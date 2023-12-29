@@ -1,0 +1,38 @@
+version: 1
+host: localhost:5001
+apikey: 12341234
+jobs:
+	filesCopy:
+		description: Copies all files from sources to targets
+		sources: 
+			- c:\Temp\ByteBuoys\sources\v1\*.txt
+		targets:
+			- c:\Temp\ByteBuoys\target\target1\
+			- c:\Temp\ByteBuoys\target\target2\
+			- s3ucket:\\asfasdf
+		labels:
+			- customer: customer1
+			
+
+	filesCopy:
+		description: Another Copy Job
+		sources: 
+			- c:\Temp\ByteBuoys\sources\v2\*Copy*.*
+		targets:
+			- c:\Temp\ByteBuoys\target\target2
+		labels:
+			- customer: customer2
+
+	checkHashes:
+		description: Just checking file checks
+		paths: 
+			- c:\Temp\ByteBuoys\sources\v2\*Copy*.*
+		labels:
+			- customer: customer3
+
+	filesExists:
+		description: Just checking file checks
+		paths: 
+			- c:\Temp\ByteBuoys\sources\v2\*Copy*.*
+		labels:
+			- customer: customer3

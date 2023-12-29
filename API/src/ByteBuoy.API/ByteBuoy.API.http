@@ -1,0 +1,12 @@
+@ByteBuoy.API_HostAddress = http://localhost:5106
+@APIKEY = 31223132132132
+
+GET {{ByteBuoy.API_HostAddress}}/v1/checkpoint
+Accept: application/json
+
+###
+
+GET {{ByteBuoy.API_HostAddress}}/v1/checkpoint
+Accept: application/json
+
+###

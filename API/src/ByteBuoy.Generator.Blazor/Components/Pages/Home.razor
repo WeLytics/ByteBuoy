@@ -1,0 +1,74 @@
+﻿@page "/"
+@using ByteBuoy.Domain.Entities.Config
+@using YamlDotNet.Serialization
+@using System.Collections.Generic
+
+<h3>Add Jobs</h3>
+
+<!-- Job Selection -->
+<select @onchange="HandleJobSelection">
+    <option value="fileCopy">File Copy Job</option>
+    <option value="checkHash">Check Hash Job</option>
+</select>
+
+<!-- Dynamic Form Based on Selection -->
+@if (selectedJobType == "fileCopy")
+{
+    <EditForm Model="newFileCopyJob" OnValidSubmit="AddFileCopyJob">
+        <!-- Form fields for FileCopyJob -->
+        <InputText @bind-Value="newFileCopyJob.Description" />
+        <!-- Add fields for sources, targets, etc. -->
+        <button type="submit">Add File Copy Job</button>
+    </EditForm>
+}
+else if (selectedJobType == "checkHash")
+{
+    <EditForm Model="newCheckHashJob" OnValidSubmit="AddCheckHashJob">
+        <!-- Form fields for CheckHashJob -->
+        <InputText @bind-Value="newCheckHashJob.Description" />
+        <!-- Add fields for paths, etc. -->
+        <button type="submit">Add Check Hash Job</button>
+    </EditForm>
+}
+
+<!-- Display Added Jobs and YAML Output -->
+<h3>Added Jobs</h3>
+@foreach (var job in jobs)
+{
+    <p>@job.Description</p>
+    <!-- Display other job details -->
+}
+
+<!-- Button to Generate YAML -->
+<button @onclick="GenerateYaml">Generate YAML</button>
+
+@code {
+    string selectedJobType = "fileCopy";
+    FileCopyJob newFileCopyJob = new FileCopyJob();
+    CheckHashJob newCheckHashJob = new CheckHashJob();
+    List<Job> jobs = new List<Job>();
+
+    void HandleJobSelection(ChangeEventArgs e)
+    {
+        selectedJobType = e.Value!.ToString()!;
+    }
+
+    void AddFileCopyJob()
+    {
+        jobs.Add(newFileCopyJob);
+        newFileCopyJob = new FileCopyJob(); // reset the form
+    }
+
+    void AddCheckHashJob()
+    {
+        jobs.Add(newCheckHashJob);
+        newCheckHashJob = new CheckHashJob(); // reset the form
+    }
+
+    void GenerateYaml()
+    {
+        var serializer = new Serializer();
+        var yaml = serializer.Serialize(jobs);
+        Console.WriteLine(yaml); // Ideally, show this in the UI or allow users to copy/download it
+    }
+}
