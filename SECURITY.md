@@ -2,8 +2,7 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+We will provide security updates to the latest major version.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,8 +10,6 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Security issues and bugs should be reported privately, via email, to WeLytics GmbH by emailing support@welytics.ai. You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Please do not open issues for anything you think might have a security implication.
