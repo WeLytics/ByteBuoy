@@ -1,5 +1,3 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
@@ -12,17 +10,17 @@ RUN apt-get update \
     clang zlib1g-dev
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ByteBuoy.API.csproj", "."]
-RUN dotnet restore "./././ByteBuoy.API.csproj"
+COPY . .
+RUN dotnet restore "./ByteBuoy.API/ByteBuoy.API.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "./ByteBuoy.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./ByteBuoy.API/ByteBuoy.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ByteBuoy.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=true
+RUN dotnet publish "./ByteBuoy.API/ByteBuoy.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=true
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 EXPOSE 8080
 COPY --from=publish /app/publish .
