@@ -13,13 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Infrastructure", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D81CE091-EEFE-4211-911C-96A8BA8A79E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByteBuoy.API.Tests", "tests\ByteBuoy.API.Tests\ByteBuoy.API.Tests.csproj", "{96166AF0-F15E-463E-BDD4-D77F487BE454}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.API.Tests", "test\ByteBuoy.API.Tests\ByteBuoy.API.Tests.csproj", "{96166AF0-F15E-463E-BDD4-D77F487BE454}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BB73E2FD-1F55-42D6-9644-2F05A7C2A310}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.API", "src\ByteBuoy.API\ByteBuoy.API.csproj", "{4499E3AE-2AAA-44C4-9741-0A29B9C6BAAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByteBuoy.Generator.Blazor", "src\ByteBuoy.Generator.Blazor\ByteBuoy.Generator.Blazor.csproj", "{34639EA3-DD4A-49DA-9B80-9B9A75294695}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Generator.Blazor", "src\ByteBuoy.Generator.Blazor\ByteBuoy.Generator.Blazor.csproj", "{34639EA3-DD4A-49DA-9B80-9B9A75294695}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByteBuoy.Agent", "src\ByteBuoy.Agent\ByteBuoy.Agent.csproj", "{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{34639EA3-DD4A-49DA-9B80-9B9A75294695}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34639EA3-DD4A-49DA-9B80-9B9A75294695}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34639EA3-DD4A-49DA-9B80-9B9A75294695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{96166AF0-F15E-463E-BDD4-D77F487BE454} = {BB73E2FD-1F55-42D6-9644-2F05A7C2A310}
 		{4499E3AE-2AAA-44C4-9741-0A29B9C6BAAC} = {D81CE091-EEFE-4211-911C-96A8BA8A79E6}
 		{34639EA3-DD4A-49DA-9B80-9B9A75294695} = {07C4B61E-2221-48EE-9A66-2BFD997CCD5E}
+		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5} = {D81CE091-EEFE-4211-911C-96A8BA8A79E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C09E56FD-2738-45FC-8232-1BACA828E7E4}

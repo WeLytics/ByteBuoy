@@ -7,11 +7,13 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'API/**'
+      - 'src/**'
+      - 'test/**'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'API/**'    
+      - 'src/**'
+      - 'test/**'
 
 jobs:
   build:
@@ -19,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./API/
+        working-directory: .
 
     steps:
     - uses: actions/checkout@v3
