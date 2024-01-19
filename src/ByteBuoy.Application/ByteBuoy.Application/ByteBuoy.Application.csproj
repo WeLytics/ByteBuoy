@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ByteBuoy.Domain\ByteBuoy.Domain.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+	<PackageReference Include="FluentValidation" Version="11.9.0">
+		<TreatAsUsed>true</TreatAsUsed>
+	</PackageReference>
+	</ItemGroup>
+</Project>

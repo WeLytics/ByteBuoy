@@ -396,4 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-src/ByteBuoy.API/*.db*
+src/ByteBuoy.API/logs/*.log
+src/ByteBuoy.API/DB/*.*
+.idea/

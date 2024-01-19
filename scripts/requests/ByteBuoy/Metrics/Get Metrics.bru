@@ -1,0 +1,15 @@
+meta {
+  name: Get Metrics
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BYTEBUOY_SERVER}}/api/metrics
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: bb_DEV123
+}
