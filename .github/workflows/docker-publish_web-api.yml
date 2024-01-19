@@ -1,4 +1,4 @@
-name: ByteBuoy Web-API: Build & Publish Docker image
+name: "ByteBuoy Web-API: Build & Publish Docker image"
 
 on:
   release:

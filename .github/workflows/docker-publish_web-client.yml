@@ -1,4 +1,4 @@
-name: ByteBuoy Web-Client: Build & Publish Docker image
+name: "ByteBuoy Web-Client: Build & Publish Docker image"
 
 on:
   release:
