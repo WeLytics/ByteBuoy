@@ -1,17 +1,26 @@
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "AllowedHosts": "*",
-  "ConnectionStrings": {
-    "Default": "Data Source=YourDatabaseFile.db;"
-  },
-  "ApiKeysAllowed": 
-    [
-      "123123", "123456"
-    ]
-  
+	"Logging": {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft.AspNetCore": "Warning"
+		}
+	},
+	"AllowedHosts": "*",
+	"Cors": {
+		"Origins": "http://localhost:4200;https://localhost:4200"
+	},
+	"ConnectionStrings": {
+		"Default": "Data Source=YourDatabaseFile.db;"
+	},
+	"ApiKeys": [
+		{
+			"Key": "bb_DEV123",
+			"Permission": "Full"
+		},
+		{
+			"Key": "bb_DEV123_READONLY",
+			"Permission": "ReadOnly"
+		}
+	]
+
 }
