@@ -36,6 +36,7 @@ namespace ByteBuoy.Infrastructure.Config
 			public string SftpHost { get; set; } // for sftpConnection@v1
 			public string Username { get; set; } // for sftpConnection@v1
 			public List<string> Paths { get; set; } // for checkHashes@v1, checkFiles@v1
+			public string WorkingDirectory { get; set; } // for bashCommands@v1
 			public Dictionary<string, string> Labels { get; set; }
 		}
 
@@ -61,7 +62,11 @@ namespace ByteBuoy.Infrastructure.Config
 
             try
             {
-                var config = deserializer.Deserialize<ConfigDto>(yamlContent);
+                var configDto = deserializer.Deserialize<ConfigDto>(yamlContent);
+				var mapper = new JobConfigMapper();
+				var result = mapper.ConfigDtoToConfig(configDto);
+				TryLoadingActions(configDto, result);
+
                 return null;
             }
             catch (YamlException ex)
@@ -71,5 +76,38 @@ namespace ByteBuoy.Infrastructure.Config
                 return null;
             }
         }
-    }
+
+		private void TryLoadingActions(ConfigDto configDto, JobConfig result)
+		{
+
+			var actionConfigs = new List<ActionConfig>();
+
+			foreach (var job in configDto.Jobs)
+			{
+				switch (job.Action)
+				{
+					case "bashCommand@v1":
+						var bashCommandConfig = new BashCommandConfig
+						{
+							Name = job.Name,
+							Action = job.Action,
+							ContinueOnError = job.ContinueOnError,
+							Labels = job.Labels,
+							Commands = job.Commands, // Assuming Commands is a property of Job
+													 // Map other specific properties if any
+						};
+						actionConfigs.Add(bashCommandConfig);
+						break;
+
+					// ... other cases for different actions
+
+					default:
+						// Handle unknown actions or add a logger statement
+						break;
+				}
+			}
+
+			return actionConfigs;
+		}
+	}
 }

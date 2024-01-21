@@ -13,11 +13,16 @@ jobs:
       customer: customer1
       customer2: someRandom Value
 
+  - name: Run some Bash Commands
+    action: bashCommands@v1
+    commands:
+      - ls -la
+    workingDirectory: c:\SourceFolder\ByteBuoy   
   
   - name: Another Copy Job
     action: filesCopy@v1
     sources: 
-      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer2*.xml
+      - c:\SourceFolder\ByteBuoy\myFiles\v1\Customer2*.xml
     targets:
       - c:\TargetFolder\TargetFolder2
     labels:
