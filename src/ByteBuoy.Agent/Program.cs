@@ -1,3 +1,5 @@
+using ByteBuoy.Agent.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -8,14 +10,9 @@ namespace ByteBuoy.Agent
     {
 		public static async Task<int> Main(string[] args)
 		{
-			// integrate logging
-			// read config
-			// execute jobs
-
 			try
 			{
-				await Host.CreateDefaultBuilder()
-				   // .ConfigureLogging(logging => logging.ClearProviders())
+				var host = Host.CreateDefaultBuilder()
 				   .UseSerilog((hostContext, loggerConfiguration) =>
 				   {
 					   loggerConfiguration
@@ -26,22 +23,24 @@ namespace ByteBuoy.Agent
 				   })
 				   .ConfigureServices((hostContext, services) =>
 				   {
-					   //services.AddSingleton<CreatePackageWorker>();
-					   //services.AddSingleton<SetupConfigurationWorker>();
-					   //services.AddSingleton<SetupStarterWorker>();
-					   //services.AddSingleton<UpdateWorker>();
-					   //services.AddSingleton<SetupWorker>();
-				   })
-				   .Build().RunAsync();
-				//.RunCommandLineApplicationAsync<Program>(args);
+					   services.AddHostedService<JobWorker>();
 
-				
-				if (!System.Diagnostics.Debugger.IsAttached)
+                       services.AddSingleton<ICommandLineService, CommandLineService>(serviceProvider =>
+                       {
+                           return new CommandLineService(args);
+                       });
+
+                   })
+				   .Build();
+
+
+                await host.RunAsync();
+
+                if (System.Diagnostics.Debugger.IsAttached)
 				{
-					Console.Write("Press any key to exit application...");
+					Console.Write("Press any key to exit (Debugging)...");
 					Console.ReadKey();
 				}
-				//return host;
 				return 0;
 			}
 			catch (Exception ex)

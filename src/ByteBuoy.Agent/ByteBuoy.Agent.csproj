@@ -18,4 +18,9 @@
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\ByteBuoy.Domain\ByteBuoy.Domain.csproj" />
+	  <ProjectReference Include="..\ByteBuoy.Infrastructure\ByteBuoy.Infrastructure.csproj" />
+	</ItemGroup>
+
 </Project>

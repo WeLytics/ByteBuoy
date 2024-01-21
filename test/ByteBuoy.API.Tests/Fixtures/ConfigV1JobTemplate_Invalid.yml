@@ -1,0 +1,38 @@
+version: 1
+host: localhost:5001
+apikey: bb_DUMMYAPIKEY
+jobs:
+  - name: Copies all files from sources to targets
+    action: filesCopy@v1
+    sources: 
+         - c:\SourceFolder\ByteBuoys\myFiles\v1\*.txt
+    targets:
+      - c:\TargetFolder\Target1\
+      - C:\StagingFolder\ByteBuoysTarget2\
+    labels:
+      customer: customer1
+      customer2: someRandom Value
+
+  
+  - name: Another Copy Job
+    action: filesCopy@v1
+    sources: 
+      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer2*.xml
+    targets:
+      - c:\TargetFolder\TargetFolder2
+    labels:
+      customer: customer2
+
+  - name: Just checking file hashes (Customer 2)
+    action: checkHashes@v1
+    paths:
+      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer2*.xml
+    labels:
+      customer: customer2
+
+  - name: Just checking file exists (Customer 3)
+    action: checkFiles@v1
+    paths: 
+      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer3*.xml
+    labels:
+       customer: customer3

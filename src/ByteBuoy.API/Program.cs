@@ -1,6 +1,5 @@
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using Serilog;
 using Microsoft.OpenApi.Models;
 using ByteBuoy.API.Validation;

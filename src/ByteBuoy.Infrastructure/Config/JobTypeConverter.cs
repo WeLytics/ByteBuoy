@@ -1,15 +1,14 @@
-﻿using ByteBuoy.Domain.Entities.Config;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
 namespace ByteBuoy.Infrastructure.Config
 {
-    // Custom type converter to handle different job types
-    public class JobTypeConverter : IYamlTypeConverter
+	// Custom type converter to handle different job types
+	public class JobTypeConverter : IYamlTypeConverter
     {
         public bool Accepts(Type type)
         {
-            return typeof(Job).IsAssignableFrom(type);
+            return typeof(Domain.Entities.Config.ActionConfig).IsAssignableFrom(type);
         }
 
         public object ReadYaml(IParser parser, Type type)
