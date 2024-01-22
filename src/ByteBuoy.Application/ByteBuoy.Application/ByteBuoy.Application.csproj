@@ -14,5 +14,6 @@
 	<PackageReference Include="FluentValidation" Version="11.9.0">
 		<TreatAsUsed>true</TreatAsUsed>
 	</PackageReference>
+	<PackageReference Include="Riok.Mapperly" Version="3.3.0" />
 	</ItemGroup>
 </Project>

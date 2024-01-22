@@ -1,4 +1,4 @@
-namespace ByteBuoy.API
+namespace ByteBuoy.Domain
 {
 	public static class Constants
 	{

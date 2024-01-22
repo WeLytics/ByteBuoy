@@ -12,10 +12,17 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="RestSharp" Version="110.2.0" />
 		<PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ByteBuoy.Application\ByteBuoy.Application\ByteBuoy.Application.csproj" />
+	  <ProjectReference Include="..\ByteBuoy.Domain\ByteBuoy.Domain.csproj" />
+	  <ProjectReference Include="..\ByteBuoy.Infrastructure\ByteBuoy.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

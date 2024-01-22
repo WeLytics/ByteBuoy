@@ -1,7 +1,6 @@
-﻿@page "/"
-@using ByteBuoy.Domain.Entities.Config
+@page "/"
+@using ByteBuoy.Domain.Entities.Config.Jobs
 @using YamlDotNet.Serialization
-@using System.Collections.Generic
 
 <h3>Add Jobs</h3>
 
@@ -10,7 +9,7 @@
     <option value="fileCopy">File Copy Job</option>
     <option value="checkHash">Check Hash Job</option>
 </select>
-
+@* 
 <!-- Dynamic Form Based on Selection -->
 @if (selectedJobType == "fileCopy")
 {
@@ -29,11 +28,11 @@ else if (selectedJobType == "checkHash")
         <!-- Add fields for paths, etc. -->
         <button type="submit">Add Check Hash Job</button>
     </EditForm>
-}
+} *@
 
 <!-- Display Added Jobs and YAML Output -->
 <h3>Added Jobs</h3>
-@foreach (var job in jobs)
+@foreach (var job in jobConfigs)
 {
     <p>@job.Description</p>
     <!-- Display other job details -->
@@ -44,31 +43,27 @@ else if (selectedJobType == "checkHash")
 
 @code {
     string selectedJobType = "fileCopy";
-    FileCopyJob newFileCopyJob = new FileCopyJob();
-    CheckHashJob newCheckHashJob = new CheckHashJob();
-    List<Job> jobs = new List<Job>();
+    List<JobConfig> jobConfigs = new List<JobConfig>();
 
     void HandleJobSelection(ChangeEventArgs e)
     {
         selectedJobType = e.Value!.ToString()!;
     }
 
-    void AddFileCopyJob()
-    {
-        jobs.Add(newFileCopyJob);
-        newFileCopyJob = new FileCopyJob(); // reset the form
-    }
+    // void AddFileCopyJob()
+    // {
+    //     jobConfigs.Add(new FilesCopyConfig() { Name = "File Copy config" }; );
+    // }
 
-    void AddCheckHashJob()
-    {
-        jobs.Add(newCheckHashJob);
-        newCheckHashJob = new CheckHashJob(); // reset the form
-    }
+    // void AddCheckHashJob()
+    // {
+    //     jobConfigs.add(new CheckHashesConfig() { Name = "Check Files Config" }); 
+    // }
 
     void GenerateYaml()
     {
         var serializer = new Serializer();
-        var yaml = serializer.Serialize(jobs);
+        var yaml = serializer.Serialize(jobConfigs);
         Console.WriteLine(yaml); // Ideally, show this in the UI or allow users to copy/download it
     }
 }

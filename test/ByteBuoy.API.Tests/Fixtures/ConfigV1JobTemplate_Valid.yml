@@ -1,0 +1,59 @@
+version: 1
+host: localhost:5001
+apiKey: bb_DUMMYAPIKEY
+pageId: bb_DUMMYPAGEID
+jobs:
+  - name: Copies all files from sources to targets
+    action: filesCopy@v1
+    sources: 
+         - c:\SourceFolder\ByteBuoys\myFiles\v1\*.txt
+    targets:
+      - c:\TargetFolder\Target1\
+      - C:\StagingFolder\ByteBuoysTarget2\
+    labels:
+      customer: customer1
+      customer2: someRandom Value
+
+  - name: Run some command Line commands
+    action: commandLine@v1
+    commands:
+      - ls -la
+    workingDirectory: c:\SourceFolder\ByteBuoy   
+  
+  - name: Move Files Job
+    action: filesMove@v1
+    overwrite: true
+    sources: 
+      - c:\SourceFolder\ByteBuoy\myFiles\v1\Customer2*.xml
+    targets:
+      - c:\TargetFolder\TargetFolder2
+    labels:
+      customer: customer2
+
+  - name: Just checking file hashes (Customer 2)
+    action: filesHashes@v1
+    hashAlgorithm: MD5
+    paths:
+      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer2*.xml
+    labels:
+      customer: customer2
+
+  - name: Just checking file exists (Customer 3)
+    action: filesExists@v1
+    paths: 
+      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer3*.xml
+    labels:
+       customer: customer3
+
+  - name: Upload Files to SSH Server
+    action: sshUpload@v1
+    host: myserver.local
+    port: 22
+    username: myuser
+    password: mypassword
+    sources: 
+      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer3*.xml
+    targets:
+      - /targetfolder/
+    labels:
+       customer: customer3

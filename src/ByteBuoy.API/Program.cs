@@ -1,6 +1,5 @@
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 using Serilog;
 using Microsoft.OpenApi.Models;
 using ByteBuoy.API.Validation;
@@ -69,8 +68,6 @@ namespace ByteBuoy.API
 				);
 			}
 
-
-			//app.UseMiddleware<ApiKeyMiddleware>();
 			app.UseCorsPolicy();
 			app.UseApiKeyMiddlewareOnRoutes();
 			app.UseHttpsRedirection();

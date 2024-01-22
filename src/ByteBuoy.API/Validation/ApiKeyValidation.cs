@@ -1,3 +1,4 @@
+using ByteBuoy.Domain;
 using ByteBuoy.Domain.Entities.ApiKey;
 
 namespace ByteBuoy.API.Validation

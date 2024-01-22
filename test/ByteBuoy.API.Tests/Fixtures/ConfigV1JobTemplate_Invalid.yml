@@ -1,0 +1,14 @@
+host: localhost:5001
+apiKey2: bb_DUMMYAPIKEY
+pageId: bb_DUMMYPAGEID
+jobs:
+  - name: Copies all files from sources to targets
+    action: filesCopy@v1
+    sources: 
+         - c:\SourceFolder\ByteBuoys\myFiles\v1\*.txt
+    targets:
+      - c:\TargetFolder\Target1\
+      - C:\StagingFolder\ByteBuoysTarget2\
+    labels:
+      customer: customer1
+      customer2: someRandom Value
