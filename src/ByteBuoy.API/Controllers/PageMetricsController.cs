@@ -22,7 +22,7 @@ namespace ByteBuoy.API.Controllers
 		{
 			return await _context.Metrics.Where(r => r.Page.Id == pageId).ToListAsync();
 		}
-
+				
 		// GET: api/v1/pages/pageId/metrics/5
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Metric>> GetPageMetricById(int pageId, int metricId)
@@ -41,9 +41,12 @@ namespace ByteBuoy.API.Controllers
 		[HttpPost]
 		public async Task<ActionResult<Metric>> PostMetric(CreatePageMetricContract createPageMetric)
 		{
-			var page = await _context.GetPageById(createPageMetric.PageId);
+			var page = await _context.GetPageById(createPageMetric.PageIdOrSlug);
+			if (page == null)
+				return NotFound();
 
 			var pageMetric = new PageContractMappers().CreatePageMetricDtoToPageMetric(createPageMetric);
+			pageMetric.Page = page;
 			_context.Metrics.Add(pageMetric);
 			await _context.SaveChangesAsync();
 
