@@ -27,9 +27,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore 
+      run: dotnet restore .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
