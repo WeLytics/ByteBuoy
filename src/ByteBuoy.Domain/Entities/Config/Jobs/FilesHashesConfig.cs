@@ -1,7 +1,8 @@
 namespace ByteBuoy.Domain.Entities.Config.Jobs
 {
-	public class CheckHashesConfig : JobConfig
+	public class FilesHashesConfig : JobConfig
 	{
 		public List<string> Paths { get; set; } = [];
+		public string? HashAlgorithm { get; set; } = "MD5";
 	}
 }

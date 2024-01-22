@@ -1,5 +1,6 @@
 using System.Net;
 using ByteBuoy.API.Validation;
+using ByteBuoy.Domain;
 
 namespace ByteBuoy.API.Middlewares
 {

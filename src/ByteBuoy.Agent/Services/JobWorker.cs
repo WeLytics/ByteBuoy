@@ -1,3 +1,4 @@
+using ByteBuoy.Agent.JobExecution;
 using ByteBuoy.Infrastructure.Config;
 using Microsoft.Extensions.Hosting;
 
@@ -9,7 +10,7 @@ namespace ByteBuoy.Agent.Services
 
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			Console.WriteLine("JobWorker started");
+			Console.WriteLine("ByteBuoy Agent started");
 			cancellationToken.ThrowIfCancellationRequested();
 
 			var filePath = commandLineService.FilePath;
@@ -25,7 +26,8 @@ namespace ByteBuoy.Agent.Services
 			var config = await configReader.ReadAgentConfigAsync(filePath);
 			if (config?.IsValid() == true)
 			{
-
+				var executionService = new JobExecutor(config);
+				await executionService.ExecuteJobsAsync();
 			}
 
 

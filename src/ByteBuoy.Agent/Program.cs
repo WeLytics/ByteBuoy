@@ -24,8 +24,7 @@ namespace ByteBuoy.Agent
 				   .ConfigureServices((hostContext, services) =>
 				   {
 					   services.AddHostedService<JobWorker>();
-
-                       services.AddSingleton<ICommandLineService, CommandLineService>(serviceProvider =>
+					   services.AddSingleton<ICommandLineService, CommandLineService>(serviceProvider =>
                        {
                            return new CommandLineService(args);
                        });

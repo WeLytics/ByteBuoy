@@ -1,9 +1,9 @@
-﻿namespace ByteBuoy.Agent.Services
+namespace ByteBuoy.Agent.Services
 {
     internal class CommandLineService : ICommandLineService
     {
         public bool DryRun { get; }
-        public string FilePath { get; } = "bytebuoy.yaml";
+        public string FilePath { get; } = "bytebuoy.yml";
 
         internal CommandLineService(string[]? args)
         {

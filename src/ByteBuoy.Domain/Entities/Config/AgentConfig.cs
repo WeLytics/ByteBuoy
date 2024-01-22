@@ -4,9 +4,10 @@ namespace ByteBuoy.Domain.Entities.Config
 {
 	public class AgentConfig
     {
-        public int Version { get; set; }
+        public decimal Version { get; set; }
         public string Host { get; set; } = null!;
-        public string Apikey { get; set; } = null!;
+        public string ApiKey { get; set; } = null!;
+        public string PageId { get; set; } = null!;
         public List<JobConfig> Jobs { get; set; } = [];
 
 
@@ -15,10 +16,17 @@ namespace ByteBuoy.Domain.Entities.Config
             if (string.IsNullOrWhiteSpace(Host))
                 return false;
 
-            if (string.IsNullOrWhiteSpace(Apikey))
+			if (Version <= 0)
+				return false;
+
+			if (string.IsNullOrWhiteSpace(ApiKey))
                 return false;
 
-            if (Jobs == null || Jobs.Count == 0)
+			if (string.IsNullOrWhiteSpace(PageId))
+				return false;
+
+
+			if (Jobs == null || Jobs.Count == 0)
                 return false;
 
             return true;

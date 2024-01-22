@@ -26,7 +26,7 @@ namespace ByteBuoy.API.Tests
 			jobConfig!.Version.Should().Be(1);
 			jobConfig.IsValid().Should().BeTrue();
 			jobConfig.Jobs.Should().NotBeNull();
-			jobConfig.Jobs.Should().HaveCount(4);
+			jobConfig.Jobs.Should().HaveCount(6);
         }
 
 		[Fact]
@@ -43,7 +43,7 @@ namespace ByteBuoy.API.Tests
 			// Assert
 			configReader.Should().NotBeNull();
 			configReader.HasErrors.Should().BeTrue();
-			configReader.ValidationErrors.Should().HaveCountGreaterThan(1);
+			configReader.ValidationErrors.Should().HaveCount(1);
 			jobConfig.Should().BeNull();
 		}
 

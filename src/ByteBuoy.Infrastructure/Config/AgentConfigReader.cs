@@ -2,7 +2,6 @@ using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
 using ByteBuoy.Domain.Entities.Config;
 using YamlDotNet.Core;
-using ByteBuoy.Domain.Entities.Config.Jobs;
 
 namespace ByteBuoy.Infrastructure.Config
 {
@@ -45,7 +44,7 @@ namespace ByteBuoy.Infrastructure.Config
 				var result = mapper.AgentConfigDtoToAgentConfig(configDto);
 				TryLoadingActions(configDto, result);
 
-                return null;
+                return result;
             }
             catch (YamlException ex)
             {
@@ -76,17 +75,29 @@ namespace ByteBuoy.Infrastructure.Config
 				switch (job.Action)
 				{
 					case "filesCopy@v1":
-						var filesCopyJob = mapper.JobDtoToFileExistsConfig(job);
+						var filesCopyJob = mapper.JobDtoToFilesCopyConfig(job);
 						result.Jobs.Add(filesCopyJob);
 						break;
-
-
-					case "bashCommand@v1":
-						var bashCommandConfig = mapper.JobDtoToFileExistsConfig(job);
-						result.Jobs.Add(bashCommandConfig);
+					case "filesMove@v1":
+						var filesMoveJob = mapper.JobDtoToFilesMoveConfig(job);
+						result.Jobs.Add(filesMoveJob);
 						break;
-
-
+					case "filesExists@v1":
+						var filesExistsJob = mapper.JobDtoToFilesExistsConfig(job);
+						result.Jobs.Add(filesExistsJob);
+						break;
+					case "filesHashes@v1":
+						var filesHashesJob = mapper.JobDtoToFilesHashesConfig(job);
+						result.Jobs.Add(filesHashesJob);
+						break;
+					case "commandLine@v1":
+						var commandLineConfig = mapper.JobDtoToCommandLineConfig(job);
+						result.Jobs.Add(commandLineConfig);
+						break;
+					case "sshUpload@v1":
+						var sshUploadJob = mapper.JobDtoToSshUploadConfig(job);
+						result.Jobs.Add(sshUploadJob);
+						break;
 					default:
 						AddValidationError("Invalid action: " + job.Action);
 						break;
