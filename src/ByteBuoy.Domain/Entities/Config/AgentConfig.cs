@@ -1,11 +1,13 @@
+using ByteBuoy.Domain.Entities.Config.Jobs;
+
 namespace ByteBuoy.Domain.Entities.Config
 {
-	public class JobConfig
+	public class AgentConfig
     {
         public int Version { get; set; }
         public string Host { get; set; } = null!;
         public string Apikey { get; set; } = null!;
-        public List<ActionConfig> Jobs { get; set; } = [];
+        public List<JobConfig> Jobs { get; set; } = [];
 
 
         public bool IsValid()

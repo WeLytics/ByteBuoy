@@ -14,7 +14,7 @@ namespace ByteBuoy.API.Tests
 			// Arrange
 			var fixturePath = "Fixtures\\ConfigV1JobTemplate_Valid.yml";
 			var yamlContent = ReadJobTemplateFixture(fixturePath);
-			var configReader = new JobConfigReader();
+			var configReader = new AgentConfigReader();
 
 			// Act
 			var jobConfig = configReader.ReadConfigText(yamlContent);
@@ -35,7 +35,7 @@ namespace ByteBuoy.API.Tests
 			// Arrange
 			var fixturePath = "Fixtures\\ConfigV1JobTemplate_Invalid.yml";
 			var yamlContent = ReadJobTemplateFixture(fixturePath);
-			var configReader = new JobConfigReader();
+			var configReader = new AgentConfigReader();
 
 			// Act
 			var jobConfig = configReader.ReadConfigText(yamlContent);

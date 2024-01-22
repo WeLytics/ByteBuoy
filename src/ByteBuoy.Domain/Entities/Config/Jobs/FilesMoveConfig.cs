@@ -1,9 +1,8 @@
-namespace ByteBuoy.Domain.Entities.Config.Actions
+namespace ByteBuoy.Domain.Entities.Config.Jobs
 {
-	public class FileExistsConfig : ActionConfig
+	public class FilesMoveJobConfig : JobConfig
 	{
 		public List<string> Sources { get; set; } = [];
 		public List<string> Targets { get; set; } = [];
-
 	}
 }

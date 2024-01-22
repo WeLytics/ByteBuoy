@@ -21,8 +21,8 @@ namespace ByteBuoy.Agent.Services
 				return;
 			}
 
-			var configReader = new JobConfigReader();
-			var config = await configReader.ReadConfigAsync(filePath);
+			var configReader = new AgentConfigReader();
+			var config = await configReader.ReadAgentConfigAsync(filePath);
 			if (config?.IsValid() == true)
 			{
 
