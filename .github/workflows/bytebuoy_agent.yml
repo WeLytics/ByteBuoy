@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: .
+        working-directory: ./src/ByteBuoy.Agent
 
     steps:
     - uses: actions/checkout@v3
@@ -27,9 +27,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
+      run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
+      run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
