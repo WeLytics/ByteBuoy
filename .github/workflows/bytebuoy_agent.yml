@@ -32,4 +32,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal .src/ByteBuoy.Agent/ByteBuoy.Agent.csproj
+      run: dotnet test --no-build --verbosity normal
