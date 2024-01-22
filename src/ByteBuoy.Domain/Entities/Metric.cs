@@ -5,17 +5,18 @@ namespace ByteBuoy.Domain.Entities
 	public class Metric
 	{
 		public int Id { get; set; }
-		public required Page Page { get; set; }
+		public Page Page { get; set; } = null!;
 
 		public decimal? Value { get; set; }
-		public required DateTime Created { get; set; }
+		public string? ValueString { get; set; }
+		public DateTime Created { get; set; } = DateTime.UtcNow;
 		public DateTime? Updated { get; set; }
 		public DateTime? Deleted { get; set; }
 
 
-		public required MetricStatus Status { get; set; }	
+		public MetricStatus Status { get; set; }
 
-		public int? MetricCategoryId { get; set; }
+		public MetricGroup MetricGroup { get; set; } = null!;
 		public string? MetaJson { get; set; }
 
 

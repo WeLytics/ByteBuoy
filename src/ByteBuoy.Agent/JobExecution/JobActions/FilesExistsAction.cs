@@ -1,56 +1,72 @@
+using System.Text.Json;
 using ByteBuoy.Agent.Services;
+using ByteBuoy.Application.Contracts;
+using ByteBuoy.Domain.Entities.Config;
 using ByteBuoy.Domain.Entities.Config.Jobs;
+
 
 namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal class FilesExistsAction(FilesExistsConfig config, ApiService apiService) : IJobAction
 	{
-		public string ApiEndpoint { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
 		public async Task ExecuteAsync()
 		{
-			foreach (var source in config.Sources)
+			foreach (var source in config.Paths)
 			{
-				foreach (var destination in config.Targets)
-				{
-					await CopyFilesAsync(source, destination);
-				}
+				await CheckPath(source);
 			}
 			return;
 		}
 
-		private async Task CopyFilesAsync(string source, string destination)
+		private async Task CheckPath(string path)
 		{
 			try
 			{
-				//check if destination is a directory or file, if directory create it if needed
-                if (File.Exists(destination))
+
+				if (path.Contains('*') || path.Contains('?'))
 				{
-					//destination is a file, check if it is a directory
-					//if it is a directory, append the source filename to it
-					var fileInfo = new FileInfo(destination);
-					if (fileInfo.Attributes.HasFlag(FileAttributes.Directory))
+					string directory = Path.GetDirectoryName(path);
+					string searchPattern = Path.GetFileName(path);
+
+					if (Directory.Exists(directory))
 					{
-						destination = Path.Combine(destination, Path.GetFileName(source));
+						string[] files = Directory.GetFiles(directory, searchPattern);
+						foreach (string file in files)
+						{
+							await SendApiRequest(path);
+						}
+					}
+					else
+					{
+						Console.WriteLine("Directory does not exist.");
 					}
 				}
-				else
+				else if (File.Exists(path))
 				{
-					//destination does not exist, check if parent directory exists
-					var directoryInfo = new DirectoryInfo(destination);
-					if (directoryInfo.Parent?.Exists == false)
-					{
-						//parent directory does not exist, create it
-						directoryInfo.Parent!.Create();
-					}
+					await SendApiRequest(path);
 				}
-				//copy the file
-				File.Copy(source, destination);
 			}
 			catch (IOException ioException)
 			{
-
 				throw;
+			}
+		}
+
+		private async Task SendApiRequest(string filePath)
+		{
+			var payload = new CreatePageMetricContract()
+			{
+				Status = Domain.Enums.MetricStatus.OK,
+				MetaJson =  JsonSerializer.Serialize(new
+				{
+					path = filePath,
+				})
+			};
+
+			var response = await apiService.PostPageMetric(payload);
+			if (!response.IsSuccess)
+			{
+				Console.WriteLine($"Error sending API request: {response.ErrorMessage}");
 			}
 		}
 	}

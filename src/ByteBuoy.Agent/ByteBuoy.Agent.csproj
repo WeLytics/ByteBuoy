@@ -20,6 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\ByteBuoy.Application\ByteBuoy.Application\ByteBuoy.Application.csproj" />
 	  <ProjectReference Include="..\ByteBuoy.Domain\ByteBuoy.Domain.csproj" />
 	  <ProjectReference Include="..\ByteBuoy.Infrastructure\ByteBuoy.Infrastructure.csproj" />
 	</ItemGroup>
