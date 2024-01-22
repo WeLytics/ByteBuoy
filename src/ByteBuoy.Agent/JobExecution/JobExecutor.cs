@@ -16,7 +16,7 @@ namespace ByteBuoy.Agent.JobExecution
 		internal JobExecutor(AgentConfig agentConfig)
 		{
 			_agentConfig = agentConfig;
-			_apiService = new ApiService(_agentConfig.Host, _agentConfig.ApiKey);
+			_apiService = new ApiService(_agentConfig);
 
 			BuildExecutionTree();
 		}
@@ -67,20 +67,22 @@ namespace ByteBuoy.Agent.JobExecution
 			foreach (var executionStep in _jobExecutionSteps)
 			{
 				var config = executionStep.Config;
-				await Console.Out.WriteLineAsync($"Executing {config.Name} ({config.Action})");
+				await LogAsync($"Job {_jobExecutionSteps.IndexOf(executionStep)+1} / {_jobExecutionSteps.Count}");
+				await LogAsync($"Executing {config.Name} ({config.Action})");
 
 				var timer = new Stopwatch();
 				timer.Start();
 				await ExecuteJobAsync(executionStep);
 				timer.Stop();
 
-				await Console.Out.WriteLineAsync($"Finished {config.Name} ({config.Action}) in {timer.Elapsed.TotalSeconds}s");
+				await LogAsync($"Finished {config.Name} ({config.Action}) in {timer.Elapsed.TotalSeconds}s");
 			}
 		}
 
+		private static Task LogAsync(string message) => Console.Out.WriteLineAsync(message);
+
 		public static async Task ExecuteJobAsync(JobExecutionStep executionStep)
 		{
-			// execute the job
 			try
 			{
 				await executionStep.jobAction.ExecuteAsync();
@@ -89,7 +91,6 @@ namespace ByteBuoy.Agent.JobExecution
 			{
 				// log the error
 				//await Logger.LogAsync(ex);
-				// if the job is configured to continue on error, then continue to the next job, otherwise throw the exception
 				if (executionStep.Config?.ContinueOnError == true)
 				{
 					throw;

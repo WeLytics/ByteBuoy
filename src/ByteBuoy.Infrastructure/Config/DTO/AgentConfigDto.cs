@@ -1,5 +1,3 @@
-using ByteBuoy.Domain.Entities.Config.Jobs;
-
 namespace ByteBuoy.Infrastructure.Config
 {
 	public class AgentConfigDto

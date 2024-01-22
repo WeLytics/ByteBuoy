@@ -1,5 +1,6 @@
-using ByteBuoy.Agent.JobExecution.JobActions;
+using System.Text.Json;
 using ByteBuoy.Domain;
+using ByteBuoy.Domain.Entities.Config;
 using RestSharp;
 
 namespace ByteBuoy.Agent.Services
@@ -7,19 +8,22 @@ namespace ByteBuoy.Agent.Services
 	internal class ApiService
 	{
 		private readonly RestClient _client;
+		private readonly AgentConfig _agentConfig;
 
-		internal ApiService(string host, string apiKey)
+		internal ApiService(AgentConfig agentConfig)
 		{
-			_client = new RestClient(host);
-			_client.AddDefaultHeader(Constants.ApiKeyHeaderName, apiKey);
+			_agentConfig = agentConfig ?? throw new ArgumentNullException(nameof(agentConfig));
+			_client = new RestClient(_agentConfig.Host);
+			_client.AddDefaultHeader(Constants.ApiKeyHeaderName, _agentConfig.ApiKey);
 		}
 
-		internal async Task<ApiResponse<T>> PostJobInfo<T>(IJobAction jobAction)
+		internal async Task<ApiResponse<T>> PostPageMetric<T>(T payload)
 		{
-			var request = new RestRequest(jobAction.ApiEndpoint, Method.Get); // Oder Method.Post, je nach Job
+			var endpoint = $"/api/v1/pages/{_agentConfig.PageId}/metrics";
+			var request = new RestRequest(endpoint, Method.Post);
+			var jsonBody = JsonSerializer.Serialize(payload);
+			request.AddJsonBody(jsonBody);
 
-			// Fügen Sie spezifische Parameter oder Header hinzu, die auf den Job zutreffen
-			// Beispiel: request.AddParameter("name", job.Parameter);
 
 			try
 			{
@@ -32,7 +36,7 @@ namespace ByteBuoy.Agent.Services
 					ErrorMessage = response.ErrorMessage
 				};
 			}
-			catch (System.Exception ex)
+			catch (Exception ex)
 			{
 				return new ApiResponse<T>
 				{

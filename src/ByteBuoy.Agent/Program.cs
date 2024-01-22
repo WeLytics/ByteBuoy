@@ -19,7 +19,7 @@ namespace ByteBuoy.Agent
 					   .MinimumLevel.Debug()
 					   .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
 					   .MinimumLevel.Override("System", LogEventLevel.Warning)
-					   .WriteTo.File("Setup.log", rollingInterval: RollingInterval.Day);
+					   .WriteTo.File("bytebuoy.log", rollingInterval: RollingInterval.Day);
 				   })
 				   .ConfigureServices((hostContext, services) =>
 				   {

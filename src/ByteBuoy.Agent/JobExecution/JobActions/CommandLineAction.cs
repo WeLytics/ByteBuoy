@@ -6,8 +6,6 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal class CommandLineAction(CommandLineConfig config, ApiService apiService) : IJobAction
 	{
-		public string ApiEndpoint { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
 		public async Task ExecuteAsync()
 		{
 			foreach (var source in config.Commands)

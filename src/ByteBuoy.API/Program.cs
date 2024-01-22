@@ -68,8 +68,6 @@ namespace ByteBuoy.API
 				);
 			}
 
-
-			//app.UseMiddleware<ApiKeyMiddleware>();
 			app.UseCorsPolicy();
 			app.UseApiKeyMiddlewareOnRoutes();
 			app.UseHttpsRedirection();
