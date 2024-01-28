@@ -13,6 +13,8 @@ namespace ByteBuoy.API.Installers
 			if (corsSettings.Origins is not null)
 				origins.AddRange(corsSettings.Origins.Split(';', StringSplitOptions.RemoveEmptyEntries));
 
+			Console.WriteLine($"Cors Origins: {string.Join(", ", origins)}");
+
 			return services.AddCors(opt =>
 				opt.AddPolicy(CorsPolicy, policy =>
 					policy.AllowAnyHeader()

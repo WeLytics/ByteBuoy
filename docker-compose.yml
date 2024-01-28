@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./src/
+    ports:
+      - "5000:5000"  
+    environment:
+      - API_KEY=bb_DEV123:FULL;bb_99999_READONLY
+
+  frontend:
+    build: ./client/ByteBuoy.Web/
+    ports:
+      - "3000:80" 
+    depends_on:
+      - api
+      - proxy
+
+  proxy:
+    build: ./client/ByteBuoy.ProxyNode/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    environment:
+      - API_KEY=bb_DEV123
+      - PORT=8080
+      - API_SERVICE_URL=http://api:5000  
+
+  # proxyNginx:
+  #   build: ./client/ByteBuoy.ProxyNginx/
+  #   #image: nginx:latest
+  #   # volumes:
+  #   #   - ./client/ByteBuoy.ProxyNginx/:/etc/nginx/templates
+  #   ports:
+  #     - "8080:80"
+  #   # depends_on:
+  #   #   - api
+  #   environment:
+  #     - API_KEY=bb_JIIHHAA
+  #     - API_SERVICE_URL=http://api:5000  
+  #   # networks:
+  #   #   - backend-networt

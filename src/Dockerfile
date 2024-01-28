@@ -15,6 +15,7 @@ RUN dotnet restore "./ByteBuoy.API/ByteBuoy.API.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "./ByteBuoy.API/ByteBuoy.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY ByteBuoy.API/appsettings.json.docker /app/publish/appsettings.json
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

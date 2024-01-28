@@ -2,7 +2,7 @@ FROM node:latest as build
 WORKDIR /app
 
 COPY package*.json ./
-
+COPY .env.docker ./.env
 RUN npm install
 
 COPY . .

@@ -1,0 +1,6 @@
+@ByteBuoy.DebugServerDotNEt_HostAddress = http://localhost:5217
+
+GET {{ByteBuoy.DebugServerDotNEt_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
