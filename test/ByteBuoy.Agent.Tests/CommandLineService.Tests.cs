@@ -41,7 +41,7 @@ namespace ByteBuoy.Agent.Tests
 			var sut = new Services.CommandLineService(null);
 
 			// Assert
-			sut.FilePath.Should().Be("bytebuoy.yaml");
+			sut.FilePath.Should().Be("bytebuoy.yml");
 			sut.DryRun.Should().BeFalse();
 		}
 	}

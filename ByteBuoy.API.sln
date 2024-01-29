@@ -25,12 +25,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Agent", "src\ByteB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0C43E1A-0639-4F73-B8F6-2386FC17F385}"
 	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Application", "src\ByteBuoy.Application\ByteBuoy.Application\ByteBuoy.Application.csproj", "{E706206C-C902-4770-9107-663DBE52E657}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByteBuoy.Agent.Tests", "test\ByteBuoy.Agent.Tests\ByteBuoy.Agent.Tests.csproj", "{2E0C6F3B-0BA9-42AC-A41D-0E1EFF47C359}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Agent.Tests", "test\ByteBuoy.Agent.Tests\ByteBuoy.Agent.Tests.csproj", "{2E0C6F3B-0BA9-42AC-A41D-0E1EFF47C359}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{41715599-F478-4C34-AE0B-79558E4A7BAA}"
+	ProjectSection(SolutionItems) = preProject
+		src\.dockerignore = src\.dockerignore
+		.gitignore = .gitignore
+		src\Dockerfile = src\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +95,7 @@ Global
 		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5} = {07C4B61E-2221-48EE-9A66-2BFD997CCD5E}
 		{E706206C-C902-4770-9107-663DBE52E657} = {D81CE091-EEFE-4211-911C-96A8BA8A79E6}
 		{2E0C6F3B-0BA9-42AC-A41D-0E1EFF47C359} = {BB73E2FD-1F55-42D6-9644-2F05A7C2A310}
+		{41715599-F478-4C34-AE0B-79558E4A7BAA} = {B0C43E1A-0639-4F73-B8F6-2386FC17F385}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C09E56FD-2738-45FC-8232-1BACA828E7E4}

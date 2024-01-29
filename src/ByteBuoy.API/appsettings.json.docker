@@ -7,19 +7,20 @@
 	},
 	"AllowedHosts": "*",
 	"Cors": {
-		"Origins": "http://localhost:4200;https://localhost:4200"
+		"Origins": "http://localhost:4200;http://localhost:3000;"
 	},
 	"ConnectionStrings": {
-		"Default": "Data Source=DB/bytebuoy.db;"
+		"Default": "Data Source=bytebuoy.db;"
 	},
 	"ApiKeys": [
 		{
 			"Key": "bb_DEV123",
-			"Permission": "FULL"
+			"Permission": "Full"
 		},
 		{
 			"Key": "bb_DEV123_READONLY",
-			"Permission": "READONLY"
+			"Permission": "ReadOnly"
 		}
 	]
+
 }

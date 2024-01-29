@@ -7,6 +7,8 @@ using ByteBuoy.API.Extensions;
 using System.Reflection;
 using FluentValidation;
 using ByteBuoy.API.Installers;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 
 namespace ByteBuoy.API
@@ -14,8 +16,8 @@ namespace ByteBuoy.API
 	public class Program
     {
         public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateSlimBuilder(args);
+		{
+			var builder = WebApplication.CreateSlimBuilder(args);
 			var config = builder.Configuration;
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddControllers();
@@ -24,7 +26,7 @@ namespace ByteBuoy.API
 			builder.Services.AddAuthorization();
 
 			builder.Services.AddDbContext<ByteBuoyDbContext>(options =>
-                options.UseSqlite(config.GetConnectionString("Default")));
+				options.UseSqlite(config.GetConnectionString("Default")));
 
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
 
@@ -75,15 +77,46 @@ namespace ByteBuoy.API
 			app.UseAuthorization();
 			app.MapControllers();
 
-
+			PrepareDatabase(builder);
 			using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ByteBuoyDbContext>();
-                context.Database.Migrate();
-            }
+			{
+				var services = scope.ServiceProvider;
+				var context = services.GetRequiredService<ByteBuoyDbContext>();
+				context.Database.Migrate();
+			}
 
-            app.Run();
-        }
-    }
+			app.MapFallback(async context =>
+			{
+				var response = new
+				{
+					Message = $"ByteBuoy: You requested {context.Request.Method} {context.Request.Path}",
+					Headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
+				};
+
+				await context.Response.WriteAsJsonAsync(response);
+			});
+
+			app.Run("http://0.0.0.0:5000");
+		}
+
+		private static void PrepareDatabase(WebApplicationBuilder builder)
+		{
+			var connectionString = builder.Configuration.GetConnectionString("Default");
+			var connectionBuilder = new SqlConnectionStringBuilder(connectionString);
+			var databaseDirectory = Path.GetDirectoryName(connectionBuilder.DataSource);
+
+			if (databaseDirectory != null && !Directory.Exists(databaseDirectory))
+			{
+				try
+				{
+					Directory.CreateDirectory(databaseDirectory!);
+					Console.WriteLine("Database directory created successfully.");
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Failed to create directory: {ex.Message}");
+				}
+			}
+		}
+	}
 }

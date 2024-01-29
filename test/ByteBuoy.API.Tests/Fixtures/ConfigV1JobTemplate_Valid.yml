@@ -32,7 +32,7 @@ jobs:
 
   - name: Just checking file hashes (Customer 2)
     action: filesHashes@v1
-    hashAlgorithm: MD5
+    hashAlgorithm: CRC32
     paths:
       - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer2*.xml
     labels:
