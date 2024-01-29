@@ -11,12 +11,13 @@ The strategy leverages the current Git repository as a base, employing it to bui
 `git clone https://github.com/WeLytics/ByteBuoy.git`
 
 
-1) Copy `build-docker-compose.yml`, `traefik-docker-compose.yml` to the current directory
+1) Copy `build-docker-compose.yml`, `traefik-docker-compose.yml` and `appsettings.json.docker` to the current directory
 
 ## Linux
 ```
 cp ./ByteBuoy/scripts/deployment/traefik-docker-swarm/build-docker-compose.yml .
 cp ./ByteBuoy/scripts/deployment/traefik-docker-swarm/traefik-docker-compose.yml .
+cp ./ByteBuoy/src/ByteBuoy.API/appsettings.json.docker appsettings.json
 ```
 
 
@@ -24,6 +25,7 @@ cp ./ByteBuoy/scripts/deployment/traefik-docker-swarm/traefik-docker-compose.yml
 ```
 copy .\ByteBuoy\scripts\deployment\traefik-docker-swarm\build-docker-compose.yml .
 copy .\ByteBuoy\scripts\deployment\traefik-docker-swarm\traefik-docker-compose.yml .
+copy .\ByteBuoy\src\ByteBuoy.API\appsettings.json.docker appsettings.json
 ```
 
 1) Modify the traefik-docker-compose.yml file to include your specific Traefik labels, such as Certresolver and Hosts. Additionally, ensure that the environment variables are correctly set. Refer to the comments within the file for detailed guidance and examples.

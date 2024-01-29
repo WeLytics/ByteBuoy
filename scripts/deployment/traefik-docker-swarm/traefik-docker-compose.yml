@@ -7,6 +7,9 @@ services:
       - API_KEY=bb_DEV123:FULL;bb_99999_READONLY
     networks:
       - traefik-public
+    volumes: 
+      - ./DB:/app/DB
+      - ./appsettings.json:/app/appsettings.json      
     deploy:
       labels:
         - "traefik.enable=true"
