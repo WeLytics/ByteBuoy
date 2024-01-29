@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./ByteBuoy/src
+    image: bytebuoy_api:latest
+    
+  frontend:
+    build: ./ByteBuoy/client/ByteBuoy.Web/
+    image: bytebuoy_frontend:latest
+
+  proxy:
+    build: ./ByteBuoy/client/ByteBuoy.ProxyNode/
+    image: bytebuoy_proxy:latest
+

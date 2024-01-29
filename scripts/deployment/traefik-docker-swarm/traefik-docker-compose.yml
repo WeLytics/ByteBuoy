@@ -1,0 +1,51 @@
+version: '3.3'
+
+services:
+  bytebuoy_api:
+    image: bytebuoy_api:latest
+    environment:
+      - API_KEY=bb_DEV123:FULL;bb_99999_READONLY
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.ByteBuoy_API.loadbalancer.server.port=5000"
+        - "traefik.http.routers.ByteBuoy_API.rule=Host(`bytebuoyapi.yourdomain.com`)"   # change to your API domain name
+        - "traefik.http.routers.ByteBuoy_API.entrypoints=web,web-secure"
+        - "traefik.http.routers.ByteBuoy_API.tls=true"      
+
+  bytebuoy_frontend:
+    image: bytebuoy_frontend:latest
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.ByteBuoy_Frontend.loadbalancer.server.port=80"
+        - "traefik.http.routers.ByteBuoy_Frontend.rule=Host(`bytebuoy.yourdomain.com`)"     # change to your frontend domain name
+        - "traefik.http.routers.ByteBuoy_Frontend.entrypoints=web,web-secure"
+        - "traefik.http.routers.ByteBuoy_Frontend.tls=true"
+
+  bytebuoy_proxy:
+    image: bytebuoy_proxy:latest
+    environment:
+      - API_KEY=bb_DEV123
+      - PORT=8080
+      - CORS_ORIGIN=https://bytebuoy.yourdomain.com     # change to your proxy domain name, defined below
+      - API_SERVICE_URL=http://traefik_bytebuoy_api:5000  
+    networks:
+      - traefik-public      
+      
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.ByteBuoy_Proxy.loadbalancer.server.port=8080"
+        - "traefik.http.routers.ByteBuoy_Proxy.rule=Host(`bytebuoyproxy.yourdomain.com`)"   # change to your proxy domain name
+        - "traefik.http.routers.ByteBuoy_Proxy.entrypoints=web,web-secure"
+        - "traefik.http.routers.ByteBuoy_Proxy.tls=true"
+
+
+networks:
+  traefik-public:
+    external: true

@@ -27,15 +27,21 @@ We move a large number of files on a daily basis, particularly for the machine l
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
-What things you need to install the software and how to install them.
+
+To initiate ByteBuoy, ensure you have a functional Docker installation on your system. This prerequisite is essential for running ByteBuoy effectively.
 
 
-## Usage
+## Usage from Sources
+
+To execute ByteBuoy, navigate to the root directory of the source repository and run the command docker compose up. This will initiate the Docker Compose process, which orchestrates the setup and starts ByteBuoy.
 
 ```sh
-tbd
+git clone https://github.com/WeLytics/ByteBuoy.git
+cd ByteBuoy
+docker compose up
 ```
 
+Launch your default web browser and navigate to [`http://localhost:3000/`](http://localhost:3000/) to access the application.
 
 ## Versioning
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/welytics/bytebuoy/tags).
