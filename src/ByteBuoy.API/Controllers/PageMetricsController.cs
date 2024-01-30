@@ -5,7 +5,6 @@ using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace ByteBuoy.API.Controllers
 {
