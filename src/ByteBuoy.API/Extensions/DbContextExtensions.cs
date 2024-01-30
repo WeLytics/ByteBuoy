@@ -11,12 +11,17 @@ namespace ByteBuoy.API.Extensions
 			return await context.Pages.SingleOrDefaultAsync(r => r.Slug == slug);
 		}
 
-		public static async Task<Page?> GetPageById(this ByteBuoyDbContext context, string id)
+		public static async Task<Page?> GetPageByIdOrSlug(this ByteBuoyDbContext context, string id)
 		{
 			if (int.TryParse(id, out int pageId))
 				return await context.Pages.SingleOrDefaultAsync(r => r.Id == pageId);
 
 			return await context.GetPageBySlug(id);
+		}
+
+		public static async Task<Page?> GetPageById(this ByteBuoyDbContext context, int pageId)
+		{
+			return await context.Pages.SingleOrDefaultAsync(r => r.Id == pageId);
 		}
 	}
 }

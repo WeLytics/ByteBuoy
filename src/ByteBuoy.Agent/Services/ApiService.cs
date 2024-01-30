@@ -19,7 +19,7 @@ namespace ByteBuoy.Agent.Services
 
 		internal async Task<ApiResponse<T>> PostPageMetric<T>(T payload)
 		{
-			var endpoint = $"/api/v1/pages/{_agentConfig.PageId}/metrics";
+			var endpoint = $"/api/v1/pages/{_agentConfig.Page}/metrics";
 			var request = new RestRequest(endpoint, Method.Post);
 			var jsonBody = JsonSerializer.Serialize(payload);
 			request.AddJsonBody(jsonBody);

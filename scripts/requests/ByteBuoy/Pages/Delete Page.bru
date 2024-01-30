@@ -1,0 +1,18 @@
+meta {
+  name: Delete Page
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{BYTEBUOY_SERVER}}/api/v1/pages
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "My Monitoring Page",
+    "slug": ""
+  }
+}

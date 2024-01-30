@@ -5,7 +5,7 @@ namespace ByteBuoy.Infrastructure.Config
 		public decimal Version { get; set; }
 		public required string Host { get; set; }
 		public required string ApiKey { get; set; }
-		public required string PageId { get; set; }
+		public required string Page { get; set; }
 		public required List<JobConfigDto> Jobs { get; set; }
 	}
 }

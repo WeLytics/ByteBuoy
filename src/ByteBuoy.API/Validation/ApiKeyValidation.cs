@@ -17,7 +17,7 @@ namespace ByteBuoy.API.Validation
 			if (string.IsNullOrWhiteSpace(requestApiKey))
 				return false;
 
-			var apiKey = _configuration.GetSection(Constants.ApiKeyName).Get<IEnumerable<ApiKey>>();
+			var apiKey = _configuration.GetSection(Constants.ApiKeyName).Get<IEnumerable<ApiKeyPermission>>();
 
 			if (apiKey == null || !apiKey.Any(r => r.Key.Equals(requestApiKey)))
 				return false;

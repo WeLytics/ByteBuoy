@@ -6,6 +6,6 @@ namespace ByteBuoy.Domain.Entities.Config.Jobs
 		public required string Action { get; set; }
 		public string? Description { get; set; }
 		public bool? ContinueOnError { get; set; }
-		public List<Dictionary<string, string>>? Labels { get; set; }
+		public Dictionary<string, string>? Labels { get; set; }
 	}
 }

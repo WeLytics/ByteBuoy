@@ -10,7 +10,7 @@ function App() {
 
   useEffect(() => {
       const loadData = async () => {
-          const result = await fetchData<Metric[]>('/api/metrics');
+          const result = await fetchData<Metric[]>('/api/v1/pages/11/metrics');
           setData(result);
       };
 

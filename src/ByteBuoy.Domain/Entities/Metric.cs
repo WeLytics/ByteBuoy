@@ -16,9 +16,7 @@ namespace ByteBuoy.Domain.Entities
 
 		public MetricStatus Status { get; set; }
 
-		public MetricGroup MetricGroup { get; set; } = null!;
+		public MetricGroup? MetricGroup { get; set; } = null!;
 		public string? MetaJson { get; set; }
-
-
 	}
 }

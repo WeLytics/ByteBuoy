@@ -14,8 +14,8 @@ using Microsoft.Extensions.Hosting;
 namespace ByteBuoy.API
 {
 	public class Program
-    {
-        public static void Main(string[] args)
+	{
+		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateSlimBuilder(args);
 			var config = builder.Configuration;
@@ -85,16 +85,19 @@ namespace ByteBuoy.API
 				context.Database.Migrate();
 			}
 
-			app.MapFallback(async context =>
+			if (app.Environment.IsDevelopment())
 			{
-				var response = new
+				app.MapFallback(async context =>
 				{
-					Message = $"ByteBuoy: You requested {context.Request.Method} {context.Request.Path}",
-					Headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
-				};
+					var response = new
+					{
+						Message = $"ByteBuoy: Request Fallback for {context.Request.Method} {context.Request.Path}",
+						Headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
+					};
 
-				await context.Response.WriteAsJsonAsync(response);
-			});
+					await context.Response.WriteAsJsonAsync(response);
+				});
+			};
 
 			app.Run("http://0.0.0.0:5000");
 		}

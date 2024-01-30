@@ -7,7 +7,7 @@ namespace ByteBuoy.Domain.Entities.Config
         public decimal Version { get; set; }
         public string Host { get; set; } = null!;
         public string ApiKey { get; set; } = null!;
-        public string PageId { get; set; } = null!;
+        public string Page { get; set; } = null!;
         public List<JobConfig> Jobs { get; set; } = [];
 
 
@@ -22,7 +22,7 @@ namespace ByteBuoy.Domain.Entities.Config
 			if (string.IsNullOrWhiteSpace(ApiKey))
                 return false;
 
-			if (string.IsNullOrWhiteSpace(PageId))
+			if (string.IsNullOrWhiteSpace(Page))
 				return false;
 
 

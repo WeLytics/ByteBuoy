@@ -7,11 +7,11 @@ using ByteBuoy.Domain.Entities.Config.Jobs;
 
 namespace ByteBuoy.Agent.JobExecution.JobActions
 {
-	internal class FilesExistsAction(FilesExistsConfig config, ApiService apiService) : IJobAction
+	internal class FilesExistsAction(FilesExistsConfig _config, ApiService _apiService) : IJobAction
 	{
 		public async Task ExecuteAsync()
 		{
-			foreach (var source in config.Paths)
+			foreach (var source in _config.Paths)
 			{
 				await CheckPath(source);
 			}
@@ -33,7 +33,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 						string[] files = Directory.GetFiles(directory, searchPattern);
 						foreach (string file in files)
 						{
-							await SendApiRequest(path);
+							await SendApiRequest(file);
 						}
 					}
 					else
@@ -60,10 +60,11 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 				MetaJson =  JsonSerializer.Serialize(new
 				{
 					path = filePath,
+					labels = _config.Labels
 				})
 			};
 
-			var response = await apiService.PostPageMetric(payload);
+			var response = await _apiService.PostPageMetric(payload);
 			if (!response.IsSuccess)
 			{
 				Console.WriteLine($"Error sending API request: {response.ErrorMessage}");
