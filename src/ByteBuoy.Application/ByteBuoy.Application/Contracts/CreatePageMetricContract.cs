@@ -7,6 +7,7 @@ namespace ByteBuoy.Application.Contracts
 		public int? MetricGroupId { get; set; }
 		public MetricStatus Status { get; set; }
 		public decimal? Value { get; set; }
+		public string? ValueString { get; set; }
 		public string? MetaJson { get; set; }
 	}
 }

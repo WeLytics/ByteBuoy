@@ -1,7 +1,6 @@
 using System.Text.Json;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
-using ByteBuoy.Domain.Entities.Config;
 using ByteBuoy.Domain.Entities.Config.Jobs;
 
 
@@ -20,35 +19,27 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 
 		private async Task CheckPath(string path)
 		{
-			try
+			if (path.Contains('*') || path.Contains('?'))
 			{
+				string directory = Path.GetDirectoryName(path);
+				string searchPattern = Path.GetFileName(path);
 
-				if (path.Contains('*') || path.Contains('?'))
+				if (Directory.Exists(directory))
 				{
-					string directory = Path.GetDirectoryName(path);
-					string searchPattern = Path.GetFileName(path);
-
-					if (Directory.Exists(directory))
+					string[] files = Directory.GetFiles(directory, searchPattern);
+					foreach (string file in files)
 					{
-						string[] files = Directory.GetFiles(directory, searchPattern);
-						foreach (string file in files)
-						{
-							await SendApiRequest(file);
-						}
-					}
-					else
-					{
-						Console.WriteLine("Directory does not exist.");
+						await SendApiRequest(file);
 					}
 				}
-				else if (File.Exists(path))
+				else
 				{
-					await SendApiRequest(path);
+					Console.WriteLine("Directory does not exist.");
 				}
 			}
-			catch (IOException ioException)
+			else if (File.Exists(path))
 			{
-				throw;
+				await SendApiRequest(path);
 			}
 		}
 
@@ -57,10 +48,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 			var payload = new CreatePageMetricContract()
 			{
 				Status = Domain.Enums.MetricStatus.OK,
-				MetaJson =  JsonSerializer.Serialize(new
+				ValueString = Path.GetFileName(filePath),
+				MetaJson = JsonSerializer.Serialize(new
 				{
 					path = filePath,
-					labels = _config.Labels
+					labels = _config.Labels,
+
 				})
 			};
 
