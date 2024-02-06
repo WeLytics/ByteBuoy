@@ -8,7 +8,6 @@ using System.Reflection;
 using FluentValidation;
 using ByteBuoy.API.Installers;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Hosting;
 
 
 namespace ByteBuoy.API
@@ -91,7 +90,7 @@ namespace ByteBuoy.API
 				{
 					var response = new
 					{
-						Message = $"ByteBuoy: Request Fallback for {context.Request.Method} {context.Request.Path}",
+						Message = $"ByteBuoy: Request DEBUG Fallback for {context.Request.Method} {context.Request.Path}",
 						Headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
 					};
 

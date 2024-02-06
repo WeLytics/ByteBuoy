@@ -1,6 +1,6 @@
-namespace ByteBuoy.Domain.Entities.Config.Jobs
+namespace ByteBuoy.Domain.Entities.Config.Tasks
 {
-	public abstract class JobConfig
+	public abstract class TaskConfig
 	{
 		public required string Name { get; set; }
 		public required string Action { get; set; }

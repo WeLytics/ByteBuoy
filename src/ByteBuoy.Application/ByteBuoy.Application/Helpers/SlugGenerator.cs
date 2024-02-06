@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Xml;
-using ByteBuoy.Domain.Entities;
 
 namespace ByteBuoy.Application.Helpers
 {

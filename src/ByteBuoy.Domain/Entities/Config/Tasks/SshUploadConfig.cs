@@ -1,6 +1,6 @@
-namespace ByteBuoy.Domain.Entities.Config.Jobs
+namespace ByteBuoy.Domain.Entities.Config.Tasks
 {
-	public class SshUploadConfig : JobConfig
+	public class SshUploadConfig : TaskConfig
 	{
 		public string? Host { get; set; }
 		public int? Port { get; set; }

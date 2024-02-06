@@ -27,9 +27,8 @@ namespace ByteBuoy.Agent.Services
 			if (config?.IsValid() == true)
 			{
 				var executionService = new JobExecutor(config);
-				await executionService.ExecuteJobsAsync();
+				await executionService.ExecuteTasksAsync();
 			}
-
 
 			_appLifetime.StopApplication();
 			return;

@@ -25,8 +25,8 @@ namespace ByteBuoy.API.Tests
 			jobConfig.Should().NotBeNull();
 			jobConfig!.Version.Should().Be(1);
 			jobConfig.IsValid().Should().BeTrue();
-			jobConfig.Jobs.Should().NotBeNull();
-			jobConfig.Jobs.Should().HaveCount(6);
+			jobConfig.Tasks.Should().NotBeNull();
+			jobConfig.Tasks.Should().HaveCount(6);
         }
 
 		[Fact]

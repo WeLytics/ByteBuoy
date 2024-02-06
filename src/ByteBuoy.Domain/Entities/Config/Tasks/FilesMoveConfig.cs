@@ -1,6 +1,6 @@
-namespace ByteBuoy.Domain.Entities.Config.Jobs
+namespace ByteBuoy.Domain.Entities.Config.Tasks
 {
-	public class FilesCopyConfig : JobConfig
+	public class FilesMoveJobConfig : TaskConfig
 	{
 		public List<string> Sources { get; set; } = [];
 		public List<string> Targets { get; set; } = [];

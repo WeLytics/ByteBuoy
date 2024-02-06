@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
-using ByteBuoy.Domain.Entities.Config.Jobs;
+using ByteBuoy.Domain.Entities.Config.Tasks;
 
 
 namespace ByteBuoy.Agent.JobExecution.JobActions

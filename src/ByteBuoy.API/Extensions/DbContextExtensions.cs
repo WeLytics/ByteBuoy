@@ -23,5 +23,10 @@ namespace ByteBuoy.API.Extensions
 		{
 			return await context.Pages.SingleOrDefaultAsync(r => r.Id == pageId);
 		}
+
+		public static async Task<Job?> GetJobById(this ByteBuoyDbContext context, int jobId)
+		{
+			return await context.Jobs.SingleOrDefaultAsync(r => r.Id == jobId);
+		}
 	}
 }

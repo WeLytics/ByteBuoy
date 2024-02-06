@@ -2,7 +2,7 @@ version: 1
 host: localhost:5001
 apiKey: bb_DUMMYAPIKEY
 page: bb_DUMMYPAGEID
-jobs:
+tasks:
   - name: Copies all files from sources to targets
     action: filesCopy@v1
     sources: 

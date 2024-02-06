@@ -1,4 +1,6 @@
 using System.Text.Json;
+using ByteBuoy.Agent.Dtos;
+using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain;
 using ByteBuoy.Domain.Entities.Config;
 using RestSharp;
@@ -17,10 +19,10 @@ namespace ByteBuoy.Agent.Services
 			_client.AddDefaultHeader(Constants.ApiKeyHeaderName, _agentConfig.ApiKey);
 		}
 
-		internal async Task<ApiResponse<T>> PostPageMetric<T>(T payload)
+
+		internal async Task<ApiResponse<T>> BaseRequest<T>(string endpoint, object payload, Method method)
 		{
-			var endpoint = $"/api/v1/pages/{_agentConfig.Page}/metrics";
-			var request = new RestRequest(endpoint, Method.Post);
+			var request = new RestRequest(endpoint, method);
 			var jsonBody = JsonSerializer.Serialize(payload);
 			request.AddJsonBody(jsonBody);
 
@@ -44,6 +46,36 @@ namespace ByteBuoy.Agent.Services
 					ErrorMessage = ex.Message
 				};
 			}
+
+		}
+
+		internal async Task<ApiResponse<T>> PostRequest<T>(string endpoint, object payload)
+		{
+			return await BaseRequest<T>(endpoint, payload, Method.Post);	
+		}
+
+		internal async Task<ApiResponse<T>> PutRequest<T>(string endpoint, object payload)
+		{
+			return await BaseRequest<T>(endpoint, payload, Method.Put);
+		}
+
+
+		internal async Task<ApiResponse<CreatePageMetricContract>> PostPageMetric(CreatePageMetricContract payload)
+		{
+			var endpoint = $"/api/v1/pages/{_agentConfig.Page}/metrics";
+			return await PostRequest<CreatePageMetricContract>(endpoint, payload);
+		}
+
+		internal async Task<ApiResponse<CreateJobResponseDto>> CreateJobAsync(CreateJobContract contract)
+		{
+			var endpoint = $"/api/v1/jobs/";
+			return await PostRequest<CreateJobResponseDto>(endpoint, contract);
+		}
+
+		internal async Task<ApiResponse<CreateJobResponseDto>> FinishJobAsync(UpdateJobContract contract)
+		{
+			var endpoint = $"/api/v1/jobs/";
+			return await PutRequest<CreateJobResponseDto>(endpoint, contract);
 		}
 	}
 }

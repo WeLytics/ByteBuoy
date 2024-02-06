@@ -1,6 +1,6 @@
-namespace ByteBuoy.Domain.Entities.Config.Jobs
+namespace ByteBuoy.Domain.Entities.Config.Tasks
 {
-	public class CommandLineConfig : JobConfig
+	public class CommandLineConfig : TaskConfig
 	{
 		public List<string> Commands { get; set; } = [];
 		public string? WorkingDirectory { get; set; }

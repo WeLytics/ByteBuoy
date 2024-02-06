@@ -1,4 +1,4 @@
-using ByteBuoy.Domain.Entities.Config.Jobs;
+using ByteBuoy.Domain.Entities.Config.Tasks;
 
 namespace ByteBuoy.Domain.Entities.Config
 {
@@ -8,7 +8,8 @@ namespace ByteBuoy.Domain.Entities.Config
         public string Host { get; set; } = null!;
         public string ApiKey { get; set; } = null!;
         public string Page { get; set; } = null!;
-        public List<JobConfig> Jobs { get; set; } = [];
+		public string? Description { get; set; }
+        public List<TaskConfig> Tasks { get; set; } = [];
 
 
         public bool IsValid()
@@ -26,7 +27,7 @@ namespace ByteBuoy.Domain.Entities.Config
 				return false;
 
 
-			if (Jobs == null || Jobs.Count == 0)
+			if (Tasks == null || Tasks.Count == 0)
                 return false;
 
             return true;

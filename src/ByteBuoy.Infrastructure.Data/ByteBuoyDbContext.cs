@@ -11,7 +11,8 @@ namespace ByteBuoy.Infrastructure.Data
 		{
 		}
 
-		public DbSet<JobRun> JobRuns { get; set; }
+		public DbSet<Job> Jobs { get; set; }
+		public DbSet<JobHistory> JobHistory { get; set; }
 		public DbSet<Page> Pages { get; set; }
 		public DbSet<Metric> Metrics { get; set; }
 		public DbSet<MetricGroup> MetricGroups { get; set; }
@@ -28,11 +29,18 @@ namespace ByteBuoy.Infrastructure.Data
 					v => (MetricStatus)Enum.Parse(typeof(MetricStatus), v));
 
 			modelBuilder
-				.Entity<JobRun>()
-				.Property(e => e.JobStatus)
+				.Entity<Job>()
+				.Property(e => e.Status)
 				.HasConversion(
 					v => v.ToString(),
 					v => (JobStatus)Enum.Parse(typeof(JobStatus), v));
+
+			modelBuilder
+				.Entity<JobHistory>()
+				.Property(e => e.Status)
+				.HasConversion(
+					v => v.ToString(),
+					v => (Domain.Enums.TaskStatus)Enum.Parse(typeof(Domain.Enums.TaskStatus), v));
 
 		}
 	}
