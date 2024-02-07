@@ -14,7 +14,6 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 			{
 				await CheckPath(source);
 			}
-			return;
 		}
 
 		private async Task CheckPath(string path)

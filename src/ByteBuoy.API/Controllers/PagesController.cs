@@ -1,3 +1,4 @@
+using ByteBuoy.API.Extensions;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Helpers;
 using ByteBuoy.Application.Mappers;
@@ -24,10 +25,10 @@ namespace ByteBuoy.API.Controllers
 		}
 
 		// GET: api/v1/pages/5
-		[HttpGet("{pageId}")]
-		public async Task<ActionResult<Page>> GetPageById(int pageId)
+		[HttpGet("{pageIdOrSlug}")]
+		public async Task<ActionResult<Page>> GetPageById(string pageIdOrSlug)
 		{
-			var page = await _context.Pages.FindAsync(pageId);
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
 
 			if (page == null)
 				return NotFound();

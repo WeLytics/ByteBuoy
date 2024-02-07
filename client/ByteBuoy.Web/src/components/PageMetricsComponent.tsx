@@ -5,15 +5,15 @@ import { useEffect, useState } from 'react'
 
 import { Metric } from '../types/Metric';
 import { fetchData } from '../services/apiService';
-import PageMetricsComponent from './PageMetricsComponent';
 
-const PageComponent: React.FC = () => {
-  const { pageId } = useParams<{ pageId: string }>();
+
+const PageMetricsComponent: React.FC = () => {
+  const { pageId: pageIdOrSlug } = useParams<{ pageId: string }>();
   const [data, setData] = useState<Metric[] | null>(null);
 
   useEffect(() => {
       const loadData = async () => {
-          const result = await fetchData<Metric[]>(`/api/v1/pages/${pageId}`);
+          const result = await fetchData<Metric[]>(`/api/v1/pages/${pageIdOrSlug}/metrics`);
           setData(result);
       };
 
@@ -22,14 +22,11 @@ const PageComponent: React.FC = () => {
   
   return (
     <>
-      <h1>ByteBuoy ⛵</h1>
+      <h1>ByteBuoy ⛵ PageMetrics</h1>
 
       {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
-
-      <h1>Metrics</h1>
-      <PageMetricsComponent />
     </>
   )
 }
 
-export default PageComponent;
+export default PageMetricsComponent;

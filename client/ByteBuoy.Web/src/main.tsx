@@ -1,78 +1,89 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from "react-dom/client";
-// import App from './App.tsx'
-import "./index.css";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation,} from 'react-router-dom';
-import ErrorPage from "./components/ErrorComponent";
-import PageComponent from "./components/PageComponent";
-import SetupComponent from "./components/SetupComponent";
-// import App from './App';
+import { createRoot } from 'react-dom/client';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  Outlet,
+} from 'react-router-dom';
+import './index.css';
+import PageComponent from './components/PageComponent';
+import JobComponent from './components/JobComponent';
+import JobsComponent from './components/JobsComponent';
+import PagesComponent from './components/PagesComponent';
+import ErrorComponent from './components/ErrorComponent';
 
-const useCheckFirstRun = () => {
-  const [isFirstRun, setIsFirstRun] = useState(null);
+
+const SetupPage = () => (
+  <div>Setup Page - follow instructions to set up your application.</div>
+);
+
+const HomePage = () => (
+  <div>Welcome to the application!</div>
+);
+
+const AppWrapper = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />}>
+          {/* Protected routes */}
+          <Route index element={<HomePage />} />
+          <Route path="setup" element={<SetupPage />} />
+          <Route path="pages/:pageId" element={<PageComponent />} />
+          <Route path="pages" element={<PagesComponent />} />
+          <Route path="jobs/:jobId" element={<JobComponent />} />
+          <Route path="jobs" element={<JobsComponent />} />
+
+          {/* <Route path="*" element={< Navigate replace to="/check-first-run" />} /> */}
+          <Route path="*" errorElement={<ErrorComponent />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+};
+
+const App = () => {
+  const navigate = useNavigate();
+  const [isChecking, setIsChecking] = useState(true);
+  const [isFirstRun, setIsFirstRun] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkFirstRun = async () => {
-      // Replace with your actual backend check
-      const response = await fetch('/api/check-first-run');
-      const data = await response.json();
-      setIsFirstRun(data.isFirstRun);
+      try {
+        // const response = await fetch('/api/isFirstRun');
+        // const data = await response.json();
+
+        setIsFirstRun(false);
+        // setIsFirstRun(data.isFirstRun);
+      } catch (error) {
+        console.error('Failed to check first run status:', error);
+        setIsFirstRun(false); // Assume it's not the first run if there's an error
+      } finally {
+        setIsChecking(false);
+      }
     };
 
     checkFirstRun();
   }, []);
 
-  return isFirstRun;
-};
-
-
-const CheckFirstRun = ({ children }) => {
-  const isFirstRun = useCheckFirstRun();
-  const location = useLocation();
-
-  if (isFirstRun === null) {
-    // Maybe return a loading spinner while waiting for the check
-    return <div>Loading...</div>;
-  }
-
-  return isFirstRun && location.pathname !== '/setup' ? <Navigate to="/setup" replace /> : children;
-};
-
-
-const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <div>Home page</div>,
-		errorElement: <ErrorPage />,
-    loader: async () => {
-      const isFirstRun = await checkFirstRun();
+  useEffect(() => {
+    if (!isChecking) {
       if (isFirstRun) {
-        return { redirect: '/setup' };
-      }
+        navigate('/setup');
+      } 
+      // else {
+      //   navigate('/');
+      // }
     }
-	},
-  {
-		path: "/setup",
-		element: <SetupComponent />
-	},
-	{
-		path: "pages/:pageId",
-		element: <PageComponent />,
-	},
-]);
+  }, [isChecking, isFirstRun, navigate]);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-	<React.StrictMode>
-       <Router>
-      {isFirstRun && <Redirect to="/setup" />}
-      <Switch>
-        {/* Your routes go here */}
-        <Route path="/setup">
-          {/* Your setup component */}
-        </Route>
-        {/* ... other routes ... */}
-      </Switch>
-    </Router>
+  if (isChecking) return <div>Checking application setup...</div>;
+  return <Outlet />;
+};
 
-	</React.StrictMode>
-);
+const container = document.getElementById('root');
+const root = createRoot(container!); // Non-null assertion operator
+root.render(<AppWrapper />);

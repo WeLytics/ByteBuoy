@@ -65,23 +65,39 @@ namespace ByteBuoy.Agent.JobExecution
 
 		public async Task ExecuteTasksAsync()
 		{
+			if (!await ConnectionTestAsync())
+			{
+				await LogAsync("Failed to connect to the API " + _agentConfig.Host);
+				return;
+			}
+
 			await CreateJobAsync();
 
 			foreach (var executionStep in _jobExecutionSteps)
 			{
-				var config = executionStep.Config;
-				await LogAsync($"Task {_jobExecutionSteps.IndexOf(executionStep)+1} / {_jobExecutionSteps.Count}");
-				await LogAsync($"Executing {config.Name} ({config.Action})");
-
-				var timer = new Stopwatch();
-				timer.Start();
-				await ExecuteJobAsync(executionStep);
-				timer.Stop();
-
-				await LogAsync($"Finished {config.Name} ({config.Action}) in {timer.Elapsed.TotalSeconds}s");
+				await ExecuteStep(executionStep);
 			}
 
 			await FinishJobAsync();
+		}
+
+		private async Task ExecuteStep(JobExecutionStep executionStep)
+		{
+			var config = executionStep.Config;
+			await LogAsync($"Task {_jobExecutionSteps.IndexOf(executionStep) + 1} / {_jobExecutionSteps.Count}");
+			await LogAsync($"Executing {config.Name} ({config.Action})");
+
+			var timer = new Stopwatch();
+			timer.Start();
+			await ExecuteJobAsync(executionStep);
+			timer.Stop();
+
+			await LogAsync($"Finished {config.Name} ({config.Action}) in {timer.Elapsed.TotalSeconds}s");
+		}
+
+		private async Task<bool> ConnectionTestAsync()
+		{
+			return await _apiService.IsHealthy();
 		}
 
 		private async Task CreateJobAsync()
@@ -93,7 +109,7 @@ namespace ByteBuoy.Agent.JobExecution
 				Status = Domain.Enums.JobStatus.Running
 			});
 
-			_jobId = response?.Data?.JobId ?? throw new Exception("Failed to start job");
+			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");
 		}
 
 		private async Task FinishJobAsync()
@@ -101,6 +117,7 @@ namespace ByteBuoy.Agent.JobExecution
 			await _apiService.FinishJobAsync(new Application.Contracts.UpdateJobContract()
 			{
 				JobId = _jobId,
+				FinishedDateTime = DateTime.UtcNow,
 				Status = Domain.Enums.JobStatus.Success
 			});
 		}

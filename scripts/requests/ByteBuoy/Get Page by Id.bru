@@ -1,11 +1,11 @@
 meta {
-  name: Health Check2
+  name: Get Page by Id
   type: http
   seq: 2
 }
 
 get {
-  url: http://localhost:5000/health
+  url: {{BYTEBUOY_SERVER}}/api/v1/pages/4
   body: none
   auth: none
 }

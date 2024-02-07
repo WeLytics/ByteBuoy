@@ -8,7 +8,7 @@ namespace ByteBuoy.Domain.Entities
         public string? Description { get; set; }
 		public string? HostName { get; set; }
 		public JobStatus Status { get; set; }
-		public DateTime StartedDateTime { get; set; }
-		public DateTime FinishedDateTime { get; set; }
+		public DateTime? StartedDateTime { get; set; }
+		public DateTime? FinishedDateTime { get; set; }
     }
 }

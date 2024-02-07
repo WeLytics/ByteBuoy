@@ -39,15 +39,17 @@ namespace ByteBuoy.API.Controllers
 		public async Task<ActionResult<Job>> PostJob(CreateJobContract createJob)
 		{
 			var newJob = new JobContractMappers().CreateJobContractToJob(createJob);
+			if (newJob.StartedDateTime == DateTime.MinValue)
+				newJob.StartedDateTime = DateTime.UtcNow;
 
 			_context.Jobs.Add(newJob);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetJob", new { newJob.Id }, newJob);
+			return CreatedAtAction(nameof(GetJob), new { jobId = newJob.Id }, newJob);
 		}
 
 
-		// POST: api/v1/jobs/{jobId}
+		// PUT: api/v1/jobs/{jobId}
 		[HttpPut("{jobId}")]
 		public async Task<ActionResult<Job>> UpdateJob(UpdateJobContract updateJob, [FromRoute] int jobId)
 		{

@@ -1,11 +1,11 @@
 meta {
-  name: Health Check
+  name: Get Pages
   type: http
   seq: 1
 }
 
 get {
-  url: {{BYTEBUOY_SERVER}}/health
+  url: {{BYTEBUOY_SERVER}}/api/v1/pages
   body: none
   auth: none
 }

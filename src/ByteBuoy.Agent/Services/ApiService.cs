@@ -2,6 +2,7 @@ using System.Text.Json;
 using ByteBuoy.Agent.Dtos;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain;
+using ByteBuoy.Domain.Entities;
 using ByteBuoy.Domain.Entities.Config;
 using RestSharp;
 
@@ -20,12 +21,15 @@ namespace ByteBuoy.Agent.Services
 		}
 
 
-		internal async Task<ApiResponse<T>> BaseRequest<T>(string endpoint, object payload, Method method)
+		internal async Task<ApiResponse<T>> BaseRequest<T>(string endpoint, object? payload, Method method)
 		{
 			var request = new RestRequest(endpoint, method);
-			var jsonBody = JsonSerializer.Serialize(payload);
-			request.AddJsonBody(jsonBody);
 
+			if (payload != null)
+			{
+				var jsonBody = JsonSerializer.Serialize(payload);
+				request.AddJsonBody(jsonBody);
+			}
 
 			try
 			{
@@ -33,6 +37,7 @@ namespace ByteBuoy.Agent.Services
 
 				return new ApiResponse<T>
 				{
+					Response = response,
 					Data = response.Data,
 					IsSuccess = response.IsSuccessful,
 					ErrorMessage = response.ErrorMessage
@@ -49,9 +54,14 @@ namespace ByteBuoy.Agent.Services
 
 		}
 
+		internal async Task<ApiResponse<T>> GetRequest<T>(string endpoint)
+		{
+			return await BaseRequest<T>(endpoint, null, Method.Get);
+		}
+
 		internal async Task<ApiResponse<T>> PostRequest<T>(string endpoint, object payload)
 		{
-			return await BaseRequest<T>(endpoint, payload, Method.Post);	
+			return await BaseRequest<T>(endpoint, payload, Method.Post);
 		}
 
 		internal async Task<ApiResponse<T>> PutRequest<T>(string endpoint, object payload)
@@ -66,16 +76,24 @@ namespace ByteBuoy.Agent.Services
 			return await PostRequest<CreatePageMetricContract>(endpoint, payload);
 		}
 
-		internal async Task<ApiResponse<CreateJobResponseDto>> CreateJobAsync(CreateJobContract contract)
+		internal async Task<ApiResponse<Job>> CreateJobAsync(CreateJobContract contract)
 		{
 			var endpoint = $"/api/v1/jobs/";
-			return await PostRequest<CreateJobResponseDto>(endpoint, contract);
+			return await PostRequest<Job>(endpoint, contract);
 		}
 
-		internal async Task<ApiResponse<CreateJobResponseDto>> FinishJobAsync(UpdateJobContract contract)
+		internal async Task<ApiResponse<UpdateJobResponseDto>> FinishJobAsync(UpdateJobContract contract)
 		{
-			var endpoint = $"/api/v1/jobs/";
-			return await PutRequest<CreateJobResponseDto>(endpoint, contract);
+			var endpoint = $"/api/v1/jobs/{contract.JobId}";
+			return await PutRequest<UpdateJobResponseDto>(endpoint, contract);
+		}
+
+		internal async Task<bool> IsHealthy()
+		{
+			var endpoint = $"/health";
+			var response = await GetRequest<GetHealthDto>(endpoint);
+
+			return response.Response?.IsSuccessStatusCode == true && response.Response?.Content == "OK";
 		}
 	}
 }
