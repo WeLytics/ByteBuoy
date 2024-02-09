@@ -60,7 +60,7 @@ const Jobs: React.FC = () => {
 												{job.description}
 											</span>
 											<span className="whitespace-nowrap">
-												{job.hostname}
+												{job.hostName}
 											</span>
 											<span className="absolute inset-0" />
 										</a>
@@ -94,7 +94,7 @@ const Jobs: React.FC = () => {
 									>
 										<circle cx={1} cy={1} r={1} />
 									</svg>
-									{/* <p className="whitespace-nowrap">{page.statusText}</p> */}
+									<p className="whitespace-nowrap">{job.hostName}</p>
 								</div>
 							</div>
 							<ChevronRightIcon

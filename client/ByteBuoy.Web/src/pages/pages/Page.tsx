@@ -22,11 +22,9 @@ const PageComponent: React.FC = () => {
   return (
     <>
       <PageTitle title={data?.title ?? "N/A"} />
-
-      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
-
-      <h1>Metrics</h1>
+      <div className="mt-5">
       <PageMetrics />
+      </div>
     </>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { parseISO, formatDistanceToNow, format } from 'date-fns';
+import moment from 'moment';
 
 interface TimeAgoProps {
   dateString: string;
@@ -8,15 +8,17 @@ interface TimeAgoProps {
 const TimeAgo: React.FC<TimeAgoProps> = ({ dateString }) => {
     if (!dateString) return <></>; 
 
-    const date = parseISO(dateString);
-    const timeAgo = formatDistanceToNow(date, { addSuffix: true });
-    const formattedDate = format(date, 'PPpp'); // Example format: 'MM/dd/yyyy, HH:mm:ss'
+    // Convert the UTC dateString to a moment object in the local timezone
+    const date = moment.utc(dateString).local();
+    
+    // Calculate the time ago in words, automatically converted to the local timezone
+    const timeAgo = date.fromNow();
+    
+    // Format the date in a readable format, considering the local timezone
+    const formattedDate = date.format('MM/DD/YYYY, HH:mm:ss'); // Example format
 
     return (
-       <>
-        DATE {formattedDate}
         <span title={formattedDate}>{timeAgo}</span>
-      </>
     );
 };
 

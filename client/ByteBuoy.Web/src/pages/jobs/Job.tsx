@@ -1,19 +1,18 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react'
-// import './App.css'
-
-import { Metric } from '../../types/Metric';
 import { fetchData } from '../../services/apiService';
+import PageTitle from '../../components/PageTitle';
+import { Job as JobType } from '../../types/Job';
 
 
 const Job: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
-  const [data, setData] = useState<Metric[] | null>(null);
+  const [data, setData] = useState<JobType | null>(null);
 
   useEffect(() => {
       const loadData = async () => {
-          const result = await fetchData<Metric[]>(`/api/v1/jobs/${jobId}/`);
+          const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
           setData(result);
       };
 
@@ -22,9 +21,7 @@ const Job: React.FC = () => {
   
   return (
     <>
-      <h1>ByteBuoy ⛵</h1>
-
-      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
+      <PageTitle title={data?.description ?? "N/A"} />
     </>
   )
 }

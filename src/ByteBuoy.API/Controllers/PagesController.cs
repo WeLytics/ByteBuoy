@@ -21,7 +21,7 @@ namespace ByteBuoy.API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<Page>>> GetPages()
 		{
-			return await _context.Pages.ToListAsync();
+			return await _context.Pages.Where(r => r.Deleted == null).ToListAsync();
 		}
 
 		// GET: api/v1/pages/5

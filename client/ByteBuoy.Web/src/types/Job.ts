@@ -1,7 +1,7 @@
 export interface Job {
     id: number;
     description: string;
-    hostname: string;
+    hostName: string;
     startedDateTime: string;
     finishedDateTime: string;
     status: number;
