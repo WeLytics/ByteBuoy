@@ -9,10 +9,9 @@ import { classNames } from '../../utils/utils';
 
 
 const statuses: { [key: number]: string } = {
-	0: "text-gray-500 bg-gray-100/10", // Running
-	1: "text-green-400 bg-green-400/10", // Success
-	2: "text-rose-400 bg-rose-400/10", // Warning
-	3: "text-red-400 bg-red-400/10", // Error
+	0: "text-green-400 bg-green-400/10", // Success
+	1: "text-rose-400 bg-rose-400/10", // Warning
+	2: "text-red-400 bg-red-400/10", // Error
 };
 
 
