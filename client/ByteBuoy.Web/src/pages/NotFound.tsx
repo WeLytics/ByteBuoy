@@ -6,7 +6,7 @@ type RouteError = {
   message?: string;
 };
 
-export default function ErrorComponent() {
+export default function NotFoundPage() {
   const error = useRouteError() as RouteError; // Cast the error to your RouteError type
   console.error(error);
 

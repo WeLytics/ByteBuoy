@@ -7,7 +7,7 @@ import { Metric } from '../types/Metric';
 import { fetchData } from '../services/apiService';
 
 
-const JobComponent: React.FC = () => {
+const Job: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
   const [data, setData] = useState<Metric[] | null>(null);
 
@@ -29,4 +29,4 @@ const JobComponent: React.FC = () => {
   )
 }
 
-export default JobComponent;
+export default Job;

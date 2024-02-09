@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CreatePageAsync } from '../services/apiService';
+import '../App.css'
 
 const SetupComponent = () => {
   const [pageName, setPageName] = useState<string>('');
