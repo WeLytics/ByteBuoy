@@ -1,19 +1,18 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react'
-// import './App.css'
-
-import { Metric } from '../types/Metric';
-import { fetchData } from '../services/apiService';
+import { Page } from '../../types/Page';
+import { fetchData } from '../../services/apiService';
 import PageMetrics from './PageMetrics';
+import PageTitle from '../../components/PageTitle';
 
 const PageComponent: React.FC = () => {
   const { pageId } = useParams<{ pageId: string }>();
-  const [data, setData] = useState<Metric[] | null>(null);
+  const [data, setData] = useState<Page | null>(null);
 
   useEffect(() => {
       const loadData = async () => {
-          const result = await fetchData<Metric[]>(`/api/v1/pages/${pageId}`);
+          const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
           setData(result);
       };
 
@@ -22,7 +21,7 @@ const PageComponent: React.FC = () => {
   
   return (
     <>
-      <h1>ByteBuoy ⛵</h1>
+      <PageTitle title={data?.title ?? "N/A"} />
 
       {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
 

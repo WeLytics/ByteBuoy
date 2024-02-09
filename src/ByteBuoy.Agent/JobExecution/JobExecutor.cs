@@ -106,7 +106,8 @@ namespace ByteBuoy.Agent.JobExecution
 			{
 				Description = _agentConfig.Description,
 				HostName = Environment.MachineName,
-				Status = Domain.Enums.JobStatus.Running
+				Status = Domain.Enums.JobStatus.Running,
+				
 			});
 
 			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");

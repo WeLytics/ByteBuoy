@@ -7,7 +7,11 @@ const Layout: React.FC = () => {
     <>
       <Header />
       <main>
+      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 dark:text-white">
+
         <Outlet /> {/* Child routes will be rendered here */}
+
+        </div>  
       </main>
       <Footer />
     </>

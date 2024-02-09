@@ -5,7 +5,6 @@ namespace ByteBuoy.Domain.Enums
 		Running,
 		Success,
 		Warning,
-		Error,
-		Failed
+		Error
 	}
 }

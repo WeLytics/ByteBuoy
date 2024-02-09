@@ -8,10 +8,10 @@ import {
 	Outlet,
 } from "react-router-dom";
 import "./index.css";
-import PageComponent from "./pages/Page";
-import Job from "./pages/Job";
-import JobsComponent from "./pages/Jobs";
-import PagesComponent from "./pages/Pages";
+import PageComponent from "./pages/pages/Page";
+import Job from "./pages/jobs/Job";
+import JobsComponent from "./pages/jobs/Jobs";
+import PagesComponent from "./pages/pages/Pages";
 import NotFoundPage from "./pages/NotFound";
 import SetupComponent from "./pages/Setup";
 import LoginPage from "./pages/user/Login";

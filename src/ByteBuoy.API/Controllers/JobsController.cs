@@ -1,4 +1,5 @@
 using ByteBuoy.API.Extensions;
+using ByteBuoy.API.Models;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
@@ -18,9 +19,38 @@ namespace ByteBuoy.API.Controllers
 
 		// GET: api/v1/jobs
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Job>>> GetJobs()
+		public async Task<ActionResult<IEnumerable<Job>>> GetJobs([FromQuery] QueryParameters queryParameters)
 		{
-			return await _context.Jobs.ToListAsync();
+			var query = _context.Jobs.AsQueryable();
+
+			if (queryParameters!= null)
+			{
+				if (queryParameters.OrderBy.EndsWith("desc"))
+				{
+					queryParameters.OrderBy = queryParameters.OrderBy[..^4];
+					queryParameters.OrderAsc = false;
+				}
+
+				var orderBy = queryParameters.OrderBy.Split(",", StringSplitOptions.RemoveEmptyEntries);
+				foreach (var order in orderBy)
+				{
+					switch (order.ToLower().Trim())
+					{
+						case "finisheddatetime":
+							if (queryParameters.OrderAsc)
+							{
+								query = query.OrderBy(r => r.FinishedDateTime);
+							}
+							else
+							{
+								query = query.OrderByDescending(r => r.FinishedDateTime);
+							}
+							break;
+					}
+				}
+			}
+
+			return await query.ToListAsync();	
 		}
 
 		// GET: api/v1/jobs/{jobId}
@@ -34,12 +64,26 @@ namespace ByteBuoy.API.Controllers
 			return Ok(job);
 		}
 
+		// DELETE api/v1/jobs/{jobId}
+		[HttpDelete("{jobId}")]
+		public async Task<ActionResult<Job>> DeleteJob([FromRoute] int jobId)
+		{
+			var job = await _context.GetJobById(jobId);
+			if (job == null)
+				return NotFound();
+
+			_context.Jobs.Remove(job);
+			await _context.SaveChangesAsync();	
+
+			return Ok();
+		}
+
 		// POST: api/v1/jobs
 		[HttpPost]
 		public async Task<ActionResult<Job>> PostJob(CreateJobContract createJob)
 		{
 			var newJob = new JobContractMappers().CreateJobContractToJob(createJob);
-			if (newJob.StartedDateTime == DateTime.MinValue)
+			if (newJob.StartedDateTime  == null || newJob.StartedDateTime == DateTime.MinValue)
 				newJob.StartedDateTime = DateTime.UtcNow;
 
 			_context.Jobs.Add(newJob);
