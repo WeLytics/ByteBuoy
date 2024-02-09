@@ -19,3 +19,18 @@ export const fetchData = async <T>(endpoint: string): Promise<T> => {
         throw error;    
     }
 };
+
+export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
+    try {
+        const response: AxiosResponse<T> = await api.post<T>(endpoint, data);
+        return response.data;
+    } catch (error) {
+        console.error("Error posting data: ", error);
+        throw error;
+    }
+};
+
+export const CreatePageAsync = async <T, U>(data: U): Promise<T> => { 
+    const endpoint = '/api/v1/pages';
+    return postData<T, U>(endpoint, data);
+}

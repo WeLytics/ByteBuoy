@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
   useNavigate,
   Outlet,
 } from 'react-router-dom';
@@ -14,11 +13,7 @@ import JobComponent from './components/JobComponent';
 import JobsComponent from './components/JobsComponent';
 import PagesComponent from './components/PagesComponent';
 import ErrorComponent from './components/ErrorComponent';
-
-
-const SetupPage = () => (
-  <div>Setup Page - follow instructions to set up your application.</div>
-);
+import SetupComponent from './components/SetupComponent';
 
 const HomePage = () => (
   <div>Welcome to the application!</div>
@@ -31,7 +26,7 @@ const AppWrapper = () => {
         <Route path="/" element={<App />}>
           {/* Protected routes */}
           <Route index element={<HomePage />} />
-          <Route path="setup" element={<SetupPage />} />
+          <Route path="setup" element={<SetupComponent />} />
           <Route path="pages/:pageId" element={<PageComponent />} />
           <Route path="pages" element={<PagesComponent />} />
           <Route path="jobs/:jobId" element={<JobComponent />} />
