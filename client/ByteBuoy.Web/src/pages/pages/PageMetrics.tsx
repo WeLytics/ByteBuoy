@@ -6,6 +6,7 @@ import { Metric } from '../../types/Metric';
 import { fetchData } from '../../services/apiService';
 import TimeAgo from '../../components/TimeAgo';
 import { classNames } from '../../utils/utils';
+import Circle from '../../components/Circle';
 
 
 const statuses: { [key: number]: string } = {
@@ -75,15 +76,17 @@ export default function PageMetrics() {
           {data?.map((item) => (
             <tr key={item.id}>
               <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-              <div
+                
+              {/* <div
 										className={classNames(
 											statuses[item.status],
 											"flex-none rounded-full p-1"
 										)}
 									>
 										<div className="h-2 w-2 rounded-full bg-current" />
-									</div>             
+									</div>              */}
                 <div className="flex items-center gap-x-4">
+                <Circle colorClass={statuses[item.status]}></Circle>
                   {item.value} 
                   
                   {item.valueString}

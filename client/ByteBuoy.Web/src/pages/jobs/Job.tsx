@@ -71,7 +71,7 @@ const Job: React.FC = () => {
 				// 	<div className="h-2 w-2 rounded-full bg-current" />
 				// </div>
 			)}
-			<PageTitle title={ job !== null ?  <Circle colorClass={statuses[job!.status]} />
+			<PageTitle title={ job !== null ? <Circle colorClass={statuses[job!.status]} />
           &&   job.description + "asdf" : "N/A"} />
 
 
