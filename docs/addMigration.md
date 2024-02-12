@@ -1,8 +1,14 @@
+# Adding a Database Migration
+
+To add a new database migration, please run the script `src\addMigration.cmd`. When prompted, ensure that the naming convention follows PascalCase and accurately describes the changes you have made. For instance, if you have added a metrics table, you might name it AddedMetricsTable.
+
+# Undoing or Removing the Last Database Migration
+
+In case you need to undo or remove the most recent database migration during the development phase, especially if it was configured incorrectly or in error, execute the script `src\undoMigration.cmd`. This will help in reverting the changes made by the last migration.
 
 
-# Troubleshooting
+## Troubleshooting
 
-`addMigration.cmd`
 
 Problem: 
 Could not execute because the specified command or file was not found.
@@ -12,8 +18,7 @@ Possible reasons for this include:
   * You intended to run a global tool, but a dotnet-prefixed executable with this name could not be found on the PATH.
 
 
-Solution:
+## Solution:
 Install Entity Framework Core tools: https://learn.microsoft.com/en-us/ef/core/cli/  
-  
- 
+   
 `dotnet tool install --global dotnet-ef`

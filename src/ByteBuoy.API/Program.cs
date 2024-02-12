@@ -8,14 +8,15 @@ using System.Reflection;
 using FluentValidation;
 using ByteBuoy.API.Installers;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Hosting;
+using ByteBuoy.Application.ServiceInterfaces;
+using ByteBuoy.Infrastructure.Services;
 
 
 namespace ByteBuoy.API
 {
 	public class Program
-    {
-        public static void Main(string[] args)
+	{
+		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateSlimBuilder(args);
 			var config = builder.Configuration;
@@ -29,6 +30,7 @@ namespace ByteBuoy.API
 				options.UseSqlite(config.GetConnectionString("Default")));
 
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
+			builder.Services.AddTransient<IMetricsConsolidationService, MetricsConsolidationService>();
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options =>
@@ -85,16 +87,19 @@ namespace ByteBuoy.API
 				context.Database.Migrate();
 			}
 
-			app.MapFallback(async context =>
+			if (app.Environment.IsDevelopment())
 			{
-				var response = new
+				app.MapFallback(async context =>
 				{
-					Message = $"ByteBuoy: You requested {context.Request.Method} {context.Request.Path}",
-					Headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
-				};
+					var response = new
+					{
+						Message = $"ByteBuoy: Request DEBUG Fallback for {context.Request.Method} {context.Request.Path}",
+						Headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
+					};
 
-				await context.Response.WriteAsJsonAsync(response);
-			});
+					await context.Response.WriteAsJsonAsync(response);
+				});
+			};
 
 			app.Run("http://0.0.0.0:5000");
 		}

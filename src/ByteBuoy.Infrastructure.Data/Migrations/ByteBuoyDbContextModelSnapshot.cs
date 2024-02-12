@@ -46,7 +46,7 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
                     b.ToTable("Incidents");
                 });
 
-            modelBuilder.Entity("ByteBuoy.Domain.Entities.JobRun", b =>
+            modelBuilder.Entity("ByteBuoy.Domain.Entities.Job", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,19 +55,55 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("JobFinished")
+                    b.Property<DateTime?>("FinishedDateTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("JobStarted")
+                    b.Property<string>("HostName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("JobStatus")
+                    b.Property<DateTime?>("StartedDateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("JobRuns");
+                    b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("ByteBuoy.Domain.Entities.JobHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TaskName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TaskNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobHistory");
                 });
 
             modelBuilder.Entity("ByteBuoy.Domain.Entities.Metric", b =>
@@ -79,13 +115,10 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("MetaJson")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("MetricGroupId")
+                    b.Property<int?>("MetricGroupId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PageId")
@@ -93,9 +126,6 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Updated")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("Value")
@@ -122,11 +152,22 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("GroupBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MetricInterval")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PageId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PageId");
 
                     b.ToTable("MetricGroups");
                 });
@@ -176,9 +217,7 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
                 {
                     b.HasOne("ByteBuoy.Domain.Entities.MetricGroup", "MetricGroup")
                         .WithMany()
-                        .HasForeignKey("MetricGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MetricGroupId");
 
                     b.HasOne("ByteBuoy.Domain.Entities.Page", "Page")
                         .WithMany()
@@ -189,6 +228,22 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
                     b.Navigation("MetricGroup");
 
                     b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("ByteBuoy.Domain.Entities.MetricGroup", b =>
+                {
+                    b.HasOne("ByteBuoy.Domain.Entities.Page", "Page")
+                        .WithMany("MetricGroups")
+                        .HasForeignKey("PageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("ByteBuoy.Domain.Entities.Page", b =>
+                {
+                    b.Navigation("MetricGroups");
                 });
 #pragma warning restore 612, 618
         }

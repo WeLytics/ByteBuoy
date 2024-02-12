@@ -1,10 +1,89 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React, { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	useNavigate,
+	Outlet,
+} from "react-router-dom";
+import "./index.css";
+import PageComponent from "./pages/pages/Page";
+import Job from "./pages/jobs/Job";
+import JobsComponent from "./pages/jobs/Jobs";
+import PagesComponent from "./pages/pages/Pages";
+import NotFoundPage from "./pages/NotFound";
+import SetupComponent from "./pages/Setup";
+import LoginPage from "./pages/user/Login";
+import Home from "./pages/Home";
+import Layout from "./Layout";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+const AppWrapper = () => {
+	return (
+		<Router>
+			<Routes>
+				<Route path="/" element={<App />}>
+					<Route element={<Layout />}>
+						{/* Protected routes */}
+						<Route index element={<Home />} />
+						<Route
+							path="pages/:pageId"
+							element={<PageComponent />}
+						/>
+						<Route path="pages" element={<PagesComponent />} />
+						<Route path="jobs/:jobId" element={<Job />} />
+						<Route path="jobs" element={<JobsComponent />} />
+						<Route path="login" element={<LoginPage />} />
+
+						{/* <Route path="*" element={< Navigate replace to="/check-first-run" />} /> */}
+						<Route path="*" errorElement={<NotFoundPage />} />
+					</Route>
+          <Route path="setup" element={<SetupComponent />} />
+				</Route>
+			</Routes>
+		</Router>
+	);
+};
+
+const App = () => {
+	const navigate = useNavigate();
+	const [isChecking, setIsChecking] = useState(true);
+	const [isFirstRun, setIsFirstRun] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		const checkFirstRun = async () => {
+			try {
+				// const response = await fetch('/api/isFirstRun');
+				// const data = await response.json();
+
+				setIsFirstRun(false);
+				// setIsFirstRun(data.isFirstRun);
+			} catch (error) {
+				console.error("Failed to check first run status:", error);
+				setIsFirstRun(false); // Assume it's not the first run if there's an error
+			} finally {
+				setIsChecking(false);
+			}
+		};
+
+		checkFirstRun();
+	}, []);
+
+	useEffect(() => {
+		if (!isChecking) {
+			if (isFirstRun) {
+				navigate("/setup");
+			}
+			// else {
+			//   navigate('/');
+			// }
+		}
+	}, [isChecking, isFirstRun, navigate]);
+
+	if (isChecking) return <div>Checking application setup...</div>;
+	return <Outlet />;
+};
+
+const container = document.getElementById("root");
+const root = createRoot(container!); // Non-null assertion operator
+root.render(<AppWrapper />);

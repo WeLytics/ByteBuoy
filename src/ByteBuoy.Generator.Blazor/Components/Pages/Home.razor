@@ -1,5 +1,5 @@
 @page "/"
-@using ByteBuoy.Domain.Entities.Config.Jobs
+@using ByteBuoy.Domain.Entities.Config.Tasks
 @using YamlDotNet.Serialization
 
 <h3>Add Jobs</h3>
@@ -43,7 +43,7 @@ else if (selectedJobType == "checkHash")
 
 @code {
     string selectedJobType = "fileCopy";
-    List<JobConfig> jobConfigs = new List<JobConfig>();
+    List<TaskConfig> jobConfigs = new List<TaskConfig>();
 
     void HandleJobSelection(ChangeEventArgs e)
     {

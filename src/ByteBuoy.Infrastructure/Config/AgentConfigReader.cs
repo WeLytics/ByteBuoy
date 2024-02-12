@@ -17,18 +17,6 @@ namespace ByteBuoy.Infrastructure.Config
             return ReadConfigText(yamlContent);
         }
 
-		public class Path
-		{
-			public string PathValue { get; set; }
-		}
-
-		public class Label
-		{
-			public string Customer { get; set; }
-		}
-
-
-
 		public AgentConfig? ReadConfigText(string yamlContent)
         {
 			ValidationErrors.Clear();
@@ -39,10 +27,10 @@ namespace ByteBuoy.Infrastructure.Config
 
             try
             {
-                var configDto = deserializer.Deserialize<AgentConfigDto>(yamlContent);
+                var configDto = deserializer.Deserialize<JobDto>(yamlContent);
 				var mapper = new AgentConfigMapper();
 				var result = mapper.AgentConfigDtoToAgentConfig(configDto);
-				TryLoadingActions(configDto, result);
+				TryLoadingTaskActions(configDto, result);
 
                 return result;
             }
@@ -66,37 +54,37 @@ namespace ByteBuoy.Infrastructure.Config
 			ValidationErrors.Add(new AgentConfigValidationError(location, message));
 		}
 
-		private void TryLoadingActions(AgentConfigDto configDto, AgentConfig result)
+		private void TryLoadingTaskActions(JobDto jobDto, AgentConfig result)
 		{
-			result.Jobs = [];
+			result.Tasks = [];
 			var mapper = new AgentConfigMapper();
-			foreach (var job in configDto.Jobs)
+			foreach (var job in jobDto.Tasks)
 			{
 				switch (job.Action)
 				{
 					case "filesCopy@v1":
 						var filesCopyJob = mapper.JobDtoToFilesCopyConfig(job);
-						result.Jobs.Add(filesCopyJob);
+						result.Tasks.Add(filesCopyJob);
 						break;
 					case "filesMove@v1":
 						var filesMoveJob = mapper.JobDtoToFilesMoveConfig(job);
-						result.Jobs.Add(filesMoveJob);
+						result.Tasks.Add(filesMoveJob);
 						break;
 					case "filesExists@v1":
 						var filesExistsJob = mapper.JobDtoToFilesExistsConfig(job);
-						result.Jobs.Add(filesExistsJob);
+						result.Tasks.Add(filesExistsJob);
 						break;
 					case "filesHashes@v1":
 						var filesHashesJob = mapper.JobDtoToFilesHashesConfig(job);
-						result.Jobs.Add(filesHashesJob);
+						result.Tasks.Add(filesHashesJob);
 						break;
 					case "commandLine@v1":
 						var commandLineConfig = mapper.JobDtoToCommandLineConfig(job);
-						result.Jobs.Add(commandLineConfig);
+						result.Tasks.Add(commandLineConfig);
 						break;
 					case "sshUpload@v1":
 						var sshUploadJob = mapper.JobDtoToSshUploadConfig(job);
-						result.Jobs.Add(sshUploadJob);
+						result.Tasks.Add(sshUploadJob);
 						break;
 					default:
 						AddValidationError("Invalid action: " + job.Action);

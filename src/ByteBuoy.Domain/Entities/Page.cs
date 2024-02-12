@@ -10,5 +10,7 @@ namespace ByteBuoy.Domain.Entities
 		public DateTime Created { get; set; } = DateTime.UtcNow;
 		public DateTime? Updated { get; set; }
 		public DateTime? Deleted { get; set; }
+
+		public IList<MetricGroup> MetricGroups { get; set; } = new List<MetricGroup>();
 	}
 }
