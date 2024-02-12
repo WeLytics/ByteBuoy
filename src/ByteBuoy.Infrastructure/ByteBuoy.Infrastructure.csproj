@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ByteBuoy.Application\ByteBuoy.Application\ByteBuoy.Application.csproj" />
     <ProjectReference Include="..\ByteBuoy.Domain\ByteBuoy.Domain.csproj" />
+    <ProjectReference Include="..\ByteBuoy.Infrastructure.Data\ByteBuoy.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>

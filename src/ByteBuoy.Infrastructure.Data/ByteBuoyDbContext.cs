@@ -42,6 +42,13 @@ namespace ByteBuoy.Infrastructure.Data
 					v => v.ToString(),
 					v => (Domain.Enums.TaskStatus)Enum.Parse(typeof(Domain.Enums.TaskStatus), v));
 
+			modelBuilder
+			.Entity<MetricGroup>()
+			.Property(e => e.MetricInterval)
+			.HasConversion(
+				v => v.ToString(),
+				v => (MetricInterval)Enum.Parse(typeof(MetricInterval), v));
+
 		}
 	}
 }

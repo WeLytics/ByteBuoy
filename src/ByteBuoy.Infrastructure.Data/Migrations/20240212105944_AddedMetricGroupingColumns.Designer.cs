@@ -3,6 +3,7 @@ using System;
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ByteBuoy.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ByteBuoyDbContext))]
-    partial class ByteBuoyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240212105944_AddedMetricGroupingColumns")]
+    partial class AddedMetricGroupingColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
@@ -233,17 +236,12 @@ namespace ByteBuoy.Infrastructure.Data.Migrations
             modelBuilder.Entity("ByteBuoy.Domain.Entities.MetricGroup", b =>
                 {
                     b.HasOne("ByteBuoy.Domain.Entities.Page", "Page")
-                        .WithMany("MetricGroups")
+                        .WithMany()
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Page");
-                });
-
-            modelBuilder.Entity("ByteBuoy.Domain.Entities.Page", b =>
-                {
-                    b.Navigation("MetricGroups");
                 });
 #pragma warning restore 612, 618
         }

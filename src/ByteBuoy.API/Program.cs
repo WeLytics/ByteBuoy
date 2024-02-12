@@ -8,6 +8,8 @@ using System.Reflection;
 using FluentValidation;
 using ByteBuoy.API.Installers;
 using Microsoft.Data.SqlClient;
+using ByteBuoy.Application.ServiceInterfaces;
+using ByteBuoy.Infrastructure.Services;
 
 
 namespace ByteBuoy.API
@@ -28,6 +30,7 @@ namespace ByteBuoy.API
 				options.UseSqlite(config.GetConnectionString("Default")));
 
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
+			builder.Services.AddTransient<IMetricsConsolidationService, MetricsConsolidationService>();
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options =>

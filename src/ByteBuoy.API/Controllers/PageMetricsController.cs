@@ -1,8 +1,10 @@
 using ByteBuoy.API.Extensions;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
+using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
+using ByteBuoy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +14,10 @@ namespace ByteBuoy.API.Controllers
 	[Route("api/v1/pages/{pageIdOrSlug}/metrics")]
 	[ApiExplorerSettings(GroupName = "V1")]
 	[ApiController]
-	public class PageMetricsController(ByteBuoyDbContext context) : ControllerBase
+	public class PageMetricsController(ByteBuoyDbContext context, IMetricsConsolidationService metricsConsolidationService) : ControllerBase
 	{
 		private readonly ByteBuoyDbContext _context = context;
+		private readonly IMetricsConsolidationService _metricsConsolidationService = metricsConsolidationService;
 
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics
 		[HttpGet]
@@ -24,7 +27,21 @@ namespace ByteBuoy.API.Controllers
 			if (page == null)
 				return NotFound();
 
-			return await _context.Metrics.Where(r => r.Page == page).ToListAsync();
+			return await _context.Metrics.Where(r => r.Page == page)
+										 .Include(r => r.MetricGroup)
+										 .OrderByDescending(r => r.Created)
+										 .ToListAsync();
+		}
+
+		// GET: api/v1/pages/{pageIdOrSlug}/metrics/consolidated
+		[HttpGet("consolidated")]
+		public async Task<ActionResult<PageMetricConsolidationDto>> GetPageConsolidated([FromRoute] string pageIdOrSlug)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+			if (page == null)
+				return NotFound();
+
+			return await _metricsConsolidationService.ConsolidateMetricsAsync(page);
 		}
 
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics/5
@@ -35,7 +52,8 @@ namespace ByteBuoy.API.Controllers
 			if (page == null)
 				return NotFound();
 
-			var pageMetric = await _context.Metrics.SingleOrDefaultAsync(r => r.Id == metricId && r.Page == page);
+			var pageMetric = await _context.Metrics.Include(r => r.MetricGroup)
+												   .SingleOrDefaultAsync(r => r.Id == metricId && r.Page == page);
 
 			if (pageMetric == null)
 			{
