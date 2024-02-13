@@ -8,13 +8,14 @@ import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
 import { JobDetail } from "../../types/JobDetails";
 import Circle from "../../components/Circle";
+import { statuses } from "../../models/statuses";
 
-const statuses: { [key: number]: string } = {
-	0: "text-gray-500 bg-gray-100/10", // Running
-	1: "text-green-400 bg-green-400/10", // Success
-	2: "text-rose-400 bg-rose-400/10", // Warning
-	3: "text-red-400 bg-red-400/10", // Error
-};
+// const statuses: { [key: number]: string } = {
+// 	0: "text-gray-500 bg-gray-100/10", // Running
+// 	1: "text-green-400 bg-green-400/10", // Success
+// 	2: "text-rose-400 bg-rose-400/10", // Warning
+// 	3: "text-red-400 bg-red-400/10", // Error
+// };
 
 const Job: React.FC = () => {
 	const { jobId } = useParams<{ jobId: string }>();
@@ -55,27 +56,10 @@ const Job: React.FC = () => {
 
 	return (
 		<>
-      {/* <Circle color={"red-400"} size={30} />   */}
-
-			{job?.status !== undefined && (
-        <Circle colorClass={classNames(
-          statuses[job!.status]
-        )}
-         />
-				// <div
-				// 	className={classNames(
-				// 		statuses[job!.status],
-				// 		"flex-none rounded-full p-1"
-				// 	)}
-				// >
-				// 	<div className="h-2 w-2 rounded-full bg-current" />
-				// </div>
-			)}
-			<PageTitle title={ job !== null ? <Circle colorClass={statuses[job!.status]} />
-          &&   job.description + "asdf" : "N/A"} />
-
-
 			<div>
+        <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white"><Circle colorClass={statuses[job!.status]} /> {job?.description ?? "N/A "}</h1>
+        {/* <Circle colorClass={statuses[job!.status]} /> {job?.description}</h1> */}
+
 				<p>Job ID: {jobId}</p>
 				<p>Job Description: {job?.description ?? "N/A"}</p>
 				<p>Job Status: {job?.status ?? "N/A"}</p>

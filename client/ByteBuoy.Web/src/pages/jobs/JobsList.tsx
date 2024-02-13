@@ -59,9 +59,6 @@ const Jobs: React.FC = () => {
 											<span className="truncate">
 												{job.description}
 											</span>
-											<span className="whitespace-nowrap">
-												{job.hostName}
-											</span>
 											<span className="absolute inset-0" />
 										</a>
 									</h2>

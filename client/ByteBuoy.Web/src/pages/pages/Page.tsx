@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react'
 import { Page } from '../../types/Page';
 import { fetchData } from '../../services/apiService';
-import PageMetrics from './PageMetrics';
 import PageTitle from '../../components/PageTitle';
+import PageMetrics from './PageMetrics';
 
 const PageComponent: React.FC = () => {
   const { pageId } = useParams<{ pageId: string }>();

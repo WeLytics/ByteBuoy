@@ -28,7 +28,6 @@ namespace ByteBuoy.API.Controllers
 				return NotFound();
 
 			return await _context.Metrics.Where(r => r.Page == page)
-										 .Include(r => r.MetricGroup)
 										 .OrderByDescending(r => r.Created)
 										 .ToListAsync();
 		}

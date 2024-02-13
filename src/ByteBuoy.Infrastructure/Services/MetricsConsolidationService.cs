@@ -1,15 +1,20 @@
+using System.CodeDom.Compiler;
+using System.Net.Sockets;
+using System.Text.Json;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Domain.Enums;
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace ByteBuoy.Infrastructure.Services
 {
 	public class MetricsConsolidationService(ByteBuoyDbContext dbContext) : IMetricsConsolidationService
 	{
 		private readonly ByteBuoyDbContext _dbContext = dbContext;
+		private readonly MetricsConsolidationMappers _mappers = new();
 
 		public async Task<PageMetricConsolidationDto> ConsolidateMetricsAsync(Page page)
 		{
@@ -19,7 +24,7 @@ namespace ByteBuoy.Infrastructure.Services
 			{
 				foreach (var metricGroup in metricGroups)
 				{
-					result.MetricGroups.Add(await LoadMetricGroupAsync(page, metricGroup));
+					result.MetricsGroups.Add(await LoadMetricGroupAsync(page, metricGroup));
 				}
 			}
 
@@ -29,24 +34,196 @@ namespace ByteBuoy.Infrastructure.Services
 		internal async Task<PageMetricGroupDto> LoadMetricGroupAsync(Page page, MetricGroup metricGroup)
 		{
 			ArgumentNullException.ThrowIfNull(metricGroup);
+
 			var result = new PageMetricGroupDto();
-			var mappers = new MetricsConsolidationMappers();
+			
 			var metricsFilter = GetDateFilterLimit(page.Created, metricGroup.MetricInterval);
 
 			var metrics = await _dbContext.Metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter)
 												   .OrderBy(r => r.Created)
 												   .ToListAsync();
 
-			mappers.MetricGroupToPageMetricGroupDto(metricGroup,result);
+			_mappers.MetricGroupToPageMetricGroupDto(metricGroup, result);
+			result.BucketValues.AddRange(GenerateBucketMapping(metricGroup, metricsFilter, metrics));
+			result.SubGroups.AddRange(GenerateSubGroups(metricGroup, metricsFilter, metrics));
+
+			return result;
+		}
+
+private class LabelCache
+		{
+			public string GroupTitle { get; set; } = null!;
+			public string? GroupValue { get; set; }
+			public List<Metric> Metrics { get; set; } = new();
+		}
+
+		private List<PageMetricSubGroupDto> GenerateSubGroups(MetricGroup metricGroup, DateTime metricsFilter, List<Metric> metrics)
+		{
+			var result = new List<PageMetricSubGroupDto>();
+
+			if (string.IsNullOrEmpty(metricGroup.GroupBy))
+				return result;
+
+			var labelCache = new List<LabelCache>();	
+			var labelName = metricGroup.GroupBy.Replace("label:", "");
 
 			foreach (var metric in metrics)
 			{
-				result.Metrics.Add(mappers.MetricToPageMetricDto(metric));
+				if (string.IsNullOrEmpty(metric.MetaJson))
+					continue;
+
+				var jsonDoc = JsonDocument.Parse(metric.MetaJson);
+				var root = jsonDoc.RootElement;
+				var labelNode = root.GetProperty("labels");
+
+
+				var labels = labelNode.EnumerateObject();
+				foreach (var label in labels)
+				{
+					if (label.Name == labelName)
+					{
+						var value = metric.ValueString ?? metric.Value.ToString();
+						var subGroup = labelCache.SingleOrDefault(r => r.GroupTitle == label.Value.GetString() &&
+																   r.GroupValue == value);
+
+						if (subGroup == null)
+						{
+							subGroup = new LabelCache
+							{
+								GroupTitle = label.Value.GetString(),
+								GroupValue = value
+							};
+							labelCache.Add(subGroup);
+						}
+						subGroup.Metrics.Add(metric);
+					}
+				}
+			}
+
+			foreach (var subGroup in labelCache)
+			{
+				var mapping = GenerateBucketMapping(metricGroup, metricsFilter, subGroup.Metrics);
+				result.Add(new PageMetricSubGroupDto
+				{
+					GroupTitle= subGroup.GroupTitle,
+					GroupValue = subGroup.GroupValue,
+					GroupByValues = mapping
+				});
 			}
 
 			return result;
 		}
 
+		private List<PageMetricBucketDto> GenerateBucketMapping(MetricGroup metricGroup, DateTime metricsFilter, List<Metric> metrics)
+		{
+			List<PageMetricBucketDto> result;
+
+			// generate buckets based on the metric interval
+			result = GenerateBuckets(metricsFilter, DateTime.UtcNow, metricGroup.MetricInterval);
+
+			// iterate through each bucket and add the filtered metrics
+			foreach (var bucket in result)
+			{
+				var bucketMetrics = metrics.Where(r => r.Created >= bucket.Start && r.Created < bucket.End).ToList();
+				foreach (var metric in bucketMetrics)
+				{
+					bucket.Metrics.Add(_mappers.MetricToPageMetricDto(metric));
+				}
+			}
+
+			// calculate bucket status based on bucket value metrics
+			foreach (var bucket in result)
+			{
+				bucket.Status = CalculateBucketStatus(bucket);
+			}
+			return result;
+		}
+
+		private static MetricStatus CalculateBucketStatus(PageMetricBucketDto bucket)
+		{
+			if (bucket.Metrics.Count == 0)
+				return MetricStatus.NoData;
+
+			if (bucket.Metrics.Any(r => r.Status == MetricStatus.Error))
+				return MetricStatus.Error;
+
+			if (bucket.Metrics.Any(r => r.Status == MetricStatus.Warning))
+				return MetricStatus.Warning;
+
+			return MetricStatus.Success;
+		}
+
+		private static List<PageMetricBucketDto> GenerateBuckets(DateTime start, DateTime utcNow, MetricInterval metricInterval)
+		{
+			var result = new List<PageMetricBucketDto>();
+			var end = utcNow;
+			if (metricInterval == MetricInterval.Hour)
+			{
+				while (start < end)
+				{
+					result.Add(new PageMetricBucketDto
+					{
+						Start = start,
+						End = start.AddHours(1),
+						Value = start.Date.ToString()
+					});
+					start = start.AddHours(1);
+				}
+			}
+			else if (metricInterval == MetricInterval.Day)
+			{
+				while (start < end)
+				{
+					result.Add(new PageMetricBucketDto
+					{
+						Start = start,
+						End = start.AddDays(1),
+						Value = start.Date.ToShortDateString()
+					});
+					start = start.AddDays(1);
+				}
+			}
+			else if (metricInterval == MetricInterval.Week)
+			{
+				while (start < end)
+				{
+					result.Add(new PageMetricBucketDto
+					{
+						Start = start,
+						End = start.AddDays(7),
+						Value = $"{start.Date} - {end.Date}"
+					});
+					start = start.AddDays(7);
+				}
+			}
+			else if (metricInterval == MetricInterval.Month)
+			{
+				while (start < end)
+				{
+					result.Add(new PageMetricBucketDto
+					{
+						Start = start,
+						End = start.AddMonths(1),
+						Value = $"{start.Date.Month} {start.Date.Year}"
+					});
+					start = start.AddMonths(1);
+				}
+			}
+			else if (metricInterval == MetricInterval.Year)
+			{
+				while (start < end)
+				{
+					result.Add(new PageMetricBucketDto
+					{
+						Start = start,
+						End = start.AddYears(1),
+						Value = $"{start.Date.Year}"
+					});
+					start = start.AddYears(1);
+				}
+			}
+			return result;
+		}
 
 		private static DateTime GetDateFilterLimit(DateTime pageCreated, MetricInterval metricInterval)
 		{

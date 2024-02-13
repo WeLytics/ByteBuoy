@@ -4,7 +4,7 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            <h1>Home PAge</h1>
+            <h1>ByteBuoy</h1>
         </div>
     );
 };

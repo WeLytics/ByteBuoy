@@ -2,8 +2,9 @@ namespace ByteBuoy.Domain.Enums
 {
 	public enum MetricStatus
 	{
-		OK,
+		NoData,
+		Success,
 		Warning,
-		Error
+		Error,
 	}
 }

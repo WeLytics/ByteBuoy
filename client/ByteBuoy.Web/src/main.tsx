@@ -17,6 +17,7 @@ import SetupComponent from "./pages/Setup";
 import LoginPage from "./pages/user/Login";
 import Home from "./pages/Home";
 import Layout from "./Layout";
+import PageMetricsList from "./pages/pages/PageMetricsList";
 
 const AppWrapper = () => {
 	return (
@@ -29,6 +30,10 @@ const AppWrapper = () => {
 						<Route
 							path="pages/:pageId"
 							element={<PageComponent />}
+						/>
+            <Route
+							path="pages/:pageId/list"
+							element={<PageMetricsList />}
 						/>
 						<Route path="pages" element={<PagesComponent />} />
 						<Route path="jobs/:jobId" element={<Job />} />

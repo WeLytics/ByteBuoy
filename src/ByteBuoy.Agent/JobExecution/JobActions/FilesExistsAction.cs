@@ -46,7 +46,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			var payload = new CreatePageMetricContract()
 			{
-				Status = Domain.Enums.MetricStatus.OK,
+				Status = Domain.Enums.MetricStatus.Success,
 				ValueString = Path.GetFileName(filePath),
 				MetaJson = JsonSerializer.Serialize(new
 				{

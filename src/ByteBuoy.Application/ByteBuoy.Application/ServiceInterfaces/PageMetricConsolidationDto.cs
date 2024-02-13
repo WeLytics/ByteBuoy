@@ -5,6 +5,6 @@ namespace ByteBuoy.Application.ServiceInterfaces
 {
 	public class PageMetricConsolidationDto
 	{
-		public List<PageMetricGroupDto> MetricGroups { get; set; } = [];
+		public List<PageMetricGroupDto> MetricsGroups { get; set; } = [];
 	}
 }
