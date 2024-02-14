@@ -47,7 +47,7 @@ namespace ByteBuoy.API.Controllers
 			_context.Pages.Add(page);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetPageById", new { id = page.Id }, page);
+			return CreatedAtAction("GetPageById", new { pageIdOrSlug = page.Id }, page);
 		}
 
 		// DELETE: api/v1/pages/

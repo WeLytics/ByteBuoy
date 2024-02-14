@@ -4,6 +4,7 @@ import { fetchData } from "../../services/apiService";
 import { MetricsConsolidated } from "../../types/MetricsConsolidated";
 import MetricsGroup from "../../components/MetricsGroup";
 import MetricsSubGroup from "../../components/MetricsSubGroup";
+import React from "react";
 
 export default function PageMetrics() {
 	const { pageId: pageIdOrSlug } = useParams<{ pageId: string }>();
@@ -21,29 +22,29 @@ export default function PageMetrics() {
 	}, [pageIdOrSlug]);
 
 	return (
-		<>
-			{metrics?.metricsGroups !== undefined &&
-			metrics?.metricsGroups!.length >= 0 ? (
-				metrics.metricsGroups.map((metricsGroup, index) => (
-					<>
-						<MetricsGroup key={index} metricsGroup={metricsGroup} />
-						{metricsGroup?.subGroups !== undefined &&
-						metricsGroup?.subGroups!.length >= 0
-							? metricsGroup.subGroups.map((subGroup, index) => (
-									<>
+<>
+  {metrics?.metricsGroups !== undefined && metrics?.metricsGroups!.length >= 0 ? (
+    metrics.metricsGroups.map((metricsGroup, index) => (
+      <React.Fragment key={index}>
+        <div>
+          <MetricsGroup metricsGroup={metricsGroup} />
+          {metricsGroup?.subGroups !== undefined && metricsGroup?.subGroups!.length >= 0
+            ? metricsGroup.subGroups.map((subGroup, subIndex) => (
+                <React.Fragment key={`subGroup-${index}-${subIndex}`}>
+                  <div>
                     <hr></hr>
-										<MetricsSubGroup
-											key={index}
-											metricsSubGroup={subGroup}
-										/>
-									</>
-                ))
-							: null}
-					</>
-				))
-			) : (
-				<p>No metrics available</p>
-			)}
-		</>
+                    <MetricsSubGroup metricsSubGroup={subGroup} />
+                  </div>
+                </React.Fragment>
+              ))
+            : null}
+        </div>
+      </React.Fragment>
+    ))
+  ) : (
+    <p>No metrics available</p>
+  )}
+</>
+
 	);
 }
