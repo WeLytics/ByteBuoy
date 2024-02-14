@@ -25,7 +25,6 @@ const Job: React.FC = () => {
 	const addJobDetail = (newDetail: JobDetail) => {
 		setJobDetails((currentDetails) => [...currentDetails, newDetail]);
 		newDetail.id = detailCount++;
-		console.log(newDetail);
 	};
 
 	useEffect(() => {
@@ -56,7 +55,8 @@ const Job: React.FC = () => {
 	return (
 		<>
 			<div>
-        <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white"><Circle colorClass={statuses[job!.status]} /> {job?.description ?? "N/A "}</h1>
+        <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
+           {job && <Circle colorClass={statuses[job.status]} />} {job?.description ?? "N/A "}</h1>
         {/* <Circle colorClass={statuses[job!.status]} /> {job?.description}</h1> */}
 
 				<p>Job ID: {jobId}</p>
