@@ -54,7 +54,7 @@ private class LabelCache
 		{
 			public string GroupTitle { get; set; } = null!;
 			public string? GroupValue { get; set; }
-			public List<Metric> Metrics { get; set; } = new();
+			public List<Metric> Metrics { get; set; } = [];
 		}
 
 		private List<PageMetricSubGroupDto> GenerateSubGroups(MetricGroup metricGroup, DateTime metricsFilter, List<Metric> metrics)
@@ -127,7 +127,10 @@ private class LabelCache
 				var bucketMetrics = metrics.Where(r => r.Created >= bucket.Start && r.Created < bucket.End).ToList();
 				foreach (var metric in bucketMetrics)
 				{
-					bucket.Metrics.Add(_mappers.MetricToPageMetricDto(metric));
+					var metricCopy = _mappers.MetricToPageMetricDto(metric);
+					if (metricCopy.Id == 0)
+						metricCopy.Id = bucketMetrics.IndexOf(metric);
+					bucket.Metrics.Add(metricCopy);
 				}
 			}
 

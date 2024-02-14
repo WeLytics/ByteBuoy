@@ -2,7 +2,6 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/apiService";
-import PageTitle from "../../components/PageTitle";
 import { Job as JobType } from "../../types/Job";
 import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";

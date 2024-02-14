@@ -1,4 +1,5 @@
 import { MetricsBucket as MetricsBucket } from './MetricsBucket';
+import { MetricsSubGroup } from './MetricsSubGroup';
 import { MetricStatus } from './MetricStatus';
 
 export interface MetricsGroup {
@@ -6,8 +7,7 @@ export interface MetricsGroup {
     title: string;
     description?: string | null;
     groupBy?: string | null;
-    // groupValue?: string | null;
-    // MetricInterval?: MetricInterval | null;
     groupStatus: MetricStatus;
     bucketValues: MetricsBucket[];
+    subGroups: MetricsSubGroup[];
   }

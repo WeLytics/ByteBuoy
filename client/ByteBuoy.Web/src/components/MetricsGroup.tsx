@@ -1,12 +1,12 @@
 import React from "react";
-import { MetricsGroup } from "../types/MetricsGroup";
+import { MetricsGroup as MetricsGroupType } from "../types/MetricsGroup";
 import StatusBar from "./MetricStatusBar";
 
 type Props = {
-	metricsGroup: MetricsGroup;
+	metricsGroup: MetricsGroupType;
 };
 
-const PageTitle: React.FC<Props> = ({ metricsGroup }) => {
+const MetricsGroup: React.FC<Props> = ({ metricsGroup }) => {
 	return (
 		<>
 			<h1>{metricsGroup.title}</h1>
@@ -16,4 +16,4 @@ const PageTitle: React.FC<Props> = ({ metricsGroup }) => {
 	);
 };
 
-export default PageTitle;
+export default MetricsGroup;
