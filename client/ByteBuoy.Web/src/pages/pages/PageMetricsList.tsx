@@ -70,14 +70,6 @@ export default function PageMetricsList() {
 							{metrics?.map((item) => (
 								<tr key={item.id}>
 									<td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-										{/* <div
-                                              className={classNames(
-                                                  statuses[item.status],
-                                                  "flex-none rounded-full p-1"
-                                              )}
-                                          >
-                                              <div className="h-2 w-2 rounded-full bg-current" />
-                                          </div>              */}
 										<div className="flex items-center gap-x-4">
 											<Circle
 												colorClass={

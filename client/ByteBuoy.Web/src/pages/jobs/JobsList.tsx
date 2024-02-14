@@ -6,13 +6,7 @@ import { fetchData } from "../../services/apiService";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
-
-const statuses: { [key: number]: string } = {
-	0: "text-gray-500 bg-gray-100/10", // Running
-	1: "text-green-400 bg-green-400/10", // Success
-	2: "text-rose-400 bg-rose-400/10", // Warning
-	3: "text-red-400 bg-red-400/10", // Error
-};
+import { statuses } from "../../models/statuses";
 
 const DEFAULT_DATE = "0001-01-01T00:00:00Z";
 
