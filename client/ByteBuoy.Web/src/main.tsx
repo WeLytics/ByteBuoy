@@ -28,14 +28,14 @@ const AppWrapper = () => {
 						{/* Protected routes */}
 						<Route index element={<Home />} />
 						<Route
-							path="pages/:pageId"
+							path="metrics/:pageId"
 							element={<PageComponent />}
 						/>
             <Route
-							path="pages/:pageId/list"
+							path="metrics/:pageId/list"
 							element={<PageMetricsList />}
 						/>
-						<Route path="pages" element={<PagesComponent />} />
+						<Route path="metrics" element={<PagesComponent />} />
 						<Route path="jobs/:jobId" element={<Job />} />
 						<Route path="jobs" element={<JobsComponent />} />
 						<Route path="login" element={<LoginPage />} />

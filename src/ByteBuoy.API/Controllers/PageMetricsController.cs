@@ -43,6 +43,53 @@ namespace ByteBuoy.API.Controllers
 			return await _metricsConsolidationService.ConsolidateMetricsAsync(page);
 		}
 
+		// GET: api/v1/pages/{pageIdOrSlug}/metrics/groups
+		[HttpGet("groups")]
+		public async Task<ActionResult<IEnumerable<MetricGroup>>> GetPageMetricGroups([FromRoute] string pageIdOrSlug)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+			if (page == null)
+				return NotFound();
+
+			var metricGroups = await _context.MetricGroups.Where(r => r.Page == page).ToListAsync();
+
+			if (metricGroups == null)
+				return NotFound();
+
+			return metricGroups;
+		}
+
+		// PATCH: api/v1/pages/{pageIdOrSlug}/metrics/groups
+		[HttpPatch("groups/{groupId}")]
+		public async Task<ActionResult<MetricGroup>> UpdatePageMetricsGroup([FromRoute] string pageIdOrSlug, [FromRoute] int groupId,
+																					     [FromBody] UpdatePageMetricGroupContract updateContract)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+			if (page == null)
+				return NotFound();
+
+			var metricGroup = await _context.MetricGroups.SingleOrDefaultAsync(r => r.Page == page && r.Id == groupId);
+			if (metricGroup == null)
+				return NotFound();
+
+
+			if (updateContract.Title != null)
+				metricGroup.Title = updateContract.Title;
+
+			if (updateContract.Description != null)
+				metricGroup.Description = updateContract.Description;
+
+			if (updateContract.MetricInterval != null)
+				metricGroup.MetricInterval = updateContract.MetricInterval.Value;
+
+			if (updateContract.GroupBy != null)
+				metricGroup.GroupBy = updateContract.GroupBy;
+
+			await _context.SaveChangesAsync();
+
+			return Ok(metricGroup);
+		}
+
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics/5
 		[HttpGet("{metricId}")]
 		public async Task<ActionResult<Metric>> GetPageMetricById([FromRoute] string pageIdOrSlug, [FromRoute] int metricId)
