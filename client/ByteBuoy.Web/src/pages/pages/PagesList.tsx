@@ -30,7 +30,7 @@ export default function PagesList() {
 								</div>
 								<h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
 									<a
-										href={"pages/" + page.id}
+										href={"metrics/" + page.id}
 										className="flex gap-x-2"
 									>
 										<span className="truncate">
