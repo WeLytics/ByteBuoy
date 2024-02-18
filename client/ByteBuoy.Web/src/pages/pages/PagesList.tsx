@@ -3,6 +3,8 @@ import { Page } from "../../types/Page";
 import { fetchData } from "../../services/apiService";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import TimeAgo from "../../components/TimeAgo";
+import Circle from "../../components/Circle";
+import { statuses } from "../../models/statuses";
 
 export default function PagesList() {
 	const [pages, setData] = useState<Page[] | null>(null);
@@ -26,9 +28,7 @@ export default function PagesList() {
 					>
 						<div className="min-w-0 flex-auto">
 							<div className="flex items-center gap-x-3">
-								<div className="flex-none rounded-full p-1">
-									<div className="h-2 w-2 rounded-full bg-current" />
-								</div>
+								<Circle colorClass={statuses[page.pageStatus]} />
 								<h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
 									<a
 										href={"metrics/" + page.id}
@@ -49,7 +49,6 @@ export default function PagesList() {
 								>
 									<circle cx={1} cy={1} r={1} />
 								</svg>
-								{/* <p className="whitespace-nowrap">{page.statusText}</p> */}
 								{<TimeAgo dateString={page.updated} />}
 							</div>
 						</div>

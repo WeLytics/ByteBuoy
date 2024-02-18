@@ -1,3 +1,5 @@
+using ByteBuoy.Domain.Enums;
+
 namespace ByteBuoy.Domain.Entities
 {
 	public class Page
@@ -11,6 +13,6 @@ namespace ByteBuoy.Domain.Entities
 		public DateTime? Updated { get; set; }
 		public DateTime? Deleted { get; set; }
 
-		//public IList<MetricGroup> MetricsGroups { get; set; } = new List<MetricGroup>();
+		public MetricStatus PageStatus { get; set; }
 	}
 }

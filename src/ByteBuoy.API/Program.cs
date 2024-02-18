@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using ByteBuoy.Application.Validators;
+using FluentValidation.AspNetCore;
 
 
 namespace ByteBuoy.API
@@ -48,6 +50,11 @@ namespace ByteBuoy.API
 					};
 				});
 
+
+			builder.Services.AddFluentValidationAutoValidation();
+			builder.Services.AddValidatorsFromAssemblyContaining<MetricValidator>();
+
+
 			builder.Services.AddAuthorization();
 
 			builder.Services.AddDbContext<ByteBuoyDbContext>(options =>
@@ -65,6 +72,7 @@ namespace ByteBuoy.API
 
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
 			builder.Services.AddTransient<IMetricsConsolidationService, MetricsConsolidationService>();
+
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options =>

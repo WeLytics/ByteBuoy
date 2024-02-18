@@ -1,17 +1,14 @@
 using System.Text.Json;
-using ByteBuoy.Domain.Entities;
+using ByteBuoy.Application.Contracts;
 using FluentValidation;
 
 namespace ByteBuoy.Application.Validators
 {
-	public class MetricValidator : AbstractValidator<Metric>
+	public class CreatePageMetricValidator : AbstractValidator<CreatePageMetricContract>
 	{
-		public MetricValidator()
+		public CreatePageMetricValidator()
 		{
-			RuleFor(x => x.Page).NotEmpty();
-			RuleFor(x => x.Created).NotEmpty();
 			RuleFor(x => x.Status).NotEmpty();
-
 
 			RuleFor(x => x.MetaJson)
 					   .Must(BeValidJson<string>)
@@ -20,8 +17,11 @@ namespace ByteBuoy.Application.Validators
 
 		}
 
-		private static bool BeValidJson<T>(string json)
+		private static bool BeValidJson<T>(string? json)
 		{
+			if (string.IsNullOrWhiteSpace(json))
+				return true;
+
 			try
 			{
 				JsonSerializer.Deserialize<T>(json);

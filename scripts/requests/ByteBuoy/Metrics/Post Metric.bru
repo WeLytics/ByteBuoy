@@ -1,0 +1,19 @@
+meta {
+  name: Post Metric
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{BYTEBUOY_SERVER}}/api/v1/pages/0/metrics
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": 2,
+    "valueString": "string",
+    "metaJson": "{'category': 0}"
+  }
+}

@@ -68,8 +68,25 @@ private class LabelCache
 				if (string.IsNullOrEmpty(metric.MetaJson))
 					continue;
 
-				var jsonDoc = JsonDocument.Parse(metric.MetaJson);
-				var root = jsonDoc.RootElement;
+				JsonDocument jsonDoc = null;
+
+				try
+				{
+					jsonDoc = JsonDocument.Parse(metric.MetaJson);
+				}
+				catch (JsonException e)
+				{
+					Console.WriteLine($"Invalid JSON: {e.Message}");
+					throw;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"Unexpected error: {e.Message}");
+					throw;
+				}
+
+
+				var root = jsonDoc!.RootElement;
 				var labelNode = root.GetProperty("labels");
 
 

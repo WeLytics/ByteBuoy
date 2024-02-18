@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 using ByteBuoy.API.Extensions;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +16,12 @@ namespace ByteBuoy.API.Controllers
 	[Route("api/v1/pages/{pageIdOrSlug}/metrics")]
 	[ApiExplorerSettings(GroupName = "V1")]
 	[ApiController]
-	public class PageMetricsController(ByteBuoyDbContext context, IMetricsConsolidationService metricsConsolidationService) : ControllerBase
+	public class PageMetricsController(ByteBuoyDbContext context, IMetricsConsolidationService metricsConsolidationService,
+		IValidator<CreatePageMetricContract> validator) : ControllerBase
 	{
 		private readonly ByteBuoyDbContext _context = context;
 		private readonly IMetricsConsolidationService _metricsConsolidationService = metricsConsolidationService;
+		private readonly IValidator<CreatePageMetricContract> _validator = validator;
 
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics
 		[HttpGet]
@@ -39,7 +44,16 @@ namespace ByteBuoy.API.Controllers
 			if (page == null)
 				return NotFound();
 
-			return await _metricsConsolidationService.ConsolidateMetricsAsync(page);
+			try
+			{
+				return await _metricsConsolidationService.ConsolidateMetricsAsync(page);
+
+			}
+			catch (Exception ex)
+			{
+				await Console.Out.WriteLineAsync(ex.Message + ex.StackTrace);
+				throw;
+			}
 		}
 
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics/groups
@@ -110,13 +124,20 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages/{pageIdOrSlug}/metrics
 		[HttpPost]
-		public async Task<ActionResult<Metric>> PostMetric(CreatePageMetricContract createPageMetric, [FromRoute] string pageIdOrSlug)
+		public async Task<IActionResult> PostMetric(CreatePageMetricContract createPageMetric, [FromRoute] string pageIdOrSlug)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
 			if (page == null)
 				return NotFound();
 
-			var pageMetric = new PageContractMappers().CreatePageMetricDtoToPageMetric(createPageMetric);
+			var result = await _validator.ValidateAsync(createPageMetric);
+
+			//if (!result.IsValid)
+			//{
+			//	return Results.ValidationProblem(result.ToDictionary());
+			//}
+
+				var pageMetric = new PageContractMappers().CreatePageMetricDtoToPageMetric(createPageMetric);
 			pageMetric.Page = page;
 
 
@@ -140,6 +161,7 @@ namespace ByteBuoy.API.Controllers
 
 			_context.Metrics.Add(pageMetric);
 			page.Updated = DateTime.UtcNow;
+			page.PageStatus = createPageMetric.Status;
 			await _context.SaveChangesAsync();
 
 			return CreatedAtAction("GetPageMetricById", new { pageIdOrSlug, metricId = pageMetric.Id }, pageMetric);
