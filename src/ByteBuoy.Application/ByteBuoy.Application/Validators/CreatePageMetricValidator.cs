@@ -11,7 +11,7 @@ namespace ByteBuoy.Application.Validators
 			RuleFor(x => x.Status).NotEmpty();
 
 			RuleFor(x => x.MetaJson)
-					   .Must(BeValidJson<string>)
+					   .Must(BeValidJson<dynamic>)
 							.WithMessage("MetaJson is not in a valid format.");
 
 
@@ -27,8 +27,9 @@ namespace ByteBuoy.Application.Validators
 				JsonSerializer.Deserialize<T>(json);
 				return true; 
 			}
-			catch (JsonException)
+			catch (JsonException exJson)
 			{
+				Console.WriteLine(exJson);
 				return false; 
 			}
 		}
