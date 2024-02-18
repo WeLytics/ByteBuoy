@@ -4,6 +4,7 @@ using ByteBuoy.Application.Helpers;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +39,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Metric>> CreatePage([FromBody] CreatePageContract createPage)
 		{
 			var page = new PageContractMappers().CreatePageDtoToPage(createPage);

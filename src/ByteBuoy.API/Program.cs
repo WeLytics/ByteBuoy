@@ -10,24 +10,58 @@ using ByteBuoy.API.Installers;
 using Microsoft.Data.SqlClient;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
+using ByteBuoy.Domain.Entities.Identity;
+using ByteBuoy.Infrastructure.Services.Mails;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace ByteBuoy.API
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateSlimBuilder(args);
 			var config = builder.Configuration;
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddControllers();
 			builder.Services.AddCorsPolicy(config);
-			builder.Services.AddAuthentication();
+			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie()
+				.AddJwtBearer("Identity.Bearer", options =>
+				{
+					// Configure JWT Bearer token validation settings here
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						// Your token validation parameters
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidIssuer = "YourIssuer",
+						ValidAudience = "YourAudience",
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey"))
+					};
+				});
+
 			builder.Services.AddAuthorization();
 
 			builder.Services.AddDbContext<ByteBuoyDbContext>(options =>
 				options.UseSqlite(config.GetConnectionString("Default")));
+
+			builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+			{
+				options.SignIn.RequireConfirmedAccount = false;
+			})
+							.AddEntityFrameworkStores<ByteBuoyDbContext>()
+							.AddDefaultTokenProviders()
+							.AddApiEndpoints();
+
+			builder.Services.AddSingleton<IEmailSender<ApplicationUser>, EmailSender>();
 
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
 			builder.Services.AddTransient<IMetricsConsolidationService, MetricsConsolidationService>();
@@ -59,6 +93,7 @@ namespace ByteBuoy.API
 
 			var app = builder.Build();
 
+			app.MapIdentityApi<ApplicationUser>();
 			app.MapGet("/health", () => "OK");
 
 
@@ -84,7 +119,9 @@ namespace ByteBuoy.API
 			{
 				var services = scope.ServiceProvider;
 				var context = services.GetRequiredService<ByteBuoyDbContext>();
-				context.Database.Migrate();
+				await context.Database.MigrateAsync();
+
+				await CreateAdminUserIfNotExist(services);
 			}
 
 			if (app.Environment.IsDevelopment())
@@ -100,8 +137,62 @@ namespace ByteBuoy.API
 					await context.Response.WriteAsJsonAsync(response);
 				});
 			};
-
+			app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager,
+					[FromBody] object empty) =>
+							{
+								if (empty != null)
+								{
+									await signInManager.SignOutAsync();
+									return Results.Ok();
+								}
+								return Results.Unauthorized();
+							})
+				.WithOpenApi()
+				.RequireAuthorization();
 			app.Run("http://0.0.0.0:5000");
+		}
+
+		private static async Task CreateAdminUserIfNotExist(IServiceProvider services)
+		{
+			var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+			var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+
+			var adminRoleName = "admin";
+			var adminEmail = "admin@example.com";
+			var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+
+
+			if (await userManager.Users.AnyAsync())
+				return;
+
+			// Ensure the admin role exists
+			if (!await roleManager.RoleExistsAsync(adminRoleName))
+			{
+				await roleManager.CreateAsync(new ApplicationRole(adminRoleName));
+			}
+
+			// Check if any user exists
+			if (!await userManager.Users.AnyAsync())
+			{
+
+				if (string.IsNullOrEmpty(adminPassword))
+				{
+					throw new InvalidOperationException("No admin password provided in the environment variables.");
+				}
+
+
+				// Create the admin user
+				var adminUser = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
+				var result = await userManager.CreateAsync(adminUser, adminPassword);
+				if (result.Succeeded)
+				{
+					await userManager.AddToRoleAsync(adminUser, adminRoleName);
+				}
+				else
+				{
+					await Console.Out.WriteLineAsync("No users available. Failed to create the admin user.");
+				}
+			}
 		}
 
 		private static void PrepareDatabase(WebApplicationBuilder builder)
@@ -117,7 +208,7 @@ namespace ByteBuoy.API
 					Directory.CreateDirectory(databaseDirectory!);
 					Console.WriteLine("Database directory created successfully.");
 				}
-				catch (Exception ex)
+				catch (IOException ex)
 				{
 					Console.WriteLine($"Failed to create directory: {ex.Message}");
 				}

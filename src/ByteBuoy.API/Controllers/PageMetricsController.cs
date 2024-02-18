@@ -4,7 +4,6 @@ using ByteBuoy.Application.Mappers;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
-using ByteBuoy.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -139,8 +138,8 @@ namespace ByteBuoy.API.Controllers
 				pageMetric.MetricGroup = metricGroup;
 			}
 
-
 			_context.Metrics.Add(pageMetric);
+			page.Updated = DateTime.UtcNow;
 			await _context.SaveChangesAsync();
 
 			return CreatedAtAction("GetPageMetricById", new { pageIdOrSlug, metricId = pageMetric.Id }, pageMetric);

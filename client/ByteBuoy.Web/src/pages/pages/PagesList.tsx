@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Page } from "../../types/Page";
 import { fetchData } from "../../services/apiService";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import TimeAgo from "../../components/TimeAgo";
 
 export default function PagesList() {
 	const [pages, setData] = useState<Page[] | null>(null);
@@ -49,6 +50,7 @@ export default function PagesList() {
 									<circle cx={1} cy={1} r={1} />
 								</svg>
 								{/* <p className="whitespace-nowrap">{page.statusText}</p> */}
+								{<TimeAgo dateString={page.updated} />}
 							</div>
 						</div>
 						<ChevronRightIcon

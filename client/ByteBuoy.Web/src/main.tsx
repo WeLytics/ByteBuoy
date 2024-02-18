@@ -12,12 +12,12 @@ import PageComponent from "./pages/pages/Page";
 import Job from "./pages/jobs/Job";
 import JobsComponent from "./pages/jobs/Jobs";
 import PagesComponent from "./pages/pages/Pages";
-import NotFoundPage from "./pages/NotFound";
 import SetupComponent from "./pages/Setup";
 import LoginPage from "./pages/user/Login";
 import Home from "./pages/Home";
 import Layout from "./Layout";
 import PageMetricsList from "./pages/pages/PageMetricsList";
+import NotFound from "./pages/pages/NotFound";
 
 const AppWrapper = () => {
 	return (
@@ -41,7 +41,7 @@ const AppWrapper = () => {
 						<Route path="login" element={<LoginPage />} />
 
 						{/* <Route path="*" element={< Navigate replace to="/check-first-run" />} /> */}
-						<Route path="*" errorElement={<NotFoundPage />} />
+						<Route path="*" element={<NotFound />} errorElement={<NotFound />} />
 					</Route>
           <Route path="setup" element={<SetupComponent />} />
 				</Route>

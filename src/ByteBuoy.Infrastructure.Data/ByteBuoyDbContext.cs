@@ -1,10 +1,13 @@
 using ByteBuoy.Domain.Entities;
+using ByteBuoy.Domain.Entities.Identity;
 using ByteBuoy.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ByteBuoy.Infrastructure.Data
 {
-	public class ByteBuoyDbContext : DbContext
+	public class ByteBuoyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 	{
 		public ByteBuoyDbContext(DbContextOptions<ByteBuoyDbContext> options)
 	   : base(options)
@@ -21,7 +24,40 @@ namespace ByteBuoy.Infrastructure.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder
+			base.OnModelCreating(modelBuilder);
+
+			string schema = "Identity";
+
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.ToTable(name: "Users", schema: schema);
+            });
+            modelBuilder.Entity<ApplicationRole>(entity =>
+            {
+                entity.ToTable(name: "Roles", schema: schema);
+            });
+            modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
+            {
+                entity.ToTable(name: "UserRoles", schema: schema);
+            });
+            modelBuilder.Entity<IdentityUserClaim<Guid>>(entity =>
+            {
+                entity.ToTable(name: "UserClaims", schema: schema);
+            });
+            modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
+            {
+                entity.ToTable(name: "UserLogins", schema: schema);
+            });
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>(entity =>
+            {
+                entity.ToTable(name: "RoleClaims", schema: schema);
+            });
+            modelBuilder.Entity<IdentityUserToken<Guid>>(entity =>
+            {
+                entity.ToTable(name: "UserTokens", schema: schema);
+            });
+
+            modelBuilder
 				.Entity<Metric>()
 				.Property(e => e.Status)
 				.HasConversion(

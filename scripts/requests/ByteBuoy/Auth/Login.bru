@@ -1,0 +1,23 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BYTEBUOY_SERVER}}/login?useCookies=true
+  body: json
+  auth: none
+}
+
+query {
+  useCookies: true
+}
+
+body:json {
+  {
+    "email": "user@mail.ch",
+    "password": "mydummypassword"
+  }
+  
+}
