@@ -9,9 +9,15 @@ type Props = {
 const MetricsSubGroup: React.FC<Props> = ({ metricsSubGroup }) => {
 	return (
 		<>
-			<h1>{metricsSubGroup.groupTitle}</h1>
-			<h2>{metricsSubGroup.groupValue}</h2>
-			<StatusBar metricsBuckets={metricsSubGroup.groupByValues} />
+			<div className="border-b border-white-200 pb-5 pt-5">
+				<h3 className="text-base font-semibold leading-6 text-white-900">
+					{metricsSubGroup.groupTitle}
+				</h3>
+				<p className="mt-2 max-w-4xl text-sm text-gray-200">
+					{metricsSubGroup.groupValue}
+				</p>
+				<StatusBar metricsBuckets={metricsSubGroup.groupByValues} />
+			</div>
 		</>
 	);
 };

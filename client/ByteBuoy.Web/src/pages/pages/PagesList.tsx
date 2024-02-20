@@ -5,18 +5,39 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import TimeAgo from "../../components/TimeAgo";
 import Circle from "../../components/Circle";
 import { statuses } from "../../models/statuses";
+import SkeletonLoader from "../../components/SkeletonLoader";
 
 export default function PagesList() {
 	const [pages, setData] = useState<Page[] | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const loadData = async () => {
-			const result = await fetchData<Page[]>(`/api/v1/pages`);
-			setData(result);
+			setLoading(true);
+			setError(null);
+			try {
+				const result = await fetchData<Page[]>(`/api/v1/pages`);
+				setData(result);
+			} catch (error) {
+				console.error("Failed to fetch metrics:", error);
+				setError("Failed to load metrics. Please try again later.");
+			} finally {
+				setLoading(false);
+			}
 		};
 
 		loadData();
 	}, []);
+
+	if (loading) {
+		return <SkeletonLoader />;
+	}
+
+	if (error) {
+		return <p className="text-red-500">{error}</p>;
+	}
+
 
 	return (
 		<div className="mx-auto max-w-lg px-4 py-12 sm:px-6 md:py-16">
@@ -28,7 +49,9 @@ export default function PagesList() {
 					>
 						<div className="min-w-0 flex-auto">
 							<div className="flex items-center gap-x-3">
-								<Circle colorClass={statuses[page.pageStatus]} />
+								<Circle
+									colorClass={statuses[page.pageStatus]}
+								/>
 								<h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
 									<a
 										href={"metrics/" + page.id}

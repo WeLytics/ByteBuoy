@@ -31,7 +31,7 @@ const AppWrapper = () => {
 							path="metrics/:pageId"
 							element={<PageComponent />}
 						/>
-            <Route
+						<Route
 							path="metrics/:pageId/list"
 							element={<PageMetricsList />}
 						/>
@@ -41,9 +41,13 @@ const AppWrapper = () => {
 						<Route path="login" element={<LoginPage />} />
 
 						{/* <Route path="*" element={< Navigate replace to="/check-first-run" />} /> */}
-						<Route path="*" element={<NotFound />} errorElement={<NotFound />} />
+						<Route
+							path="*"
+							element={<NotFound />}
+							errorElement={<NotFound />}
+						/>
 					</Route>
-          <Route path="setup" element={<SetupComponent />} />
+					<Route path="setup" element={<SetupComponent />} />
 				</Route>
 			</Routes>
 		</Router>

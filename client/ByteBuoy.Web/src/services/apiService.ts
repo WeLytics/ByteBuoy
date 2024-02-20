@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { redirect } from 'react-router';
+import { toast } from "react-toastify";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BACKEND_API_URI;
@@ -73,6 +74,7 @@ export const fetchData = async <T>(endpoint: string): Promise<T> => {
         const response: AxiosResponse<T> = await api.get<T>(endpoint);
         return response.data;
     } catch (error) {
+        toast.error("Failed to load data!");
         console.error("Error fetching data: ", error);
         throw error;    
     }
@@ -83,6 +85,7 @@ export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
         const response: AxiosResponse<T> = await api.post<T>(endpoint, data);
         return response.data;
     } catch (error) {
+        toast.error("Failed to send data!");
         console.error("Error posting data: ", error);
         throw error;
     }

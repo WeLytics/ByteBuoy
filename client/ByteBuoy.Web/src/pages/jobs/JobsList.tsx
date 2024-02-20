@@ -7,6 +7,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
 import { statuses } from "../../models/statuses";
+import SkeletonLoader from "../../components/SkeletonLoader";
 
 const DEFAULT_DATE = "0001-01-01T00:00:00Z";
 
@@ -16,15 +17,36 @@ const isValidDate = (dateString: string) => {
 
 const Jobs: React.FC = () => {
 	const [jobs, setData] = useState<Job[] | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const loadData = async () => {
-			const result = await fetchData<Job[]>(`/api/v1/jobs?orderby=finishedDatetime desc`);
-			setData(result);
+			setLoading(true);
+			setError(null);
+			try {
+				const result = await fetchData<Job[]>(
+					`/api/v1/jobs?orderby=finishedDatetime desc`
+				);
+				setData(result);
+			} catch (error) {
+				console.error("Failed to fetch metrics:", error);
+				setError("Failed to load metrics. Please try again later.");
+			} finally {
+				setLoading(false);
+			}
 		};
 
 		loadData();
 	}, []);
+
+	if (loading) {
+		return <SkeletonLoader />;
+	}
+
+	if (error) {
+		return <p className="text-red-500">{error}</p>;
+	}
 
 	return (
 		<>
@@ -85,7 +107,9 @@ const Jobs: React.FC = () => {
 									>
 										<circle cx={1} cy={1} r={1} />
 									</svg>
-									<p className="whitespace-nowrap">{job.hostName}</p>
+									<p className="whitespace-nowrap">
+										{job.hostName}
+									</p>
 								</div>
 							</div>
 							<ChevronRightIcon

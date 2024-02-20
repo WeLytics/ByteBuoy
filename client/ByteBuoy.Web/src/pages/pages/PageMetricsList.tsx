@@ -8,33 +8,56 @@ import PageTitle from "../../components/PageTitle";
 import { Page } from "../../types/Page";
 import { statuses } from "../../models/statuses";
 import { RenderMetaJson } from "../../components/MetaJsonRenderer";
+import SkeletonLoader from "../../components/SkeletonLoader";
 
 export default function PageMetricsList() {
 	const { pageId: pageIdOrSlug } = useParams<{ pageId: string }>();
 	const [metrics, setMetrics] = useState<Metric[] | null>(null);
 	const [page, setPage] = useState<Page | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
+
 
 	useEffect(() => {
 		const loadData = async () => {
-			const resultMetrics = await fetchData<Metric[]>(
-				`/api/v1/pages/${pageIdOrSlug}/metrics`
-			);
-			setMetrics(resultMetrics);
+			setLoading(true);
+			setError(null);
 
-			const resultPage = await fetchData<Page>(
-				`/api/v1/pages/${pageIdOrSlug}`
-			);
-			setPage(resultPage);
+			try {
+				const resultMetrics = await fetchData<Metric[]>(
+					`/api/v1/pages/${pageIdOrSlug}/metrics`
+				);
+				setMetrics(resultMetrics);
+
+				const resultPage = await fetchData<Page>(
+					`/api/v1/pages/${pageIdOrSlug}`
+				);
+				setPage(resultPage);
+				}
+			catch (error) {
+				console.error("Failed to fetch metrics:", error);
+				setError("Failed to load metrics. Please try again later.");
+			} finally {
+				setLoading(false);
+			}
 		};
 
 		loadData();
 	}, []);
 
+	if (loading) {
+		return <SkeletonLoader />;
+	}
+
+	if (error) {
+		return <p className="text-red-500">{error}</p>;
+	}
+
 	return (
 		<>
 			<PageTitle title={page?.title ?? "N/A"} />
 			<div className="mt-5">
-				<div className="bg-gray-900 py-10">
+				<div className="py-10">
 					{/* <StatusBar statuses={data} /> */}
 
 					<table className="mt-6 w-full whitespace-nowrap text-left">

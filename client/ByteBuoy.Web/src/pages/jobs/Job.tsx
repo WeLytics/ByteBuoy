@@ -8,6 +8,7 @@ import TimeAgo from "../../components/TimeAgo";
 import { JobDetail } from "../../types/JobDetails";
 import Circle from "../../components/Circle";
 import { statuses } from "../../models/statuses";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
 const Job: React.FC = () => {
 	const { jobId } = useParams<{ jobId: string }>();
@@ -50,8 +51,6 @@ const Job: React.FC = () => {
 			<div>
         <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
            {job && <Circle colorClass={statuses[job.status]} />} {job?.description ?? "N/A "}</h1>
-        {/* <Circle colorClass={statuses[job!.status]} /> {job?.description}</h1> */}
-
 				<p>Job ID: {jobId}</p>
 				<p>Job Description: {job?.description ?? "N/A"}</p>
 				<p>Job Status: {job?.status ?? "N/A"}</p>
@@ -72,11 +71,17 @@ const Job: React.FC = () => {
 									"absolute left-0 top-0 flex w-6 justify-center"
 								)}
 							>
-								<div className="w-px bg-gray-200" />
+								{jobIdx < jobDetails.length - 1 && 
+									<div className="w-px bg-gray-200" />
+								}
 							</div>
 
-							<div className="relative flex h-6 w-6 flex-none items-center justify-center dark:bg-gray">
+							<div className="relative flex h-6 w-6 flex-none items-center justify-center">
+							{	jobIdx == jobDetails.length -1  ? (
+								<CheckCircleIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+							) : (
 								<div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
+							)}
 							</div>
 							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500">
 								<span className="font-medium dark:text-white text-gray-900">
