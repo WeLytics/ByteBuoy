@@ -61,9 +61,9 @@ namespace ByteBuoy.API
 				options.UseSqlite(config.GetConnectionString("Default")));
 
 			builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-			{
-				options.SignIn.RequireConfirmedAccount = false;
-			})
+										{
+											options.SignIn.RequireConfirmedAccount = false;
+										})
 							.AddEntityFrameworkStores<ByteBuoyDbContext>()
 							.AddDefaultTokenProviders()
 							.AddApiEndpoints();
@@ -72,6 +72,7 @@ namespace ByteBuoy.API
 
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
 			builder.Services.AddTransient<IMetricsConsolidationService, MetricsConsolidationService>();
+			builder.Services.AddTransient<IIdentityService, IdentityService>();
 
 
 			builder.Services.AddEndpointsApiExplorer();
@@ -84,7 +85,7 @@ namespace ByteBuoy.API
 			);
 			builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-			// Serilog
+			// Logging
 			Log.Logger = new LoggerConfiguration()
 				.ReadFrom.Configuration(builder.Configuration.GetSection("Logging"))
 				.WriteTo.Console()
@@ -92,12 +93,6 @@ namespace ByteBuoy.API
 				.CreateLogger();
 
 			builder.Host.UseSerilog();
-
-			//builder.Services.ConfigureHttpJsonOptions(options =>
-			//{
-			//	options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-			//});
-
 
 			var app = builder.Build();
 
@@ -127,9 +122,10 @@ namespace ByteBuoy.API
 			{
 				var services = scope.ServiceProvider;
 				var context = services.GetRequiredService<ByteBuoyDbContext>();
+				var identityService = services.GetRequiredService<IIdentityService>();
 				await context.Database.MigrateAsync();
 
-				await CreateAdminUserIfNotExist(services);
+				await identityService.CreateAdminUserIfNotExistFromSystemEnv(services);
 			}
 
 			if (app.Environment.IsDevelopment())
@@ -157,50 +153,9 @@ namespace ByteBuoy.API
 							})
 				.WithOpenApi()
 				.RequireAuthorization();
+
+
 			app.Run("http://0.0.0.0:5000");
-		}
-
-		private static async Task CreateAdminUserIfNotExist(IServiceProvider services)
-		{
-			var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-			var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
-
-			var adminRoleName = "admin";
-			var adminEmail = "admin@example.com";
-			var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
-
-
-			if (await userManager.Users.AnyAsync())
-				return;
-
-			// Ensure the admin role exists
-			if (!await roleManager.RoleExistsAsync(adminRoleName))
-			{
-				await roleManager.CreateAsync(new ApplicationRole(adminRoleName));
-			}
-
-			// Check if any user exists
-			if (!await userManager.Users.AnyAsync())
-			{
-
-				if (string.IsNullOrEmpty(adminPassword))
-				{
-					throw new InvalidOperationException("No admin password provided in the environment variables.");
-				}
-
-
-				// Create the admin user
-				var adminUser = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
-				var result = await userManager.CreateAsync(adminUser, adminPassword);
-				if (result.Succeeded)
-				{
-					await userManager.AddToRoleAsync(adminUser, adminRoleName);
-				}
-				else
-				{
-					await Console.Out.WriteLineAsync("No users available. Failed to create the admin user.");
-				}
-			}
 		}
 
 		private static void PrepareDatabase(WebApplicationBuilder builder)

@@ -9,7 +9,7 @@ namespace ByteBuoy.Infrastructure.Services.Mails
 	{
 		public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink)
 		{
-			throw new NotImplementedException();
+			return Task.CompletedTask;
 		}
 
 		public Task SendPasswordResetCodeAsync(ApplicationUser user, string email, string resetCode)

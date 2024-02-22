@@ -38,7 +38,7 @@ const navigation: {
 const Footer: React.FC = () => {
 	return (
     <footer >
-			<div className="mx-auto max-w-7xl overflow-hidden px-6 py-6 lg:px-8">
+			<div className="mx-auto max-w-6xl overflow-hidden px-6 py-6 lg:px-8">
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 md:flex md:items-top md:justify-between lg:mt-24">
           <div className="flex space-x-6 md:order-2">
             {navigation.social.map((item) => (

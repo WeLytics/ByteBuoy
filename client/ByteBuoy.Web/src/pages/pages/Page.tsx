@@ -14,15 +14,16 @@ import { Menu, Transition } from "@headlessui/react";
 
 import PageMetrics from "./PageMetrics";
 import { classNames } from "../../utils/utils";
+import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
 	const { pageId } = useParams<{ pageId: string }>();
-	const [data, setData] = useState<Page | null>(null);
+	const [page, setPage] = useState<Page | null>(null);
 
 	useEffect(() => {
 		const loadData = async () => {
 			const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
-			setData(result);
+			setPage(result);
 		};
 
 		loadData();
@@ -30,11 +31,14 @@ const PageComponent: React.FC = () => {
 
 	return (
 		<>
+			
+			{page && <PageEditForm page2={page} />}
+			
 			{/* <PageTitle title={data?.title ?? "N/A"} /> */}
 			<div className="lg:flex lg:items-center lg:justify-between mt-4">
 				<div className="min-w-0 flex-1">
 					<h2 className="mt-2 text-left text-2xl font-bold leading-7 text-white sm:truncate sm:text-3xl sm:tracking-tight">
-						{data?.title ?? "N/A"}
+						{page?.title ?? "N/A"}
 					</h2>
 				</div>
 				<div className="mt-5 flex lg:ml-4 lg:mt-0">

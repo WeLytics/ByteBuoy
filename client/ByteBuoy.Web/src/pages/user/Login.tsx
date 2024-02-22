@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Notification from "../../components/Notification";
 import { login } from "../../services/apiService";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
 	const [email, setEmail] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false);  
-  const [showError, setShowError] = useState("");
 	const [password, setPassword] = useState("");
+	const navigate = useNavigate(); 
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value);
@@ -18,16 +18,15 @@ const LoginPage: React.FC = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-    setShowError("");
-    setShowSuccess(false);
 
 		try {
 			const response = await login(email, password);
 			console.log("Login successful", response);
-      setShowSuccess(true);
+			toast.success("Login successful");
+			navigate("/");
 		} catch (error) {
 			console.error("Login failed: ", error);
-      setShowError("Login failed. Please try again.");
+			toast.error("Login failed. Please try again.");
 		}
 	};
 
@@ -50,7 +49,7 @@ const LoginPage: React.FC = () => {
 						<div>
 							<label
 								htmlFor="email"
-								className="block text-sm font-medium leading-6 text-white"
+								className="block text-sm font-medium leading-6 text-white text-left"
 							>
 								Email address
 							</label>
@@ -109,11 +108,7 @@ const LoginPage: React.FC = () => {
 						</div>
 					</form>
 				</div>
-        
 			</div>
-      
-      {showSuccess && <Notification isSuccess={true} isError={false} title="Success" text="Login successful" />}
-          {showError && <Notification isSuccess={false} isError={true} title="Error" text={showError ?? "Login failed"} />}
 		</>
 	);
 };

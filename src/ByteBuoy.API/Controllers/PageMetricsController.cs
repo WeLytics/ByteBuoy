@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using ByteBuoy.API.Extensions;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
@@ -6,7 +5,6 @@ using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,11 +15,12 @@ namespace ByteBuoy.API.Controllers
 	[ApiExplorerSettings(GroupName = "V1")]
 	[ApiController]
 	public class PageMetricsController(ByteBuoyDbContext context, IMetricsConsolidationService metricsConsolidationService,
-		IValidator<CreatePageMetricContract> validator) : ControllerBase
+		IValidator<CreatePageMetricContract> validator, ILogger<PageMetricsController> logger) : ControllerBase
 	{
 		private readonly ByteBuoyDbContext _context = context;
 		private readonly IMetricsConsolidationService _metricsConsolidationService = metricsConsolidationService;
 		private readonly IValidator<CreatePageMetricContract> _validator = validator;
+		private readonly ILogger<PageMetricsController> _logger = logger;
 
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics
 		[HttpGet]
@@ -47,11 +46,10 @@ namespace ByteBuoy.API.Controllers
 			try
 			{
 				return await _metricsConsolidationService.ConsolidateMetricsAsync(page);
-
 			}
 			catch (Exception ex)
 			{
-				await Console.Out.WriteLineAsync(ex.Message + ex.StackTrace);
+				_logger.LogError(ex.Message + ex.StackTrace);
 				throw;
 			}
 		}
@@ -115,9 +113,7 @@ namespace ByteBuoy.API.Controllers
 												   .SingleOrDefaultAsync(r => r.Id == metricId && r.Page == page);
 
 			if (pageMetric == null)
-			{
 				return NotFound();
-			}
 
 			return pageMetric;
 		}
@@ -131,13 +127,7 @@ namespace ByteBuoy.API.Controllers
 				return NotFound();
 
 			var result = await _validator.ValidateAsync(createPageMetric);
-
-			//if (!result.IsValid)
-			//{
-			//	return Results.ValidationProblem(result.ToDictionary());
-			//}
-
-				var pageMetric = new PageContractMappers().CreatePageMetricDtoToPageMetric(createPageMetric);
+			var pageMetric = new PageContractMappers().CreatePageMetricDtoToPageMetric(createPageMetric);
 			pageMetric.Page = page;
 
 

@@ -3,18 +3,27 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 import { classNames } from "../utils/utils";
+import { postData } from "../services/apiService";
 
 const navigation = [
 	{ name: "Metrics", href: "metrics", current: true },
 	{ name: "Jobs Runs", href: "jobs", current: false },
 ];
 
-export default function Nav() {
+export default function Navbar() {
+	async function logout() {
+		localStorage.removeItem("token");
+		await postData("/logout", null);
+		document.cookie =
+			"token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		window.location.href = "/login";
+	}
+
 	return (
-		<Disclosure as="nav" className="bg-gray-800">
+		<Disclosure as="nav" className="">
 			{({ open }) => (
 				<>
-					<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+					<div className="mx-auto max-w-6xl px-2 sm:px-6 lg:px-8">
 						<div className="relative flex h-16 items-center justify-between">
 							<div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 								{/* Mobile menu button*/}
@@ -95,11 +104,15 @@ export default function Nav() {
 											<span className="sr-only">
 												Open user menu
 											</span>
-                                            <span className="inline-block h-6 w-6 overflow-hidden rounded-full bg-gray-100">
-        <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      </span>
+											<span className="inline-block h-6 w-6 overflow-hidden rounded-full bg-gray-100">
+												<svg
+													className="h-full w-full text-gray-300"
+													fill="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+												</svg>
+											</span>
 										</Menu.Button>
 									</div>
 									<Transition
@@ -115,7 +128,22 @@ export default function Nav() {
 											<Menu.Item>
 												{({ active }) => (
 													<a
-														href="#"
+														href="/login"
+														className={classNames(
+															active
+																? "bg-gray-100"
+																: "",
+															"block px-4 py-2 text-sm text-gray-700"
+														)}
+													>
+														Login
+													</a>
+												)}
+											</Menu.Item>
+											<Menu.Item>
+												{({ active }) => (
+													<a
+														href="/profile"
 														className={classNames(
 															active
 																? "bg-gray-100"
@@ -131,21 +159,9 @@ export default function Nav() {
 												{({ active }) => (
 													<a
 														href="#"
-														className={classNames(
-															active
-																? "bg-gray-100"
-																: "",
-															"block px-4 py-2 text-sm text-gray-700"
-														)}
-													>
-														Settings
-													</a>
-												)}
-											</Menu.Item>
-											<Menu.Item>
-												{({ active }) => (
-													<a
-														href="#"
+														onClick={() => {
+															logout();	
+														}}
 														className={classNames(
 															active
 																? "bg-gray-100"

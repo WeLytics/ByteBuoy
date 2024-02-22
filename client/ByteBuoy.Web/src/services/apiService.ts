@@ -92,6 +92,6 @@ export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
 };
 
 export const CreatePageAsync = async <T, U>(data: U): Promise<T> => { 
-    const endpoint = '/api/v1/pages';
+    const endpoint = '/api/v1/system/initialSetup';
     return postData<T, U>(endpoint, data);
 }

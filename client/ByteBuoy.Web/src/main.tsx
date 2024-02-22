@@ -18,37 +18,36 @@ import Home from "./pages/Home";
 import Layout from "./Layout";
 import PageMetricsList from "./pages/pages/PageMetricsList";
 import NotFound from "./pages/pages/NotFound";
+import ProfilePage from "./pages/user/Profile";
+import { fetchData } from "./services/apiService";
 
 const AppWrapper = () => {
 	return (
 		<Router>
 			<Routes>
-				<Route path="/" element={<App />}>
-					<Route element={<Layout />}>
-						{/* Protected routes */}
+				<Route element={<Layout />}>
+					<Route path="/" element={<App />} >
+					{/* Protected routes */}
 						<Route index element={<Home />} />
-						<Route
-							path="metrics/:pageId"
-							element={<PageComponent />}
-						/>
-						<Route
-							path="metrics/:pageId/list"
-							element={<PageMetricsList />}
-						/>
-						<Route path="metrics" element={<PagesComponent />} />
-						<Route path="jobs/:jobId" element={<Job />} />
-						<Route path="jobs" element={<JobsComponent />} />
-						<Route path="login" element={<LoginPage />} />
-
-						{/* <Route path="*" element={< Navigate replace to="/check-first-run" />} /> */}
-						<Route
-							path="*"
-							element={<NotFound />}
-							errorElement={<NotFound />}
-						/>
 					</Route>
-					<Route path="setup" element={<SetupComponent />} />
+					<Route path="metrics/:pageId" element={<PageComponent />} />
+					<Route
+						path="metrics/:pageId/list"
+						element={<PageMetricsList />}
+					/>
+					<Route path="metrics" element={<PagesComponent />} />
+					<Route path="jobs/:jobId" element={<Job />} />
+					<Route path="jobs" element={<JobsComponent />} />
+					<Route path="login" element={<LoginPage />} />
+					<Route path="profile" element={<ProfilePage />} />
+					<Route
+						path="*"
+						element={<NotFound />}
+						errorElement={<NotFound />}
+					/>
 				</Route>
+				<Route path="setup" element={<SetupComponent />} />
+				{/* </Route> */}
 			</Routes>
 		</Router>
 	);
@@ -62,11 +61,9 @@ const App = () => {
 	useEffect(() => {
 		const checkFirstRun = async () => {
 			try {
-				// const response = await fetch('/api/isFirstRun');
-				// const data = await response.json();
+				const response = await fetchData("/api/v1/system/isFirstRun");
 
-				setIsFirstRun(false);
-				// setIsFirstRun(data.isFirstRun);
+				setIsFirstRun(response);
 			} catch (error) {
 				console.error("Failed to check first run status:", error);
 				setIsFirstRun(false); // Assume it's not the first run if there's an error
@@ -83,13 +80,10 @@ const App = () => {
 			if (isFirstRun) {
 				navigate("/setup");
 			}
-			// else {
-			//   navigate('/');
-			// }
 		}
 	}, [isChecking, isFirstRun, navigate]);
 
-	if (isChecking) return <div>Checking application setup...</div>;
+	if (isChecking) return <div>Loading application...</div>;
 	return <Outlet />;
 };
 

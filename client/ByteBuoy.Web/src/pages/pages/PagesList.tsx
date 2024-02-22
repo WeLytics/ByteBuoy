@@ -40,7 +40,7 @@ export default function PagesList() {
 
 
 	return (
-		<div className="mx-auto max-w-lg px-4 py-12 sm:px-6 md:py-16">
+		<div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 md:pt-16">
 			<ul role="list" className="divide-y divide-white/5">
 				{pages?.map((page) => (
 					<li
