@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Page } from "../types/Page";
-import { toast } from "react-toastify";
 import FormField from "./FormField";
 import { FieldError, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { number, object, string, z } from "zod";
+import { string, z } from "zod";
 
 interface Props {
 	page2: Page;
@@ -16,18 +15,18 @@ const schema = z.object({
 });
 
 const PageEditForm: React.FC<Props> = ({ page2 }) => {
-	const [page, setPage] = useState<Page>(page2);
+	const [page] = useState<Page>(page2);
 	const methods = useForm();
 	const {
 		register,
-		handleSubmit,
+		//handleSubmit,
 		formState: { errors },
 	} = useForm({
 		resolver: zodResolver(schema),
 	});
 
 
-	const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
+	// const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
 
 	// const [errorText, setError] = useState<string>("");
 
@@ -40,7 +39,7 @@ const PageEditForm: React.FC<Props> = ({ page2 }) => {
 
 	return (
 		<form
-			onSubmit={handleSubmit(onSubmit)}
+			// onSubmit={handleSubmit(onSubmit)}
 			className="space-y-4 text-white"
 		>
 			<FormProvider {...methods}>

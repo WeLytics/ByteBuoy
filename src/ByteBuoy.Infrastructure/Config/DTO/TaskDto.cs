@@ -1,6 +1,6 @@
 namespace ByteBuoy.Infrastructure.Config
 {
-	public class TaskDto
+	public class TaskDto		
 	{
 		public required string Name { get; set; }
 		public required string Action { get; set; }

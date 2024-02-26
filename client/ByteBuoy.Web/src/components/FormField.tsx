@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import {
 	FieldError,
 	FieldValues,
@@ -30,7 +29,7 @@ const FormField = <
 	error,
 	valueAsNumber,
 }: FormFieldProps<TFormValues, TFieldName>) => {
-	const inputRef = useRef();
+	// const inputRef = useRef();
 	// const { setValue } = useFormContext(); // Assuming your form is wrapped in a FormProvider
 	// const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,10 +44,10 @@ const FormField = <
 	return (
 		<>
 			<input
-				ref={(e) => {
-					register(name).ref(e);
-					inputRef.current = e;
-				}}
+				// ref={(e) => {
+					// register(name).ref(e);
+					// inputRef.current = e;
+				// }}
 			/>
 
 			<input

@@ -61,7 +61,7 @@ const App = () => {
 	useEffect(() => {
 		const checkFirstRun = async () => {
 			try {
-				const response = await fetchData("/api/v1/system/isFirstRun");
+				const response = await fetchData<boolean>("/api/v1/system/isFirstRun");
 
 				setIsFirstRun(response);
 			} catch (error) {
