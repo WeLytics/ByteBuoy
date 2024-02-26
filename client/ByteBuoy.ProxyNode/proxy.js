@@ -16,7 +16,8 @@ if (!API_KEY) {
 // CORS Middleware
 console.error('CORS_ORIGIN SET TO: ' + CORS_ORIGIN);
 app.use(cors({
-    origin: CORS_ORIGIN
+    origin: CORS_ORIGIN,
+    credentials: true,
 }));
 
 // Proxy endpoints
