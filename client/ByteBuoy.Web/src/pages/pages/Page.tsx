@@ -32,7 +32,7 @@ const PageComponent: React.FC = () => {
 	return (
 		<>
 			
-			{page && <PageEditForm page2={page} />}
+			{/* {page && <PageEditForm page2={page} />} */}
 			
 			{/* <PageTitle title={data?.title ?? "N/A"} /> */}
 			<div className="lg:flex lg:items-center lg:justify-between mt-4">
