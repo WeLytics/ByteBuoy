@@ -14,7 +14,7 @@ import { Menu, Transition } from "@headlessui/react";
 
 import PageMetrics from "./PageMetrics";
 import { classNames } from "../../utils/utils";
-import PageEditForm from "../../components/PageEditForm";
+// import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
 	const { pageId } = useParams<{ pageId: string }>();
