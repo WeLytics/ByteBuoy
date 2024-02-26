@@ -66,12 +66,13 @@ export default function PagesList() {
 							</div>
 							<div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
 								<p className="truncate">{page.description}</p>
-								<svg
+								
+								{ page.updated && page.description && <svg
 									viewBox="0 0 2 2"
 									className="h-0.5 w-0.5 flex-none fill-gray-300"
 								>
 									<circle cx={1} cy={1} r={1} />
-								</svg>
+								</svg>}
 								{<TimeAgo dateString={page.updated} />}
 							</div>
 						</div>

@@ -26,7 +26,7 @@ const Jobs: React.FC = () => {
 			setError(null);
 			try {
 				const result = await fetchData<Job[]>(
-					`/api/v1/jobs?orderby=finishedDatetime desc`
+					`/api/v1/jobs?orderby=starteddatetime desc`
 				);
 				setData(result);
 			} catch (error) {
@@ -81,7 +81,7 @@ const Jobs: React.FC = () => {
 								</div>
 								<div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
 									<p className="truncate">
-										{isValidDate(job.finishedDateTime) ? (
+										{job.finishedDateTime && isValidDate(job.finishedDateTime) ? (
 											<>
 												<span>Finished </span>
 												<TimeAgo

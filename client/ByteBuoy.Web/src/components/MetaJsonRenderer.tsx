@@ -1,10 +1,14 @@
+function capitalizeFirstLetter(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 const RenderJsonData: React.FC<{ data: []; }> = ({ data }) => {
     if (typeof data === 'object' && data !== null) {
       return (
         <div>
           {Object.entries(data).map(([key, value]) => (
             <div key={key}>
-              <strong>{key}:</strong> <RenderJsonData data={value} />
+              <strong>{capitalizeFirstLetter(key)}:</strong> <RenderJsonData data={value} />
             </div>
           ))}
         </div>

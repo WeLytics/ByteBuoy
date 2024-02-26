@@ -82,6 +82,15 @@ namespace ByteBuoy.Agent.Services
 			return await PostRequest<Job>(endpoint, contract);
 		}
 
+		internal async Task<ApiResponse<JobHistory>> CreateJobHistoryAsync(CreateJobHistoryContract contract)
+		{
+			if (contract.JobId <= 0)
+				throw new InvalidDataException("JobId not provided");
+
+			var endpoint = $"/api/v1/jobs/{contract.JobId}/history";
+			return await PostRequest<JobHistory>(endpoint, contract);
+		}
+
 		internal async Task<ApiResponse<UpdateJobResponseDto>> FinishJobAsync(UpdateJobContract contract)
 		{
 			var endpoint = $"/api/v1/jobs/{contract.JobId}";

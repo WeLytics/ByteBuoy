@@ -46,8 +46,22 @@ namespace ByteBuoy.API.Controllers
 								query = query.OrderByDescending(r => r.FinishedDateTime);
 							}
 							break;
+						case "starteddatetime":
+							if (queryParameters.OrderAsc)
+							{
+								query = query.OrderBy(r => r.StartedDateTime);
+							}
+							else
+							{
+								query = query.OrderByDescending(r => r.StartedDateTime);
+							}
+							break;
 					}
 				}
+			}
+			else
+			{
+				query = query.OrderByDescending(query => query.StartedDateTime);
 			}
 
 			return await query.ToListAsync();	
@@ -57,7 +71,9 @@ namespace ByteBuoy.API.Controllers
 		[HttpGet("{jobId}")]
 		public async Task<ActionResult<Job>> GetJob([FromRoute] int jobId)
 		{
-			var job = await _context.GetJobById(jobId);
+			var job = await _context.Jobs
+							.Include(r => r.JobHistory)
+							.SingleOrDefaultAsync(r => r.Id == jobId);
 			if (job == null)
 				return NotFound();
 
@@ -119,6 +135,9 @@ namespace ByteBuoy.API.Controllers
 
 			var newJobHistory = new JobHistoryContractMappers().CreateJobHistoryContractToDto(createJobHistory);
 			newJobHistory.JobId = jobId;
+			if (newJobHistory.CreatedDateTime == DateTime.MinValue)
+				newJobHistory.CreatedDateTime = DateTime.UtcNow;
+
 			_context.JobHistory.Add(newJobHistory);
 			await _context.SaveChangesAsync();
 

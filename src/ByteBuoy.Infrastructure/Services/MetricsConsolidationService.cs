@@ -36,7 +36,7 @@ namespace ByteBuoy.Infrastructure.Services
 			var metricsFilter = GetDateFilterLimit(page.Created, metricGroup.MetricInterval);
 
 			var metrics = await _dbContext.Metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter)
-												   .OrderBy(r => r.Created)
+												   .OrderByDescending(r => r.Created)
 												   .ToListAsync();
 
 			_mappers.MetricGroupToPageMetricGroupDto(metricGroup, result);
@@ -46,7 +46,7 @@ namespace ByteBuoy.Infrastructure.Services
 			return result;
 		}
 
-private class LabelCache
+		private class LabelCache
 		{
 			public string GroupTitle { get; set; } = null!;
 			public string? GroupValue { get; set; }

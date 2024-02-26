@@ -75,6 +75,7 @@ namespace ByteBuoy.Agent.JobExecution
 
 			foreach (var executionStep in _jobExecutionSteps)
 			{
+				await CreateJobHistoryAsync(executionStep);
 				await ExecuteStep(executionStep);
 			}
 
@@ -108,6 +109,24 @@ namespace ByteBuoy.Agent.JobExecution
 				HostName = Environment.MachineName,
 				Status = Domain.Enums.JobStatus.Running,
 				
+			});
+
+			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");
+		}
+
+		private async Task CreateJobHistoryAsync(JobExecutionStep step)
+		{
+			if (_jobId <= 0)
+				throw new Exception("JobId is not set");
+
+			var response = await _apiService.CreateJobHistoryAsync(new Application.Contracts.CreateJobHistoryContract()
+			{
+				TaskName = step.Config.Name,
+				TaskNumber = _jobExecutionSteps.IndexOf(step) + 1,
+				JobId = _jobId,
+				Description = step.Config.Description,
+				Status = Domain.Enums.TaskStatus.OK,
+				ErrorMessage = null
 			});
 
 			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");

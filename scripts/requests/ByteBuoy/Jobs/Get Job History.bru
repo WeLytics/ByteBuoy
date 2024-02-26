@@ -1,0 +1,21 @@
+meta {
+  name: Get Job History
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BYTEBUOY_SERVER}}/api/v1/jobs?orderby=finishedDatetime desc
+  body: json
+  auth: none
+}
+
+query {
+  orderby: finishedDatetime desc
+}
+
+body:json {
+  {
+    
+  }
+}

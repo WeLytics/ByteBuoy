@@ -1,4 +1,5 @@
 using System.Text.Json;
+using ByteBuoy.Agent.Helpers;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain.Entities.Config.Tasks;
@@ -20,7 +21,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			if (path.Contains('*') || path.Contains('?'))
 			{
-				string directory = Path.GetDirectoryName(path);
+				string directory = Path.GetDirectoryName(path) ?? throw new InvalidOperationException();
 				string searchPattern = Path.GetFileName(path);
 
 				if (Directory.Exists(directory))
@@ -52,7 +53,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 				{
 					path = filePath,
 					labels = _config.Labels,
-
+					hashSHA256 = FileHasher.GetFileSHA256Hash(filePath)
 				})
 			};
 
@@ -60,6 +61,8 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 			if (!response.IsSuccess)
 			{
 				Console.WriteLine($"Error sending API request: {response.ErrorMessage}");
+				Console.WriteLine($"Request: {response?.Response?.Request.Resource}");
+				Console.WriteLine($"Response: {response.Response?.Content}");
 			}
 		}
 	}

@@ -21,27 +21,48 @@ const Job: React.FC = () => {
 		newDetail.id = detailCount++;
 	};
 
-	useEffect(() => {
-		const loadData = async () => {
-			const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
-			// const details: JobDetail[] = [];
-			if (result === null) return;
+	const loadData = async () => {
+		const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
+		if (result === null) 
+			return;
 
-			addJobDetail({
-				description: "Job started",
-				date: result.startedDateTime,
-			});
+		addJobDetail({
+			description: "Job started",
+			date: result.startedDateTime,
+		});
 
-			if (result?.finishedDateTime !== null) {
+		if (result.jobHistory) {
+			for (const history of result.jobHistory) {
 				addJobDetail({
-					description: "Job finished",
-					date: result.finishedDateTime,
+					description: history.taskName ?? '',
+					date: history.createdDateTime,
 				});
 			}
+		}
+		else {
+			console.log("No job history found")	
+			console.log(result as JobType);
+		}
 
-			// setJobDetails(details);
-			setJob(result);
-		};
+
+		if (result?.finishedDateTime !== null) {
+			addJobDetail({
+				description: "Job finished",
+				date: result.finishedDateTime,
+			});
+		}
+		else {
+			addJobDetail({
+				description: "Job NOT finished yet",
+				date: '',
+			});
+		}
+
+		// setJobDetails(details);
+		setJob(result);
+	};
+	
+	useEffect(() => {
 
 		loadData();
 	}, []);
@@ -49,11 +70,10 @@ const Job: React.FC = () => {
 	return (
 		<>
 			<div>
-        <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
-           {job && <Circle colorClass={statuses[job.status]} />} {job?.description ?? "N/A "}</h1>
-				<p>Job ID: {jobId}</p>
-				<p>Job Description: {job?.description ?? "N/A"}</p>
-				<p>Job Status: {job?.status ?? "N/A"}</p>
+				<h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
+					{job && <Circle colorClass={statuses[job.status]} />}{" "}
+					{job?.description ?? "N/A "}
+				</h1>
 			</div>
 
 			<div className="mx-auto max-w-lg px-4 py-12 sm:px-6 md:py-16">
@@ -71,17 +91,20 @@ const Job: React.FC = () => {
 									"absolute left-0 top-0 flex w-6 justify-center"
 								)}
 							>
-								{jobIdx < jobDetails.length - 1 && 
+								{jobIdx < jobDetails.length - 1 && (
 									<div className="w-px bg-gray-200" />
-								}
+								)}
 							</div>
 
 							<div className="relative flex h-6 w-6 flex-none items-center justify-center">
-							{	jobIdx == jobDetails.length -1  ? (
-								<CheckCircleIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
-							) : (
-								<div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
-							)}
+								{jobIdx == jobDetails.length - 1 ? (
+									<CheckCircleIcon
+										className="h-6 w-6 text-green-600"
+										aria-hidden="true"
+									/>
+								) : (
+									<div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
+								)}
 							</div>
 							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500">
 								<span className="font-medium dark:text-white text-gray-900">

@@ -38,7 +38,7 @@ const SetupComponent = () => {
 			const response = await PostInitialSetupAsync<ServerResponse, FormSchemaType>(data);
 			toast.success("Instance set up successfully!");
 			setTimeout(() => {
-				window.location.href = `/pages/${response.newPageId}`;
+				window.location.href = `/metrics/${response.newPageId}`;
 			}, 3000); // Redirect after showing success message
 		} catch (error) {
 			if (axios.isAxiosError(error)) {

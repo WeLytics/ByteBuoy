@@ -16,7 +16,7 @@ const MetricBucketIndicatorHoverPanel: React.FC<DialogBoxProps> = ({
 }) => {
 	return (
 		<div
-			className="text-left bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-lg p-4 border border-gray-200 dark:border-gray-700 w-96"
+			className="text-left resize overflow-auto break-words bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-lg p-4 border border-gray-200 dark:border-gray-700 w-96"
 			style={{
 				position: "absolute",
 				top: "100%",
