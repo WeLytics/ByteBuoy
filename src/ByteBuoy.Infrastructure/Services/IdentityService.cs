@@ -1,3 +1,4 @@
+using ByteBuoy.Application.DTO;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -11,17 +12,18 @@ namespace ByteBuoy.Infrastructure.Services
 		private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
 		private const string _adminRoleName = "admin";
 
-		public async Task<bool> CreateAdminUser(string username, string password)
+		public async Task<IdentityServiceResult> CreateAdminUser(string username, string password)
 		{
 			await CreateAdminRoleIfNotExists();
 
 			var adminUser = new ApplicationUser { UserName = username, Email = username };
 			var result = await _userManager.CreateAsync(adminUser, password);
 
-			if (result.Succeeded)
-				await _userManager.AddToRoleAsync(adminUser, _adminRoleName);
+			if (!result.Succeeded)
+				return new IdentityServiceResult(result.ToUserErrorList());
 
-			return result.Succeeded;
+			await _userManager.AddToRoleAsync(adminUser, _adminRoleName);
+			return new IdentityServiceResult() { Succeeded = true };
 		}
 
 		internal async Task CreateAdminRoleIfNotExists()
@@ -30,24 +32,23 @@ namespace ByteBuoy.Infrastructure.Services
 				await _roleManager.CreateAsync(new ApplicationRole { Name = _adminRoleName });
 		}
 
-		public async Task<bool> CreateAdminUserIfNotExistFromSystemEnv(IServiceProvider services)
+		public async Task<IdentityServiceResult> CreateAdminUserIfNotExistFromSystemEnv(IServiceProvider services)
 		{
 			var adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL");
 			var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
 
 			if (await _userManager.Users.AnyAsync())
-				return false;
+				return new IdentityServiceResult() { Succeeded = true };
 
 			if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
 			{
 				Console.WriteLine("No admin email/password provided in the environment variables.");
-				return false;
+				return new IdentityServiceResult() { Succeeded = true };
 			}
 
 			await CreateAdminRoleIfNotExists();
 
-			var result = await CreateAdminUser(adminEmail, adminPassword);
-			return result;
+			return await CreateAdminUser(adminEmail, adminPassword);
 		}
 	}
 }

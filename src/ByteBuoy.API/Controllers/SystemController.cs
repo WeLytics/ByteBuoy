@@ -19,7 +19,8 @@ namespace ByteBuoy.API.Controllers
 
 		private async Task<bool> IsFirstRun()
 		{
-			return !(await _dbContext.Users.AnyAsync() && await _dbContext.Pages.AnyAsync());
+			var hasRecords = await _dbContext.Users.AnyAsync() && await _dbContext.Pages.AnyAsync();
+			return !hasRecords;
 		}
 
 		[HttpGet("isFirstRun")]
@@ -31,20 +32,19 @@ namespace ByteBuoy.API.Controllers
 			return Ok(false);
 		}
 
-
 		[HttpPost("initialSetup")]
 		public async Task<IActionResult> InitialSetup([FromBody] CreateSystemSetupContract contract)
 		{
 			if (string.IsNullOrEmpty(contract.AdminEmail) || string.IsNullOrEmpty(contract.AdminPassword) || string.IsNullOrEmpty(contract.PageTitle))
-				return BadRequest("AdminEmail, AdminPassword and PageName are required");
+				return BadRequest(new { errors = "AdminEmail, AdminPassword and PageName are required" });
 
 			if (!await IsFirstRun())
-				return BadRequest("System already set up");
+				return BadRequest(new { errors = "System already set up" });
 
 			var result = await _identityService.CreateAdminUser(contract.AdminEmail, contract.AdminPassword);
 
-			if (!result)
-				return BadRequest("Failed to create admin user");
+			if (!result.Succeeded)
+				return BadRequest(new { errors = "Failed to create admin user: " + string.Join("-", result.Errors) });
 
 			var page = new Page
 			{
@@ -53,8 +53,9 @@ namespace ByteBuoy.API.Controllers
 				IsPublic = true,
 			};
 			await _dbContext.Pages.AddAsync(page);
+			await _dbContext.SaveChangesAsync();
 
-			return Ok(true);
+			return Ok(new { newPageId= page.Id});
 		}
 	}
 }

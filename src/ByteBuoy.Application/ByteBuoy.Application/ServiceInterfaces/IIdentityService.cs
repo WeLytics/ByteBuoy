@@ -1,8 +1,11 @@
+using ByteBuoy.Application.DTO;
+using Microsoft.AspNetCore.Identity;
+
 namespace ByteBuoy.Application.ServiceInterfaces
 {
 	public interface IIdentityService
 	{
-		Task<bool> CreateAdminUserIfNotExistFromSystemEnv(IServiceProvider services);
-		Task<bool> CreateAdminUser(string username, string password);	
+		Task<IdentityServiceResult> CreateAdminUserIfNotExistFromSystemEnv(IServiceProvider services);
+		Task<IdentityServiceResult> CreateAdminUser(string username, string password);	
 	}
 }

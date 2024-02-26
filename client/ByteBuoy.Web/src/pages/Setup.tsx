@@ -1,10 +1,12 @@
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { CreatePageAsync } from "../services/apiService";
+import { PostInitialSetupAsync } from "../services/apiService";
 import "../App.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import axios from "axios";
 
 const FormSchema = z.object({
 	adminEmail: z.string().email(),
@@ -12,9 +14,16 @@ const FormSchema = z.object({
 	pageTitle: z.string().min(5).max(30),
 });
 
+interface ServerResponse {
+	errors: string,
+	newPageId: string,
+}
+
+
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 const SetupComponent = () => {
+	const [errorServer, setErrorServer] = useState('');
 	const {
 		register,
 		handleSubmit,
@@ -25,13 +34,21 @@ const SetupComponent = () => {
 
 	const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
 		try {
-			const newPageId = await CreatePageAsync(data);
-			toast.success("Page created successfully!");
+			setErrorServer('');
+			const response = await PostInitialSetupAsync<ServerResponse, FormSchemaType>(data);
+			toast.success("Instance set up successfully!");
 			setTimeout(() => {
-				window.location.href = `/pages/${newPageId}`;
+				window.location.href = `/pages/${response.newPageId}`;
 			}, 3000); // Redirect after showing success message
 		} catch (error) {
-			toast.error("Failed to finish setup. Please try again.");
+			if (axios.isAxiosError(error)) {
+				const serverError = error.response?.data.errors;	
+				toast.error("Failed to finish setup. Please try again: " + serverError);
+				setErrorServer(serverError);
+			}
+			else {
+				toast.error("Failed to finish setup. Please try again.");
+			}
 		} 
 	};
 
@@ -105,6 +122,10 @@ const SetupComponent = () => {
 								Save
 							</button>
 						</div>
+
+						{errorServer && (
+							<p className="text-sm text-red-600 mt-1">{errorServer}</p>
+						)}
 					</div>
 				</div>
 			</form>
