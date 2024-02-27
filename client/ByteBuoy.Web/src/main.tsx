@@ -20,6 +20,7 @@ import PageMetricsList from "./pages/pages/PageMetricsList";
 import NotFound from "./pages/pages/NotFound";
 import ProfilePage from "./pages/user/Profile";
 import { fetchData } from "./services/apiService";
+import TraceComponent from "./pages/pages/Trace";
 
 const AppWrapper = () => {
 	return (
@@ -31,6 +32,7 @@ const AppWrapper = () => {
 						<Route index element={<Home />} />
 					</Route>
 					<Route path="metrics/:pageId" element={<PageComponent />} />
+					<Route path="trace/:fileHash" element={<TraceComponent />} />
 					<Route
 						path="metrics/:pageId/list"
 						element={<PageMetricsList />}

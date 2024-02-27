@@ -5,13 +5,9 @@ meta {
 }
 
 get {
-  url: {{BYTEBUOY_SERVER}}/api/v1/jobs?orderby=finishedDatetime desc
+  url: {{BYTEBUOY_SERVER}}/api/v1/jobs/4
   body: json
   auth: none
-}
-
-query {
-  orderby: finishedDatetime desc
 }
 
 body:json {

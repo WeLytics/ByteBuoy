@@ -1,19 +1,17 @@
-import { NavLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Metric } from "../../types/Metric";
 import { fetchData } from "../../services/apiService";
 import TimeAgo from "../../components/TimeAgo";
 import Circle from "../../components/Circle";
 import PageTitle from "../../components/PageTitle";
-import { Page } from "../../types/Page";
 import { statuses } from "../../models/statuses";
 import { RenderMetaJson } from "../../components/MetaJsonRenderer";
 import SkeletonLoader from "../../components/SkeletonLoader";
 
-export default function PageMetricsList() {
-	const { pageId: pageIdOrSlug } = useParams<{ pageId: string }>();
+export default function TraceComponent() {
+	const { fileHash } = useParams<{ fileHash: string }>();
 	const [metrics, setMetrics] = useState<Metric[] | null>(null);
-	const [page, setPage] = useState<Page | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -25,14 +23,9 @@ export default function PageMetricsList() {
 
 			try {
 				const resultMetrics = await fetchData<Metric[]>(
-					`/api/v1/pages/${pageIdOrSlug}/metrics`
+					`/api/v1/trace/${fileHash}`
 				);
 				setMetrics(resultMetrics);
-
-				const resultPage = await fetchData<Page>(
-					`/api/v1/pages/${pageIdOrSlug}`
-				);
-				setPage(resultPage);
 				}
 			catch (error) {
 				console.error("Failed to fetch metrics:", error);
@@ -55,7 +48,8 @@ export default function PageMetricsList() {
 
 	return (
 		<>
-			<PageTitle title={page?.title ?? "N/A"} />
+			<PageTitle title="Trace" />
+			<div>SHA-256 Hash: {fileHash}</div>
 			<div className="mt-5">
 				<div className="py-10">
 					{/* <StatusBar statuses={data} /> */}
@@ -109,7 +103,7 @@ export default function PageMetricsList() {
 
 										{item.hashSHA256 && 
 											<div className="flex gap-x-3">
-												<NavLink to={"/trace/" + item.hashSHA256}><strong>Hash (SHA256): {item.hashSHA256}</strong> </NavLink>
+												<strong>Hash (SHA256): {item.hashSHA256}</strong>
 											</div>
 										}
 									</td>
