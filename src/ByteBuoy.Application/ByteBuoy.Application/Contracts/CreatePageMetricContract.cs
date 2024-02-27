@@ -9,5 +9,6 @@ namespace ByteBuoy.Application.Contracts
 		public decimal? Value { get; set; }
 		public string? ValueString { get; set; }
 		public string? MetaJson { get; set; }
+		public string? HashSHA256 { get; set; }
 	}
 }

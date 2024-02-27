@@ -16,5 +16,7 @@ namespace ByteBuoy.Domain.Entities
 
 		public MetricGroup? MetricGroup { get; set; } = null!;
 		public string? MetaJson { get; set; }
+
+		public string? HashSHA256 { get; set; }
 	}
 }

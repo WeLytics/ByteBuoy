@@ -91,7 +91,7 @@ export default function PageMetrics() {
 												key={`subGroup-${index}-${subIndex}`}
 											>
 												<div>
-													<hr></hr>
+													<hr />
 													<MetricsSubGroup
 														metricsSubGroup={
 															subGroup

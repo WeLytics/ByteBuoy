@@ -30,12 +30,14 @@ const MetricBucketIndicatorHoverPanel: React.FC<DialogBoxProps> = ({
 				<React.Fragment key={metric.id}>
 					<div className="m-2 p-2">
 						<div>
-							<Circle colorClass={statuses[metric.status]} />
+							<span className="pr-3"> 
+								<Circle colorClass={statuses[metric.status]} />
+							</span>
 							<TimeAgo dateString={metric.created} />
 						</div>
 						{metric.value}
 						{metric.valueString}
-						{RenderMetaJson(metric.metaJson)}
+						{metric.metaJson && RenderMetaJson(metric.metaJson)}
 					</div>
 					<hr />
 				</React.Fragment>

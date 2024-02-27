@@ -54,7 +54,6 @@ namespace ByteBuoy.API
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddValidatorsFromAssemblyContaining<MetricValidator>();
 
-
 			builder.Services.AddAuthorization();
 
 			builder.Services.AddDbContext<ByteBuoyDbContext>(options =>

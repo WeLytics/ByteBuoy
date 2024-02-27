@@ -65,6 +65,7 @@ namespace ByteBuoy.Agent.JobExecution
 
 		public async Task ExecuteTasksAsync()
 		{
+			var executionContext = new JobExecutionContext(_agentConfig);	
 			if (!await ConnectionTestAsync())
 			{
 				await LogAsync("Failed to connect to the API " + _agentConfig.Host);
@@ -76,13 +77,13 @@ namespace ByteBuoy.Agent.JobExecution
 			foreach (var executionStep in _jobExecutionSteps)
 			{
 				await CreateJobHistoryAsync(executionStep);
-				await ExecuteStep(executionStep);
+				await ExecuteStep(executionContext, executionStep);
 			}
 
 			await FinishJobAsync();
 		}
 
-		private async Task ExecuteStep(JobExecutionStep executionStep)
+		private async Task ExecuteStep(JobExecutionContext executionContext, JobExecutionStep executionStep)
 		{
 			var config = executionStep.Config;
 			await LogAsync($"Task {_jobExecutionSteps.IndexOf(executionStep) + 1} / {_jobExecutionSteps.Count}");
@@ -90,7 +91,7 @@ namespace ByteBuoy.Agent.JobExecution
 
 			var timer = new Stopwatch();
 			timer.Start();
-			await ExecuteJobAsync(executionStep);
+			await ExecuteJobAsync(executionContext, executionStep);
 			timer.Stop();
 
 			await LogAsync($"Finished {config.Name} ({config.Action}) in {timer.Elapsed.TotalSeconds}s");
@@ -128,8 +129,6 @@ namespace ByteBuoy.Agent.JobExecution
 				Status = Domain.Enums.TaskStatus.OK,
 				ErrorMessage = null
 			});
-
-			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");
 		}
 
 		private async Task FinishJobAsync()
@@ -144,16 +143,15 @@ namespace ByteBuoy.Agent.JobExecution
 
 		private static Task LogAsync(string message) => Console.Out.WriteLineAsync(message);
 
-		public static async Task ExecuteJobAsync(JobExecutionStep executionStep)
+		public static async Task ExecuteJobAsync(JobExecutionContext executionContext, JobExecutionStep executionStep)
 		{
 			try
 			{
-				await executionStep.jobAction.ExecuteAsync();
+				await executionStep.jobAction.ExecuteAsync(executionContext);
 			}
 			catch (Exception ex)
 			{
-				// log the error
-				//await Logger.LogAsync(ex);
+				Console.WriteLine(ex);
 				if (executionStep.Config?.ContinueOnError == true)
 				{
 					throw;

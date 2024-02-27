@@ -10,7 +10,7 @@ namespace ByteBuoy.Agent.Services
 
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			Console.WriteLine("ByteBuoy Agent started (v0.1.4)");
+			Console.WriteLine("ByteBuoy Agent started (v0.1.6)");
 			cancellationToken.ThrowIfCancellationRequested();
 
 			var filePath = commandLineService.FilePath;

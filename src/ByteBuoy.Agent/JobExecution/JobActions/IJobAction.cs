@@ -2,6 +2,6 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal interface IJobAction
 	{
-		Task ExecuteAsync();
+		Task ExecuteAsync(JobExecutionContext jobExecutionContext);
 	}
 }

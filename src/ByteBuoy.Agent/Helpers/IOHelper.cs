@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace ByteBuoy.Agent.Helpers
 {
 	internal class IOHelper
@@ -10,12 +12,21 @@ namespace ByteBuoy.Agent.Helpers
 			await sourceStream.CopyToAsync(destinationStream);
 		}
 
-
-		internal  static async Task MoveFileAsync(string sourcePath, string destinationPath)
+		internal static async Task MoveFileAsync(string sourcePath, string destinationPath)
 		{
 			await CopyFileAsync(sourcePath, destinationPath);
 			File.Delete(sourcePath);
 		}
 
+		internal static bool IsFileIgnored(string filePath, IEnumerable<string> ignorePatterns)
+		{
+			if (ignorePatterns == null || !ignorePatterns.Any())
+				return false;
+
+			var fileName = Path.GetFileName(filePath);	
+			var comparison  = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
+
+			return ignorePatterns.Any(pattern => fileName.Equals(pattern, comparison));
+		}	
 	}
 }

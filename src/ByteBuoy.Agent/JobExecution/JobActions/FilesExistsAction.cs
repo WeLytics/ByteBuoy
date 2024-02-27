@@ -2,6 +2,7 @@ using System.Text.Json;
 using ByteBuoy.Agent.Helpers;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
+using ByteBuoy.Domain.Entities;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
 
@@ -9,8 +10,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal class FilesExistsAction(FilesExistsConfig _config, ApiService _apiService) : IJobAction
 	{
-		public async Task ExecuteAsync()
+		private JobExecutionContext _jobExecutionContext;
+
+		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
+			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
+
 			foreach (var source in _config.Paths)
 			{
 				await CheckPath(source);
@@ -29,7 +34,14 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 					string[] files = Directory.GetFiles(directory, searchPattern);
 					foreach (string file in files)
 					{
-						await SendApiRequest(file);
+						if (!IOHelper.IsFileIgnored(file, _jobExecutionContext.GetGlobalgnoredFiles()))
+						{
+							await SendApiRequest(file);
+						}
+						else
+						{
+							Console.WriteLine($"File {file} is ignored.");
+						} 
 					}
 				}
 				else
@@ -49,11 +61,11 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 			{
 				Status = Domain.Enums.MetricStatus.Success,
 				ValueString = Path.GetFileName(filePath),
+				HashSHA256 = FileHasher.GetFileSHA256Hash(filePath),
 				MetaJson = JsonSerializer.Serialize(new
 				{
 					path = filePath,
 					labels = _config.Labels,
-					hashSHA256 = FileHasher.GetFileSHA256Hash(filePath)
 				})
 			};
 
@@ -62,7 +74,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 			{
 				Console.WriteLine($"Error sending API request: {response.ErrorMessage}");
 				Console.WriteLine($"Request: {response?.Response?.Request.Resource}");
-				Console.WriteLine($"Response: {response.Response?.Content}");
+				Console.WriteLine($"Response: {response?.Response?.Content}");
 			}
 		}
 	}

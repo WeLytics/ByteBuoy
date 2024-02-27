@@ -1,6 +1,6 @@
 namespace ByteBuoy.Infrastructure.Config
 {
-	public class JobDto
+	public class AgentConfigDto
 	{
 		public decimal Version { get; set; }
 		public required string Host { get; set; }
@@ -8,6 +8,7 @@ namespace ByteBuoy.Infrastructure.Config
 		public required string Page { get; set; }
 
 		public string? Description { get; set; }
+		public string? IgnoreFiles { get; set; }
 		public required List<TaskDto> Tasks { get; set; }
 	}
 }

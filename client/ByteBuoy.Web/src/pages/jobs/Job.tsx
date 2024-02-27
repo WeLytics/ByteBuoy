@@ -29,6 +29,7 @@ const Job: React.FC = () => {
 		addJobDetail({
 			description: "Job started",
 			date: result.startedDateTime,
+			isFinished: false,
 		});
 
 		if (result.jobHistory) {
@@ -36,6 +37,7 @@ const Job: React.FC = () => {
 				addJobDetail({
 					description: history.taskName ?? '',
 					date: history.createdDateTime,
+					isFinished: false,
 				});
 			}
 		}
@@ -49,12 +51,14 @@ const Job: React.FC = () => {
 			addJobDetail({
 				description: "Job finished",
 				date: result.finishedDateTime,
+				isFinished: true
 			});
 		}
 		else {
 			addJobDetail({
 				description: "Job NOT finished yet",
 				date: '',
+				isFinished: false,
 			});
 		}
 
@@ -63,7 +67,6 @@ const Job: React.FC = () => {
 	};
 	
 	useEffect(() => {
-
 		loadData();
 	}, []);
 
@@ -97,7 +100,7 @@ const Job: React.FC = () => {
 							</div>
 
 							<div className="relative flex h-6 w-6 flex-none items-center justify-center">
-								{jobIdx == jobDetails.length - 1 ? (
+								{jobIdx == jobDetails.length - 1 && jobDetail.isFinished ? (
 									<CheckCircleIcon
 										className="h-6 w-6 text-green-600"
 										aria-hidden="true"
@@ -106,7 +109,7 @@ const Job: React.FC = () => {
 									<div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
 								)}
 							</div>
-							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500">
+							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500 text-left">
 								<span className="font-medium dark:text-white text-gray-900">
 									{jobDetail.description}
 								</span>
