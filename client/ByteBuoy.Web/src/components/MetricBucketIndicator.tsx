@@ -28,8 +28,9 @@ const MetricBucketIndicator: React.FC<StatusIndicatorProps> = ({
 					position: "relative", // Important for absolute positioning of the dialog
 					display: "inline-block",
 				}}
-				onMouseEnter={() => setShowDialog(true)}
-				onMouseLeave={() => setShowDialog(false)}
+				// onMouseEnter={() => setShowDialog(true)}
+				// onMouseLeave={() => setShowDialog(false)}
+				onMouseDown={() => setShowDialog(!showDialog)}
 			>
 				{showDialog && metricsBucket.status !== MetricStatus.NoData && (
 					<MetricBucketIndicatorHoverPanel

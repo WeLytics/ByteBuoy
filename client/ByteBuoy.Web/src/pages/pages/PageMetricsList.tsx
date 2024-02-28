@@ -9,6 +9,7 @@ import { Page } from "../../types/Page";
 import { statuses } from "../../models/statuses";
 import { RenderMetaJson } from "../../components/MetaJsonRenderer";
 import SkeletonLoader from "../../components/SkeletonLoader";
+import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
 
 export default function PageMetricsList() {
 	const { pageId: pageIdOrSlug } = useParams<{ pageId: string }>();
@@ -109,7 +110,7 @@ export default function PageMetricsList() {
 
 										{item.hashSHA256 && 
 											<div className="flex gap-x-3">
-												<NavLink to={"/trace/" + item.hashSHA256}><strong>Hash (SHA256): {item.hashSHA256}</strong> </NavLink>
+												<NavLink to={"/trace/" + item.hashSHA256}><strong>Hash (SHA256): {item.hashSHA256} <MagnifyingGlassCircleIcon 	className="block h-6 w-6"></MagnifyingGlassCircleIcon></strong> </NavLink>
 											</div>
 										}
 									</td>
