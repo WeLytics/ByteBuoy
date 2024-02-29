@@ -10,7 +10,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal class FilesExistsAction(FilesExistsConfig _config, ApiService _apiService) : IJobAction
 	{
-		private JobExecutionContext _jobExecutionContext;
+		private JobExecutionContext _jobExecutionContext = null!;
 
 		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
@@ -24,10 +24,13 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 
 		private async Task CheckPath(string path)
 		{
+			path = IOHelper.ResolvePathWithDynamicPlaceholders(path);
+
 			if (path.Contains('*') || path.Contains('?'))
 			{
-				string directory = Path.GetDirectoryName(path) ?? throw new InvalidOperationException();
-				string searchPattern = Path.GetFileName(path);
+				var directory = Path.GetDirectoryName(path) ?? throw new InvalidOperationException();
+
+				var searchPattern = Path.GetFileName(path);
 
 				if (Directory.Exists(directory))
 				{

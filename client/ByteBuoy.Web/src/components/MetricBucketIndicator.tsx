@@ -21,6 +21,7 @@ const MetricBucketIndicator: React.FC<StatusIndicatorProps> = ({
 	return (
 		<>
 			<div
+				title={metricsBucket.value}
 				className={`tooltip ${
 					statusColors[metricsBucket.status]
 				} p-1 h-10 flex items-center justify-center text-white rounded ${ metricsBucket.status !== MetricStatus.NoData ? 'cursor-pointer' : '' }`}
