@@ -2,7 +2,6 @@ using System.Text.Json;
 using ByteBuoy.Agent.Helpers;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
-using ByteBuoy.Domain.Entities;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
 
@@ -25,6 +24,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		private async Task CheckPath(string path)
 		{
 			path = IOHelper.ResolvePathWithDynamicPlaceholders(path);
+			_jobExecutionContext.AddLog($"Checking resolved path: {path}");
 
 			if (path.Contains('*') || path.Contains('?'))
 			{
@@ -39,21 +39,23 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 					{
 						if (!IOHelper.IsFileIgnored(file, _jobExecutionContext.GetGlobalgnoredFiles()))
 						{
+							_jobExecutionContext.AddLog($"File {file} found");
 							await SendApiRequest(file);
 						}
 						else
 						{
-							Console.WriteLine($"File {file} is ignored.");
+							_jobExecutionContext.AddLog($"File {file} is ignored");
 						} 
 					}
 				}
 				else
 				{
-					Console.WriteLine("Directory does not exist.");
+					_jobExecutionContext.AddErrorLog("Directory does not exist");
 				}
 			}
 			else if (File.Exists(path))
 			{
+				_jobExecutionContext.AddLog($"Checking path: {path}");
 				await SendApiRequest(path);
 			}
 		}
@@ -75,9 +77,9 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 			var response = await _apiService.PostPageMetric(payload);
 			if (!response.IsSuccess)
 			{
-				Console.WriteLine($"Error sending API request: {response.ErrorMessage}");
-				Console.WriteLine($"Request: {response?.Response?.Request.Resource}");
-				Console.WriteLine($"Response: {response?.Response?.Content}");
+				_jobExecutionContext.AddErrorLog($"Error sending API request: {response.ErrorMessage}");
+				_jobExecutionContext.AddErrorLog($"Request: {response?.Response?.Request.Resource}");
+				_jobExecutionContext.AddErrorLog($"Response: {response?.Response?.Content}");
 			}
 		}
 	}

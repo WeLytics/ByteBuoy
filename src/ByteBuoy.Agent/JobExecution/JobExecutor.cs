@@ -65,7 +65,20 @@ namespace ByteBuoy.Agent.JobExecution
 
 		public async Task ExecuteTasksAsync()
 		{
-			var executionContext = new JobExecutionContext(_agentConfig);	
+			var executionContext = new JobExecutionContext(_agentConfig, config =>
+			{
+				config.LogAction = async (step, value) =>
+				{
+					Console.WriteLine(value);
+					await CreateJobStepSuccessHistoryAsync(step, value);
+				};
+				config.ErrorLogAction = async (step, value) =>
+				{
+					Console.WriteLine(value);
+					await CreateJobStepErrorHistoryAsync(step, value);
+				};
+			});
+
 			if (!await ConnectionTestAsync())
 			{
 				await LogAsync("Failed to connect to the API " + _agentConfig.Host);
@@ -76,22 +89,23 @@ namespace ByteBuoy.Agent.JobExecution
 
 			foreach (var executionStep in _jobExecutionSteps)
 			{
-				await CreateJobHistoryAsync(executionStep);
-				await ExecuteStep(executionContext, executionStep);
+				executionContext.CurrentExecutionStep = executionStep;	
+				await CreateStartJobHistoryAsync(executionStep);
+				await ExecuteStep(executionContext);
 			}
 
 			await FinishJobAsync();
 		}
 
-		private async Task ExecuteStep(JobExecutionContext executionContext, JobExecutionStep executionStep)
+		private async Task ExecuteStep(JobExecutionContext executionContext)
 		{
-			var config = executionStep.Config;
-			await LogAsync($"Task {_jobExecutionSteps.IndexOf(executionStep) + 1} / {_jobExecutionSteps.Count}");
+			var config = executionContext.CurrentExecutionStep.Config;
+			await LogAsync($"Task {_jobExecutionSteps.IndexOf(executionContext.CurrentExecutionStep) + 1} / {_jobExecutionSteps.Count}");
 			await LogAsync($"Executing {config.Name} ({config.Action})");
 
 			var timer = new Stopwatch();
 			timer.Start();
-			await ExecuteJobAsync(executionContext, executionStep);
+			await ExecuteJobAsync(executionContext);
 			timer.Stop();
 
 			await LogAsync($"Finished {config.Name} ({config.Action}) in {timer.Elapsed.TotalSeconds}s");
@@ -115,12 +129,12 @@ namespace ByteBuoy.Agent.JobExecution
 			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");
 		}
 
-		private async Task CreateJobHistoryAsync(JobExecutionStep step)
+		private async Task CreateStartJobHistoryAsync(JobExecutionStep step)
 		{
 			if (_jobId <= 0)
 				throw new Exception("JobId is not set");
 
-			var response = await _apiService.CreateJobHistoryAsync(new Application.Contracts.CreateJobHistoryContract()
+			await _apiService.CreateJobHistoryAsync(new Application.Contracts.CreateJobHistoryContract()
 			{
 				TaskName = step.Config.Name,
 				TaskNumber = _jobExecutionSteps.IndexOf(step) + 1,
@@ -128,6 +142,39 @@ namespace ByteBuoy.Agent.JobExecution
 				Description = step.Config.Description,
 				Status = Domain.Enums.TaskStatus.OK,
 				ErrorMessage = null
+			});
+		}
+
+		private async Task CreateJobStepSuccessHistoryAsync(JobExecutionStep step, string description)
+		{
+			if (_jobId <= 0)
+				throw new Exception("JobId is not set");
+
+			await _apiService.CreateJobHistoryAsync(new Application.Contracts.CreateJobHistoryContract()
+			{
+				TaskName = step.Config.Name,
+				TaskNumber = _jobExecutionSteps.IndexOf(step) + 1,
+				JobId = _jobId,
+				Description = description,
+				Status = Domain.Enums.TaskStatus.OK,
+				ErrorMessage = null
+			});
+		}
+
+
+		private async Task CreateJobStepErrorHistoryAsync(JobExecutionStep step, string errorMessage)
+		{
+			if (_jobId <= 0)
+				throw new Exception("JobId is not set");
+
+			await _apiService.CreateJobHistoryAsync(new Application.Contracts.CreateJobHistoryContract()
+			{
+				TaskName = step.Config.Name,
+				TaskNumber = _jobExecutionSteps.IndexOf(step) + 1,
+				JobId = _jobId,
+				Description = step.Config.Description,
+				Status = Domain.Enums.TaskStatus.Error,
+				ErrorMessage = errorMessage
 			});
 		}
 
@@ -143,16 +190,16 @@ namespace ByteBuoy.Agent.JobExecution
 
 		private static Task LogAsync(string message) => Console.Out.WriteLineAsync(message);
 
-		public static async Task ExecuteJobAsync(JobExecutionContext executionContext, JobExecutionStep executionStep)
+		public static async Task ExecuteJobAsync(JobExecutionContext executionContext)
 		{
 			try
 			{
-				await executionStep.jobAction.ExecuteAsync(executionContext);
+				await executionContext.CurrentExecutionStep.jobAction.ExecuteAsync(executionContext);
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex);
-				if (executionStep.Config?.ContinueOnError == true)
+				if (executionContext.CurrentExecutionStep.Config?.ContinueOnError == true)
 				{
 					throw;
 				}

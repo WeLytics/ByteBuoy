@@ -13,6 +13,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 
 			foreach (var source in config.Sources)
 			{
+				_jobExecutionContext.AddLog($"Moving files from {source} to {config.Targets}");
 				foreach (var destination in config.Targets)
 				{
 					await MoveFilesAsync(source, destination);

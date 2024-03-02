@@ -9,6 +9,7 @@ import { JobDetail } from "../../types/JobDetails";
 import Circle from "../../components/Circle";
 import { statuses } from "../../models/statuses";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { JobHistory } from "../../types/JobHistory";
 
 const Job: React.FC = () => {
 	const { jobId } = useParams<{ jobId: string }>();
@@ -23,49 +24,68 @@ const Job: React.FC = () => {
 
 	const loadData = async () => {
 		const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
-		if (result === null) 
-			return;
+		if (result === null) return;
 
 		addJobDetail({
-			description: "Job started",
+			taskName: "Job started",
 			date: result.startedDateTime,
 			isFinished: false,
+			description: null,
+			errorText: null,
 		});
 
 		if (result.jobHistory) {
-			for (const history of result.jobHistory) {
-				addJobDetail({
-					description: history.taskName ?? '',
-					date: history.createdDateTime,
-					isFinished: false,
-				});
-			}
-		}
-		else {
-			console.log("No job history found")	
-			console.log(result as JobType);
+			const groupedByTaskNumber: Record<string, JobDetail> =
+				result.jobHistory.reduce(
+					(acc: Record<string, JobDetail>, history: JobHistory) => {
+						const key = history.taskNumber ?? "";
+						const description = history.description ?? "";
+						if (!acc[key]) {
+							acc[key] = {
+								taskName: history.taskName ?? "",
+								description: [description],
+								date: history.createdDateTime,
+								isFinished: false,
+								errorText: null,
+							};
+						} else {
+							acc[key].description!.push(description);
+						}
+						return acc;
+					},
+					{}
+				);
+
+			Object.values(groupedByTaskNumber).forEach(
+				(jobDetail: JobDetail) => {
+					addJobDetail(jobDetail);
+				}
+			);
 		}
 
 
 		if (result?.finishedDateTime !== null) {
 			addJobDetail({
-				description: "Job finished",
+				description: ["Job finished"],
 				date: result.finishedDateTime,
-				isFinished: true
+				isFinished: true,
+				taskName: "",
+				errorText: null,
 			});
-		}
-		else {
+		} else {
 			addJobDetail({
-				description: "Job NOT finished yet",
-				date: '',
+				description: ["Job NOT finished yet"],
+				date: "",
 				isFinished: false,
+				taskName: "",
+				errorText: null,
 			});
 		}
 
 		// setJobDetails(details);
 		setJob(result);
 	};
-	
+
 	useEffect(() => {
 		loadData();
 	}, []);
@@ -100,7 +120,8 @@ const Job: React.FC = () => {
 							</div>
 
 							<div className="relative flex h-6 w-6 flex-none items-center justify-center">
-								{jobIdx == jobDetails.length - 1 && jobDetail.isFinished ? (
+								{jobIdx == jobDetails.length - 1 &&
+								jobDetail.isFinished ? (
 									<CheckCircleIcon
 										className="h-6 w-6 text-green-600"
 										aria-hidden="true"
@@ -110,9 +131,14 @@ const Job: React.FC = () => {
 								)}
 							</div>
 							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500 text-left">
-								<span className="font-medium dark:text-white text-gray-900">
-									{jobDetail.description}
+								<span className="font-bold dark:text-white text-gray-900">
+									{jobDetail.taskName}
 								</span>
+								{jobDetail.description && (
+									<span className="block dark:text-white text-gray-400 italic break-all">
+										{jobDetail.description && jobDetail.description.map((desc, idx) => <span key={idx}>{desc}<br /></span>)}
+									</span>
+								)}
 							</p>
 							<div className="flex-none py-0.5 text-xs leading-5 text-gray-500">
 								<TimeAgo dateString={jobDetail.date} />

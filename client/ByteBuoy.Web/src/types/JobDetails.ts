@@ -1,6 +1,8 @@
 export interface JobDetail {
     id?: number;
-    description: string;
+    taskName: string;
+    description: string[] | null;
+    errorText: string | null;  
     date: string;
     isFinished: boolean;
 }
