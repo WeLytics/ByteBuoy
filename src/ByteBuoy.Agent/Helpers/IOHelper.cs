@@ -52,8 +52,10 @@ namespace ByteBuoy.Agent.Helpers
 		private static string ResolvePathPlaceholder(string placeholder)
 		{
 			var currentDate = DateTime.Now;
-			placeholder = placeholder.Replace("yy", currentDate.ToString("yy"))
+
+			placeholder = placeholder
 							.Replace("yyyy", currentDate.ToString("yyyy"))
+							.Replace("yy", currentDate.ToString("yy"))
 							.Replace("MM", currentDate.ToString("MM"))
 							.Replace("dd", currentDate.ToString("dd"));
 

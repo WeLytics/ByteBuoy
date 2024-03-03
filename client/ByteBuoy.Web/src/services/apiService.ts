@@ -88,7 +88,17 @@ export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
     }
 };
 
-export const PostInitialSetupAsync = async <T, U>(data: U): Promise<T> => { 
+export const patchData = async <T, U>(endpoint: string, data: U): Promise<T> => {
+    try {
+        const response: AxiosResponse<T> = await api.patch<T>(endpoint, data);
+        return response.data;
+    } catch (error) {
+        console.error("Error patching data: ", error);
+        throw error;
+    }
+};
+
+export const postInitialSetupAsync = async <T, U>(data: U): Promise<T> => { 
     const endpoint = '/api/v1/system/initialSetup';
     return postData<T, U>(endpoint, data);
 }

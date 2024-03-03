@@ -99,7 +99,7 @@ const Job: React.FC = () => {
 				</h1>
 			</div>
 
-			<div className="mx-auto max-w-lg px-4 py-12 sm:px-6 md:py-16">
+			<div className="mx-auto max-w-2lg px-4 py-12 sm:px-6 md:py-16">
 				<ul role="list" className="space-y-6">
 					{jobDetails.map((jobDetail, jobIdx) => (
 						<li

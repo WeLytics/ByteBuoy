@@ -1,6 +1,6 @@
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PostInitialSetupAsync } from "../services/apiService";
+import { postInitialSetupAsync } from "../services/apiService";
 import "../App.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -35,7 +35,7 @@ const SetupComponent = () => {
 	const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
 		try {
 			setErrorServer('');
-			const response = await PostInitialSetupAsync<ServerResponse, FormSchemaType>(data);
+			const response = await postInitialSetupAsync<ServerResponse, FormSchemaType>(data);
 			toast.success("Instance set up successfully!");
 			setTimeout(() => {
 				window.location.href = `/metrics/${response.newPageId}`;

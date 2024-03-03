@@ -11,6 +11,17 @@ import { RenderMetaJson } from "../../components/MetaJsonRenderer";
 import SkeletonLoader from "../../components/SkeletonLoader";
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
 
+
+function truncateString(input: string): string {
+	const maxLength = 20;
+	if (input.length <= maxLength) {
+		return input;
+	}
+	return `${input.substring(0, maxLength)}…`;
+  }
+  
+  // Bei
+
 export default function PageMetricsList() {
 	const { pageId: pageIdOrSlug } = useParams<{ pageId: string }>();
 	const [metrics, setMetrics] = useState<Metric[] | null>(null);
@@ -57,11 +68,9 @@ export default function PageMetricsList() {
 	return (
 		<>
 			<PageTitle title={page?.title ?? "N/A"} />
-			<div className="mt-5">
+			<div className="mx-auto max-w-6xl sm:px-6 lg:px-8 dark:text-white lg:py-3 overflow-x-auto">
 				<div className="py-10">
-					{/* <StatusBar statuses={data} /> */}
-
-					<table className="mt-6 w-full whitespace-nowrap text-left">
+					<table className="mt-6 whitespace-nowrap text-left table-auto">
 						<colgroup>
 							<col className="w-full sm:w-4/12" />
 							<col className="lg:w-4/12" />
@@ -110,7 +119,7 @@ export default function PageMetricsList() {
 
 										{item.hashSHA256 && 
 											<div className="flex gap-x-3">
-												<NavLink to={"/trace/" + item.hashSHA256}><strong>Hash (SHA256): {item.hashSHA256} <MagnifyingGlassCircleIcon 	className="block h-6 w-6"></MagnifyingGlassCircleIcon></strong> </NavLink>
+												<NavLink to={"/trace/" + item.hashSHA256}><strong>Hash (SHA256): {truncateString(item.hashSHA256)} <MagnifyingGlassCircleIcon 	className="inline-block h-6 w-6"></MagnifyingGlassCircleIcon></strong> </NavLink>
 											</div>
 										}
 									</td>
