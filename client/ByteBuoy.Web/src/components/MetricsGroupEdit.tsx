@@ -5,7 +5,7 @@ import { MetricsGroup } from '../types/MetricsGroup';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { patchDAta, patchData, postData } from '../services/apiService';
+import { patchData } from '../services/apiService';
 import { useParams } from 'react-router-dom';
 
 // Define the schema for the form validation using Zod
