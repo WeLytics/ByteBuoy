@@ -36,7 +36,7 @@ export default function TraceComponent() {
 		};
 
 		loadData();
-	}, []);
+	});
 
 	if (loading) {
 		return <SkeletonLoader />;

@@ -25,7 +25,7 @@ const PageComponent: React.FC = () => {
 	
 	useEffect(() => {
 		loadData();
-	}, []);
+	});
 
 	const loadData = async () => {
 		const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);

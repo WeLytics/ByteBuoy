@@ -88,7 +88,7 @@ const Job: React.FC = () => {
 
 	useEffect(() => {
 		loadData();
-	}, []);
+	});
 
 	return (
 		<>
