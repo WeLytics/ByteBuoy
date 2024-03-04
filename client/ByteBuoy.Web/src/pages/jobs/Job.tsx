@@ -12,83 +12,83 @@ import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { JobHistory } from "../../types/JobHistory";
 
 const Job: React.FC = () => {
-	const { jobId } = useParams<{ jobId: string }>();
 	const [jobDetails, setJobDetails] = useState<JobDetail[]>([]);
 	const [job, setJob] = useState<JobType | null>(null);
-	let detailCount = 0;
-
-	const addJobDetail = (newDetail: JobDetail) => {
-		setJobDetails((currentDetails) => [...currentDetails, newDetail]);
-		newDetail.id = detailCount++;
-	};
-
-	const loadData = async () => {
-		const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
-		if (result === null) return;
-
-		addJobDetail({
-			taskName: "Job started",
-			date: result.startedDateTime,
-			isFinished: false,
-			description: null,
-			errorText: null,
-		});
-
-		if (result.jobHistory) {
-			const groupedByTaskNumber: Record<string, JobDetail> =
-				result.jobHistory.reduce(
-					(acc: Record<string, JobDetail>, history: JobHistory) => {
-						const key = history.taskNumber ?? "";
-						const description = history.description ?? "";
-						if (!acc[key]) {
-							acc[key] = {
-								taskName: history.taskName ?? "",
-								description: [description],
-								date: history.createdDateTime,
-								isFinished: false,
-								errorText: null,
-							};
-						} else {
-							acc[key].description!.push(description);
-						}
-						return acc;
-					},
-					{}
-				);
-
-			Object.values(groupedByTaskNumber).forEach(
-				(jobDetail: JobDetail) => {
-					addJobDetail(jobDetail);
-				}
-			);
-		}
-
-
-		if (result?.finishedDateTime !== null) {
-			addJobDetail({
-				description: ["Job finished"],
-				date: result.finishedDateTime,
-				isFinished: true,
-				taskName: "",
-				errorText: null,
-			});
-		} else {
-			addJobDetail({
-				description: ["Job NOT finished yet"],
-				date: "",
-				isFinished: false,
-				taskName: "",
-				errorText: null,
-			});
-		}
-
-		// setJobDetails(details);
-		setJob(result);
-	};
-
+	const { jobId } = useParams<{ jobId: string }>();
+	
 	useEffect(() => {
+		let detailCount = 0;
+		const addJobDetail = (newDetail: JobDetail) => {
+			setJobDetails((currentDetails) => [...currentDetails, newDetail]);
+			newDetail.id = detailCount++;
+		};
+
+		
+		const loadData = async () => {
+			const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
+			if (result === null) return;
+	
+			addJobDetail({
+				taskName: "Job started",
+				date: result.startedDateTime,
+				isFinished: false,
+				description: null,
+				errorText: null,
+			});
+	
+			if (result.jobHistory) {
+				const groupedByTaskNumber: Record<string, JobDetail> =
+					result.jobHistory.reduce(
+						(acc: Record<string, JobDetail>, history: JobHistory) => {
+							const key = history.taskNumber ?? "";
+							const description = history.description ?? "";
+							if (!acc[key]) {
+								acc[key] = {
+									taskName: history.taskName ?? "",
+									description: [description],
+									date: history.createdDateTime,
+									isFinished: false,
+									errorText: null,
+								};
+							} else {
+								acc[key].description!.push(description);
+							}
+							return acc;
+						},
+						{}
+					);
+	
+				Object.values(groupedByTaskNumber).forEach(
+					(jobDetail: JobDetail) => {
+						addJobDetail(jobDetail);
+					}
+				);
+			}
+	
+	
+			if (result?.finishedDateTime !== null) {
+				addJobDetail({
+					description: ["Job finished"],
+					date: result.finishedDateTime,
+					isFinished: true,
+					taskName: "",
+					errorText: null,
+				});
+			} else {
+				addJobDetail({
+					description: ["Job NOT finished yet"],
+					date: "",
+					isFinished: false,
+					taskName: "",
+					errorText: null,
+				});
+			}
+	
+			// setJobDetails(details);
+			setJob(result);
+		};
 		loadData();
-	});
+	}, [jobId]);
 
 	return (
 		<>

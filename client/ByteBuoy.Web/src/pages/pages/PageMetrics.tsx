@@ -32,7 +32,8 @@ export default function PageMetrics() {
 
 	useEffect(() => {
 		loadData();
-	});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	if (loading) {
 		return <SkeletonLoader />;

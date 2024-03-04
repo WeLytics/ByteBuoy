@@ -1,52 +1,51 @@
-import React, { useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Page } from "../../types/Page";
-import { fetchData, postDataNoPayload } from "../../services/apiService";
+import React, {useCallback} from "react";
+import {Link, useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Page} from "../../types/Page";
+import {fetchData, postDataNoPayload} from "../../services/apiService";
 
-import { Fragment } from "react";
+import {Fragment} from "react";
 import {
 	ChevronDownIcon,
 	ClockIcon,
 	PencilIcon,
 	ArchiveBoxXMarkIcon,
-	ArrowPathIcon
+	ArrowPathIcon,
 } from "@heroicons/react/20/solid";
-import { Menu, Transition } from "@headlessui/react";
+import {Menu, Transition} from "@headlessui/react";
 
 import PageMetrics from "./PageMetrics";
-import { classNames } from "../../utils/utils";
+import {classNames} from "../../utils/utils";
 // import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
-	const { pageId } = useParams<{ pageId: string }>();
+	const {pageId} = useParams<{pageId: string}>();
 	const [page, setPage] = useState<Page | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
-	
+
 	useEffect(() => {
+		const loadData = async () => {
+			const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
+			setPage(result);
+		};
+
 		loadData();
-	});
+	}, [pageId]);
 
-	const loadData = async () => {
-		const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
-		setPage(result);
-	};
-
-	const purgeList= async () => {
+	const purgeList = async () => {
 		await postDataNoPayload(`/api/v1/pages/${pageId}/metrics/purge`);
 		refreshChild();
-	}
+	};
 
 	const refreshChild = useCallback(() => {
-        // Incrementing the key will cause the useEffect in ChildComponent to run
-        setRefreshKey(prevKey => prevKey + 1);
-    }, []);
+		// Incrementing the key will cause the useEffect in ChildComponent to run
+		setRefreshKey((prevKey) => prevKey + 1);
+	}, []);
 
 	return (
 		<>
-			
 			{/* {page && <PageEditForm page2={page} />} */}
-			
+
 			{/* <PageTitle title={data?.title ?? "N/A"} /> */}
 			<div className="lg:flex lg:items-center lg:justify-between mt-4">
 				<div className="min-w-0 flex-1">
@@ -97,8 +96,6 @@ const PageComponent: React.FC = () => {
 						</button>
 					</span>
 
-
-
 					<span className="ml-3 hidden sm:block">
 						<button
 							type="button"
@@ -133,7 +130,7 @@ const PageComponent: React.FC = () => {
 						>
 							<Menu.Items className="absolute left-0 z-10 -ml-1 mt-2 w-48 origin-top-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
 								<Menu.Item>
-									{({ active }) => (
+									{({active}) => (
 										<a
 											href="#"
 											className={classNames(
@@ -146,7 +143,7 @@ const PageComponent: React.FC = () => {
 									)}
 								</Menu.Item>
 								<Menu.Item>
-									{({ active }) => (
+									{({active}) => (
 										<a
 											href="#"
 											className={classNames(

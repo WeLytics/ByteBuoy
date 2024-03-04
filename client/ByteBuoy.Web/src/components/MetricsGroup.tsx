@@ -3,6 +3,7 @@ import { MetricsGroup as MetricsGroupType } from "../types/MetricsGroup";
 import StatusBar from "./MetricStatusBar";
 import { NumericToMetricIntervalMapping } from "../types/MetricInterval";
 import MetricsGroupEdit from "./MetricsGroupEdit";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 type Props = {
 	metricsGroup: MetricsGroupType;
@@ -20,19 +21,21 @@ const MetricsGroup: React.FC<Props> = ({ metricsGroup, reloadList }) => {
 
 	return (
 		<>
-			<h1>
+			<h1 className="font-bold">
 				{metricsGroup.title} (
 				{NumericToMetricIntervalMapping[metricsGroup.metricInterval]})
+				<PencilIcon onClick={handleEdit} className="inline-block ml-3 h-5 w-5 cursor-pointer" />
 			</h1>
 			<h2>{metricsGroup.description}</h2>
 
+			{isEditing && (
+				<div className="border-solid border-2 border-sky-100 p-3 rounded">
+				<MetricsGroupEdit  initialValues={metricsGroup} reloadList={reloadList} />
+				</div>
+			)}
+
 			<StatusBar metricsBuckets={metricsGroup.bucketValues} />
 
-			<button onClick={handleEdit}>Edit</button>
-
-			{isEditing && (
-				<MetricsGroupEdit initialValues={metricsGroup} reloadList={reloadList} />
-			)}
 		</>
 	);
 };
