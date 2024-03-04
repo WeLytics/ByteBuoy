@@ -39,7 +39,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages
 		[HttpPost]
-		[Authorize(Roles = "Admin")]
+		//[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Metric>> CreatePage([FromBody] CreatePageContract createPage)
 		{
 			var page = new PageContractMappers().CreatePageDtoToPage(createPage);

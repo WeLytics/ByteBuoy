@@ -14,10 +14,8 @@ const MetricsGroup: React.FC<Props> = ({ metricsGroup, reloadList }) => {
 	const [isEditing, setIsEditing] = useState(false);
 
 	const handleEdit = () => {
-
 		setIsEditing(!isEditing);
 	};
-
 
 	return (
 		<>
