@@ -47,23 +47,23 @@ export default function PageMetrics() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		const loadData = async () => {
-			setLoading(true);
-			setError(null);
-			try {
-				const result = await fetchData<MetricsConsolidated>(
-					`/api/v1/pages/${pageIdOrSlug}/metrics/consolidated`
-				);
-				setMetrics(result);
-			} catch (error) {
-				console.error("Failed to fetch metrics:", error);
-				setError("Failed to load metrics. Please try again later.");
-			} finally {
-				setLoading(false);
-			}
-		};
+	const loadData = async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const result = await fetchData<MetricsConsolidated>(
+				`/api/v1/pages/${pageIdOrSlug}/metrics/consolidated`
+			);
+			setMetrics(result);
+		} catch (error) {
+			console.error("Failed to fetch metrics:", error);
+			setError("Failed to load metrics. Please try again later.");
+		} finally {
+			setLoading(false);
+		}
+	};
 
+	useEffect(() => {
 		loadData();
 	}, [pageIdOrSlug]);
 
@@ -82,7 +82,7 @@ export default function PageMetrics() {
 				metrics.metricsGroups.map((metricsGroup, index) => (
 					<React.Fragment key={index}>
 						<div className="text-left">
-							<MetricsGroup metricsGroup={metricsGroup} />
+							<MetricsGroup metricsGroup={metricsGroup} reloadList={loadData} />
 							{metrics?.metricsGroups &&
 							metrics.metricsGroups.length > 0
 								? metricsGroup.subGroups.map(

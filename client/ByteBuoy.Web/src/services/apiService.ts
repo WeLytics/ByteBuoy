@@ -88,6 +88,16 @@ export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
     }
 };
 
+export const postDataNoPayload = async <T>(endpoint: string): Promise<T> => {
+    try {
+        const response: AxiosResponse<T> = await api.post<T>(endpoint);
+        return response.data;
+    } catch (error) {
+        console.error("Error posting data: ", error);
+        throw error;
+    }
+};
+
 export const patchData = async <T, U>(endpoint: string, data: U): Promise<T> => {
     try {
         const response: AxiosResponse<T> = await api.patch<T>(endpoint, data);

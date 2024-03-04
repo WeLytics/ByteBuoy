@@ -35,6 +35,22 @@ namespace ByteBuoy.API.Controllers
 										 .ToListAsync();
 		}
 
+		// POST: api/v1/pages/{pageIdOrSlug}/metrics/purge
+		[HttpPost("purge")]
+		public async Task<ActionResult<bool>> PurgePageMetrics([FromRoute] string pageIdOrSlug)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+			if (page == null)
+				return NotFound();
+
+			var metrics = await _context.Metrics.Where(r => r.Page == page)
+										 .ToListAsync();
+
+			_context.Metrics.RemoveRange(metrics);
+			await _context.SaveChangesAsync();
+			return Ok(true);
+		}
+
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics/consolidated
 		[HttpGet("consolidated")]
 		public async Task<ActionResult<PageMetricConsolidationDto>> GetPageConsolidated([FromRoute] string pageIdOrSlug)

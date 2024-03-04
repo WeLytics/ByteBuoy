@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Page } from "../../types/Page";
-import { fetchData } from "../../services/apiService";
+import { fetchData, postDataNoPayload } from "../../services/apiService";
 
 import { Fragment } from "react";
 import {
 	ChevronDownIcon,
 	ClockIcon,
 	PencilIcon,
+	ArchiveBoxXMarkIcon,
+	ArrowPathIcon
 } from "@heroicons/react/20/solid";
 import { Menu, Transition } from "@headlessui/react";
 
@@ -19,15 +21,26 @@ import { classNames } from "../../utils/utils";
 const PageComponent: React.FC = () => {
 	const { pageId } = useParams<{ pageId: string }>();
 	const [page, setPage] = useState<Page | null>(null);
-
+	const [refreshKey, setRefreshKey] = useState(0);
+	
 	useEffect(() => {
-		const loadData = async () => {
-			const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
-			setPage(result);
-		};
-
 		loadData();
 	}, []);
+
+	const loadData = async () => {
+		const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
+		setPage(result);
+	};
+
+	const purgeList= async () => {
+		await postDataNoPayload(`/api/v1/pages/${pageId}/metrics/purge`);
+		refreshChild();
+	}
+
+	const refreshChild = useCallback(() => {
+        // Incrementing the key will cause the useEffect in ChildComponent to run
+        setRefreshKey(prevKey => prevKey + 1);
+    }, []);
 
 	return (
 		<>
@@ -70,6 +83,35 @@ const PageComponent: React.FC = () => {
 						</button>
 					</span>
 
+					<span className="ml-3 hidden sm:block">
+						<button
+							type="button"
+							className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+							onClick={refreshChild}
+						>
+							<ArrowPathIcon
+								className="-ml-0.5 mr-1.5 h-5 w-5"
+								aria-hidden="true"
+							/>
+							Refresh
+						</button>
+					</span>
+
+
+
+					<span className="ml-3 hidden sm:block">
+						<button
+							type="button"
+							className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+							onClick={purgeList}
+						>
+							<ArchiveBoxXMarkIcon
+								className="-ml-0.5 mr-1.5 h-5 w-5"
+								aria-hidden="true"
+							/>
+							Purge
+						</button>
+					</span>
 
 					{/* Dropdown */}
 					<Menu as="div" className="relative ml-3 sm:hidden">
@@ -123,7 +165,7 @@ const PageComponent: React.FC = () => {
 			</div>
 
 			<div className="mt-5">
-				<PageMetrics />
+				<PageMetrics key={refreshKey} />
 			</div>
 		</>
 	);

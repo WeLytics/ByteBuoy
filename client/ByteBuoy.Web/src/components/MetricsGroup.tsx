@@ -6,19 +6,16 @@ import MetricsGroupEdit from "./MetricsGroupEdit";
 
 type Props = {
 	metricsGroup: MetricsGroupType;
+	reloadList: () => void;
 };
 
-const MetricsGroup: React.FC<Props> = ({ metricsGroup }) => {
+const MetricsGroup: React.FC<Props> = ({ metricsGroup, reloadList }) => {
 	const [isEditing, setIsEditing] = useState(false);
 
 	const handleEdit = () => {
 
 		setIsEditing(!isEditing);
 	};
-
-	const reloadList = ()=> {
-		console.log("reload");
-	}
 
 
 	return (
