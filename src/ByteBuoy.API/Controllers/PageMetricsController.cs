@@ -5,6 +5,7 @@ using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +38,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages/{pageIdOrSlug}/metrics/purge
 		[HttpPost("purge")]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<bool>> PurgePageMetrics([FromRoute] string pageIdOrSlug)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
