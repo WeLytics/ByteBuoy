@@ -34,18 +34,18 @@ const PageCreateForm = () => {
 		try {
 			setErrorServer('');
 			const response = await postData<ServerResponse, FormSchemaType>('/api/v1/pages',data);
-			toast.success("Instance set up successfully!");
+			toast.success("Metric Page created");
 			setTimeout(() => {
 				window.location.href = `/metrics/${response.id}`;
-			}, 3000); // Redirect after showing success message
+			}, 3000); 
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				const serverError = error.response?.data.errors;	
-				toast.error("Failed to finish setup. Please try again: " + serverError);
+				toast.error("Failed to create the page. Please try again: " + serverError);
 				setErrorServer(serverError);
 			}
 			else {
-				toast.error("Failed to finish setup. Please try again.");
+				toast.error("Failed to create the page. Please try again.");
 			}
 		} 
 	};
