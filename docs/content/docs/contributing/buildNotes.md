@@ -22,17 +22,17 @@ seo:
 
 # Troubleshooting Builds: ByteBuoy.Agent Error
 
-# Issue:
+# Issue
 
 When attempting to run the ByteBuoy.Agent, you encounter the following error message:
 
 `Error reading config: Line: 1, Col: 1, Idx: 0Failed to create an instance of type 'ByteBuoy.Infrastructure.Config.JobDto`
 
-# Cause:
+# Cause
 
 This error typically indicates that the Trim Code option was enabled during the build process of the Agent. The YAML reader heavily relies on reflection, and the code trimming feature, which removes unused code, can lead to issues by inadvertently removing necessary code paths that the YAML reader depends on.
 
-# Solution:
+# Solution
 
 To resolve this issue, please follow these steps:
 

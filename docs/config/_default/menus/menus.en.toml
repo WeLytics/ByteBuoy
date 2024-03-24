@@ -30,14 +30,14 @@
 
 [[main]]
   name = "Docs"
-  url = "/docs/guides/example-guide/"
+  url = "/docs/getting-started/getting-started/"
 # url = "/docs/1.0/prologue/introduction/"
   weight = 10
 
-[[main]]
-  name = "Blog"
-  url = "/blog/"
-  weight = 30
+#[[main]]
+#  name = "Blog"
+#  url = "/blog/"
+#  weight = 30
 
 # [[social]]
 #   name = "Twitter"
@@ -58,10 +58,10 @@
   post = "v0.1.0"
   weight = 30
 
-[[footer]]
-  name = "Privacy Policy"
-  url = "/privacy/"
-  weight = 10
+# [[footer]]
+#  name = "Privacy Policy"
+#  url = "/privacy/"
+#  weight = 10
 
 # [[footer]]
 #   name = "Terms of Service"
