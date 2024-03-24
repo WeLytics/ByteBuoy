@@ -1,7 +1,7 @@
 {
-  "name": "ByteBuoy Docs",
-  "version": "0.0.0",
-  "description": "Doks theme",
+  "name": "ByteBuoyDocs",
+  "version": "0.0.1",
+  "description": "ByteBuoy Documentation",
   "author": "ByteBuoy",
   "license": "MIT",
   "scripts": {

@@ -400,3 +400,4 @@ src/ByteBuoy.API/logs/*.log
 src/ByteBuoy.API/DB/*.*
 .idea/
 scripts/requests/ByteBuoy/environments/Prod.bru
+docs/public/
