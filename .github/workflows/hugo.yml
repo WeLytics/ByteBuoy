@@ -60,7 +60,7 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
-            --destination docs
+            --destination public
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
