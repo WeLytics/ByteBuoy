@@ -1,8 +1,8 @@
 {
-  "name": "--template",
+  "name": "ByteBuoy Docs",
   "version": "0.0.0",
   "description": "Doks theme",
-  "author": "Hyas",
+  "author": "ByteBuoy",
   "license": "MIT",
   "scripts": {
     "dev": "exec-bin node_modules/.bin/hugo/hugo server --bind=0.0.0.0 --disableFastRender --baseURL=http://localhost --noHTTPCache",
