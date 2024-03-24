@@ -48,7 +48,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+        run: "npm ci"
         working-directory: docs
       - name: Build production website
         env:
