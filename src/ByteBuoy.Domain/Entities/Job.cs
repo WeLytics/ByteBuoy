@@ -10,5 +10,7 @@ namespace ByteBuoy.Domain.Entities
 		public JobStatus Status { get; set; }
 		public DateTime? StartedDateTime { get; set; }
 		public DateTime? FinishedDateTime { get; set; }
-    }
+
+		public List<JobHistory> JobHistory { get; set; } = [];
+	}
 }

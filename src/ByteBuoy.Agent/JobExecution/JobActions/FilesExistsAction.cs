@@ -1,4 +1,5 @@
 using System.Text.Json;
+using ByteBuoy.Agent.Helpers;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain.Entities.Config.Tasks;
@@ -8,8 +9,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal class FilesExistsAction(FilesExistsConfig _config, ApiService _apiService) : IJobAction
 	{
-		public async Task ExecuteAsync()
+		private JobExecutionContext _jobExecutionContext = null!;
+
+		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
+			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
+
 			foreach (var source in _config.Paths)
 			{
 				await CheckPath(source);
@@ -18,26 +23,39 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 
 		private async Task CheckPath(string path)
 		{
+			path = IOHelper.ResolvePathWithDynamicPlaceholders(path);
+			_jobExecutionContext.AddLog($"Checking resolved path: {path}");
+
 			if (path.Contains('*') || path.Contains('?'))
 			{
-				string directory = Path.GetDirectoryName(path);
-				string searchPattern = Path.GetFileName(path);
+				var directory = Path.GetDirectoryName(path) ?? throw new InvalidOperationException();
+
+				var searchPattern = Path.GetFileName(path);
 
 				if (Directory.Exists(directory))
 				{
 					string[] files = Directory.GetFiles(directory, searchPattern);
 					foreach (string file in files)
 					{
-						await SendApiRequest(file);
+						if (!IOHelper.IsFileIgnored(file, _jobExecutionContext.GetGlobalgnoredFiles()))
+						{
+							_jobExecutionContext.AddLog($"File {file} found");
+							await SendApiRequest(file);
+						}
+						else
+						{
+							_jobExecutionContext.AddLog($"File {file} is ignored");
+						} 
 					}
 				}
 				else
 				{
-					Console.WriteLine("Directory does not exist.");
+					_jobExecutionContext.AddErrorLog("Directory does not exist");
 				}
 			}
 			else if (File.Exists(path))
 			{
+				_jobExecutionContext.AddLog($"Checking path: {path}");
 				await SendApiRequest(path);
 			}
 		}
@@ -46,20 +64,22 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			var payload = new CreatePageMetricContract()
 			{
-				Status = Domain.Enums.MetricStatus.OK,
+				Status = Domain.Enums.MetricStatus.Success,
 				ValueString = Path.GetFileName(filePath),
+				HashSHA256 = FileHasher.GetFileSHA256Hash(filePath),
 				MetaJson = JsonSerializer.Serialize(new
 				{
 					path = filePath,
 					labels = _config.Labels,
-
 				})
 			};
 
 			var response = await _apiService.PostPageMetric(payload);
 			if (!response.IsSuccess)
 			{
-				Console.WriteLine($"Error sending API request: {response.ErrorMessage}");
+				_jobExecutionContext.AddErrorLog($"Error sending API request: {response.ErrorMessage}");
+				_jobExecutionContext.AddErrorLog($"Request: {response?.Response?.Request.Resource}");
+				_jobExecutionContext.AddErrorLog($"Response: {response?.Response?.Content}");
 			}
 		}
 	}

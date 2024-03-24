@@ -6,8 +6,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 {
 	internal class FilesHashesAction(FilesHashesConfig config, ApiService apiService) : IJobAction
 	{
-		public async Task ExecuteAsync()
+		private JobExecutionContext _jobExecutionContext;
+
+		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
+			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
+
 			foreach (var source in config.Paths)
 			{
 

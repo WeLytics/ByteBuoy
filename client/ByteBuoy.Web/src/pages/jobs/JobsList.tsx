@@ -6,13 +6,8 @@ import { fetchData } from "../../services/apiService";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
-
-const statuses: { [key: number]: string } = {
-	0: "text-gray-500 bg-gray-100/10", // Running
-	1: "text-green-400 bg-green-400/10", // Success
-	2: "text-rose-400 bg-rose-400/10", // Warning
-	3: "text-red-400 bg-red-400/10", // Error
-};
+import { statuses } from "../../models/statuses";
+import SkeletonLoader from "../../components/SkeletonLoader";
 
 const DEFAULT_DATE = "0001-01-01T00:00:00Z";
 
@@ -22,19 +17,40 @@ const isValidDate = (dateString: string) => {
 
 const Jobs: React.FC = () => {
 	const [jobs, setData] = useState<Job[] | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const loadData = async () => {
-			const result = await fetchData<Job[]>(`/api/v1/jobs?orderby=finishedDatetime desc`);
-			setData(result);
+			setLoading(true);
+			setError(null);
+			try {
+				const result = await fetchData<Job[]>(
+					`/api/v1/jobs?orderby=starteddatetime desc`
+				);
+				setData(result);
+			} catch (error) {
+				console.error("Failed to fetch metrics:", error);
+				setError("Failed to load metrics. Please try again later.");
+			} finally {
+				setLoading(false);
+			}
 		};
 
 		loadData();
 	}, []);
 
+	if (loading) {
+		return <SkeletonLoader />;
+	}
+
+	if (error) {
+		return <p className="text-red-500">{error}</p>;
+	}
+
 	return (
 		<>
-			<div className="mx-auto max-w-lg px-4 py-12 sm:px-6 md:py-16">
+			<div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 md:pt-16">
 				<ul role="list" className="divide-y divide-white/5">
 					{jobs?.map((job) => (
 						<li
@@ -59,16 +75,13 @@ const Jobs: React.FC = () => {
 											<span className="truncate">
 												{job.description}
 											</span>
-											<span className="whitespace-nowrap">
-												{job.hostName}
-											</span>
 											<span className="absolute inset-0" />
 										</a>
 									</h2>
 								</div>
 								<div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
 									<p className="truncate">
-										{isValidDate(job.finishedDateTime) ? (
+										{job.finishedDateTime && isValidDate(job.finishedDateTime) ? (
 											<>
 												<span>Finished </span>
 												<TimeAgo
@@ -94,7 +107,9 @@ const Jobs: React.FC = () => {
 									>
 										<circle cx={1} cy={1} r={1} />
 									</svg>
-									<p className="whitespace-nowrap">{job.hostName}</p>
+									<p className="whitespace-nowrap">
+										{job.hostName}
+									</p>
 								</div>
 							</div>
 							<ChevronRightIcon

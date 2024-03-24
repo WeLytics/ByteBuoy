@@ -10,27 +10,69 @@ using ByteBuoy.API.Installers;
 using Microsoft.Data.SqlClient;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
+using ByteBuoy.Domain.Entities.Identity;
+using ByteBuoy.Infrastructure.Services.Mails;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using ByteBuoy.Application.Validators;
+using FluentValidation.AspNetCore;
 
 
 namespace ByteBuoy.API
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateSlimBuilder(args);
 			var config = builder.Configuration;
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddControllers();
 			builder.Services.AddCorsPolicy(config);
-			builder.Services.AddAuthentication();
+			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie()
+				.AddJwtBearer("Identity.Bearer", options =>
+				{
+					// Configure JWT Bearer token validation settings here
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						// Your token validation parameters
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidIssuer = "YourIssuer",
+						ValidAudience = "YourAudience",
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey"))
+					};
+				});
+
+
+			builder.Services.AddFluentValidationAutoValidation();
+			builder.Services.AddValidatorsFromAssemblyContaining<MetricValidator>();
+
 			builder.Services.AddAuthorization();
 
 			builder.Services.AddDbContext<ByteBuoyDbContext>(options =>
 				options.UseSqlite(config.GetConnectionString("Default")));
 
+			builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+										{
+											options.SignIn.RequireConfirmedAccount = false;
+										})
+							.AddEntityFrameworkStores<ByteBuoyDbContext>()
+							.AddDefaultTokenProviders()
+							.AddApiEndpoints();
+
+			builder.Services.AddSingleton<IEmailSender<ApplicationUser>, EmailSender>();
+
 			builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
 			builder.Services.AddTransient<IMetricsConsolidationService, MetricsConsolidationService>();
+			builder.Services.AddTransient<IIdentityService, IdentityService>();
+
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options =>
@@ -42,7 +84,7 @@ namespace ByteBuoy.API
 			);
 			builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-			// Serilog
+			// Logging
 			Log.Logger = new LoggerConfiguration()
 				.ReadFrom.Configuration(builder.Configuration.GetSection("Logging"))
 				.WriteTo.Console()
@@ -51,14 +93,9 @@ namespace ByteBuoy.API
 
 			builder.Host.UseSerilog();
 
-			//builder.Services.ConfigureHttpJsonOptions(options =>
-			//{
-			//	options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-			//});
-
-
 			var app = builder.Build();
 
+			app.MapIdentityApi<ApplicationUser>();
 			app.MapGet("/health", () => "OK");
 
 
@@ -84,7 +121,10 @@ namespace ByteBuoy.API
 			{
 				var services = scope.ServiceProvider;
 				var context = services.GetRequiredService<ByteBuoyDbContext>();
-				context.Database.Migrate();
+				var identityService = services.GetRequiredService<IIdentityService>();
+				await context.Database.MigrateAsync();
+
+				await identityService.CreateAdminUserIfNotExistFromSystemEnv(services);
 			}
 
 			if (app.Environment.IsDevelopment())
@@ -100,6 +140,19 @@ namespace ByteBuoy.API
 					await context.Response.WriteAsJsonAsync(response);
 				});
 			};
+			app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager,
+					[FromBody] object empty) =>
+							{
+								if (empty != null)
+								{
+									await signInManager.SignOutAsync();
+									return Results.Ok();
+								}
+								return Results.Unauthorized();
+							})
+				.WithOpenApi()
+				.RequireAuthorization();
+
 
 			app.Run("http://0.0.0.0:5000");
 		}
@@ -117,7 +170,7 @@ namespace ByteBuoy.API
 					Directory.CreateDirectory(databaseDirectory!);
 					Console.WriteLine("Database directory created successfully.");
 				}
-				catch (Exception ex)
+				catch (IOException ex)
 				{
 					Console.WriteLine($"Failed to create directory: {ex.Message}");
 				}

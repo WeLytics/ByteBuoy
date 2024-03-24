@@ -1,0 +1,20 @@
+meta {
+  name: Initial Setup
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{BYTEBUOY_SERVER}}/api/v1/system/initialSetup
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "adminEmail": "user@mail.ch",
+    "adminPassword": "MyDummyPassword32*",
+    "pageTitle": "My Initial Page"
+  }
+  
+}

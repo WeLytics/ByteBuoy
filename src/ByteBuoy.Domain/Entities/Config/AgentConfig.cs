@@ -9,7 +9,8 @@ namespace ByteBuoy.Domain.Entities.Config
         public string ApiKey { get; set; } = null!;
         public string Page { get; set; } = null!;
 		public string? Description { get; set; }
-        public List<TaskConfig> Tasks { get; set; } = [];
+		public string? IgnoreFiles { get; set; }
+		public List<TaskConfig> Tasks { get; set; } = [];
 
 
         public bool IsValid()

@@ -1,8 +1,9 @@
 export interface Metric {
     id: number;
-    value: number;
-    valueString: number;
+    value: number | null;
+    valueString: string | null;
     created: string;
     status: number;
-    metaJson: string;
+    metaJson: string | null;
+    hashSHA256: string | null;
 }

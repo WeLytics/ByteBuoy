@@ -2,86 +2,104 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/apiService";
-import PageTitle from "../../components/PageTitle";
 import { Job as JobType } from "../../types/Job";
 import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
 import { JobDetail } from "../../types/JobDetails";
 import Circle from "../../components/Circle";
-
-const statuses: { [key: number]: string } = {
-	0: "text-gray-500 bg-gray-100/10", // Running
-	1: "text-green-400 bg-green-400/10", // Success
-	2: "text-rose-400 bg-rose-400/10", // Warning
-	3: "text-red-400 bg-red-400/10", // Error
-};
+import { statuses } from "../../models/statuses";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import { JobHistory } from "../../types/JobHistory";
 
 const Job: React.FC = () => {
-	const { jobId } = useParams<{ jobId: string }>();
 	const [jobDetails, setJobDetails] = useState<JobDetail[]>([]);
 	const [job, setJob] = useState<JobType | null>(null);
-	let detailCount = 0;
-
-	const addJobDetail = (newDetail: JobDetail) => {
-		setJobDetails((currentDetails) => [...currentDetails, newDetail]);
-		newDetail.id = detailCount++;
-		console.log(newDetail);
-	};
-
+	const { jobId } = useParams<{ jobId: string }>();
+	
 	useEffect(() => {
+		let detailCount = 0;
+		const addJobDetail = (newDetail: JobDetail) => {
+			setJobDetails((currentDetails) => [...currentDetails, newDetail]);
+			newDetail.id = detailCount++;
+		};
+
+		
 		const loadData = async () => {
 			const result = await fetchData<JobType>(`/api/v1/jobs/${jobId}/`);
-			// const details: JobDetail[] = [];
 			if (result === null) return;
-
+	
 			addJobDetail({
-				description: "Job started",
+				taskName: "Job started",
 				date: result.startedDateTime,
+				isFinished: false,
+				description: null,
+				errorText: null,
 			});
-
+	
+			if (result.jobHistory) {
+				const groupedByTaskNumber: Record<string, JobDetail> =
+					result.jobHistory.reduce(
+						(acc: Record<string, JobDetail>, history: JobHistory) => {
+							const key = history.taskNumber ?? "";
+							const description = history.description ?? "";
+							if (!acc[key]) {
+								acc[key] = {
+									taskName: history.taskName ?? "",
+									description: [description],
+									date: history.createdDateTime,
+									isFinished: false,
+									errorText: null,
+								};
+							} else {
+								acc[key].description!.push(description);
+							}
+							return acc;
+						},
+						{}
+					);
+	
+				Object.values(groupedByTaskNumber).forEach(
+					(jobDetail: JobDetail) => {
+						addJobDetail(jobDetail);
+					}
+				);
+			}
+	
+	
 			if (result?.finishedDateTime !== null) {
 				addJobDetail({
-					description: "Job finished",
+					description: ["Job finished"],
 					date: result.finishedDateTime,
+					isFinished: true,
+					taskName: "",
+					errorText: null,
+				});
+			} else {
+				addJobDetail({
+					description: ["Job NOT finished yet"],
+					date: "",
+					isFinished: false,
+					taskName: "",
+					errorText: null,
 				});
 			}
-
+	
 			// setJobDetails(details);
 			setJob(result);
 		};
-
 		loadData();
-	}, []);
+	}, [jobId]);
 
 	return (
 		<>
-      {/* <Circle color={"red-400"} size={30} />   */}
-
-			{job?.status !== undefined && (
-        <Circle colorClass={classNames(
-          statuses[job!.status]
-        )}
-         />
-				// <div
-				// 	className={classNames(
-				// 		statuses[job!.status],
-				// 		"flex-none rounded-full p-1"
-				// 	)}
-				// >
-				// 	<div className="h-2 w-2 rounded-full bg-current" />
-				// </div>
-			)}
-			<PageTitle title={ job !== null ? <Circle colorClass={statuses[job!.status]} />
-          &&   job.description + "asdf" : "N/A"} />
-
-
 			<div>
-				<p>Job ID: {jobId}</p>
-				<p>Job Description: {job?.description ?? "N/A"}</p>
-				<p>Job Status: {job?.status ?? "N/A"}</p>
+				<h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
+					{job && <Circle colorClass={statuses[job.status]} />}{" "}
+					{job?.description ?? "N/A "}
+				</h1>
 			</div>
 
-			<div className="mx-auto max-w-lg px-4 py-12 sm:px-6 md:py-16">
+			<div className="mx-auto max-w-2lg px-4 py-12 sm:px-6 md:py-16">
 				<ul role="list" className="space-y-6">
 					{jobDetails.map((jobDetail, jobIdx) => (
 						<li
@@ -96,16 +114,31 @@ const Job: React.FC = () => {
 									"absolute left-0 top-0 flex w-6 justify-center"
 								)}
 							>
-								<div className="w-px bg-gray-200" />
+								{jobIdx < jobDetails.length - 1 && (
+									<div className="w-px bg-gray-200" />
+								)}
 							</div>
 
-							<div className="relative flex h-6 w-6 flex-none items-center justify-center dark:bg-gray">
-								<div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
+							<div className="relative flex h-6 w-6 flex-none items-center justify-center">
+								{jobIdx == jobDetails.length - 1 &&
+								jobDetail.isFinished ? (
+									<CheckCircleIcon
+										className="h-6 w-6 text-green-600"
+										aria-hidden="true"
+									/>
+								) : (
+									<div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
+								)}
 							</div>
-							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500">
-								<span className="font-medium dark:text-white text-gray-900">
-									{jobDetail.description}
+							<p className="flex-auto py-0.5 text-xs leading-5 dark:text-white-500 text-gray-500 text-left">
+								<span className="font-bold dark:text-white text-gray-900">
+									{jobDetail.taskName}
 								</span>
+								{jobDetail.description && (
+									<span className="block dark:text-white text-gray-400 italic break-all">
+										{jobDetail.description && jobDetail.description.map((desc, idx) => <span key={idx}>{desc}<br /></span>)}
+									</span>
+								)}
 							</p>
 							<div className="flex-none py-0.5 text-xs leading-5 text-gray-500">
 								<TimeAgo dateString={jobDetail.date} />

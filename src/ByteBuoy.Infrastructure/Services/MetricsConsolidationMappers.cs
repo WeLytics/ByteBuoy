@@ -10,5 +10,6 @@ namespace ByteBuoy.Infrastructure.Services
 	{
 		internal partial void MetricGroupToPageMetricGroupDto(MetricGroup metricGroup, PageMetricGroupDto dto);
 		internal partial PageMetricDto MetricToPageMetricDto(Metric metric);
+		internal partial PageMetricBucketDto MetricToPageMetricBucketDto(Metric metric);
 	}
 }

@@ -7,7 +7,7 @@ namespace ByteBuoy.Infrastructure.Config
 	[Mapper]
 	internal partial class AgentConfigMapper
 	{
-		internal partial AgentConfig AgentConfigDtoToAgentConfig(JobDto configDto);
+		internal partial AgentConfig AgentConfigDtoToAgentConfig(AgentConfigDto configDto);
 		internal partial FilesExistsConfig JobDtoToFilesExistsConfig(TaskDto configDto);
 		internal partial FilesCopyConfig JobDtoToFilesCopyConfig(TaskDto configDto);
 		internal partial FilesMoveJobConfig JobDtoToFilesMoveConfig(TaskDto configDto);

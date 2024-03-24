@@ -1,4 +1,3 @@
-using ByteBuoy.Domain.Entities;
 using ByteBuoy.Domain.Enums;
 
 namespace ByteBuoy.Application.ServiceInterfaces
@@ -10,6 +9,7 @@ namespace ByteBuoy.Application.ServiceInterfaces
 		public string? ValueString { get; set; }
 		public DateTime Created { get; set; } = DateTime.UtcNow;
 		public MetricStatus Status { get; set; }
+		public string? HashSHA256 { get; set; }
 
 		public string? MetaJson { get; set; }
 

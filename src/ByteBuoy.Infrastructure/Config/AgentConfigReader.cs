@@ -27,7 +27,7 @@ namespace ByteBuoy.Infrastructure.Config
 
             try
             {
-                var configDto = deserializer.Deserialize<JobDto>(yamlContent);
+                var configDto = deserializer.Deserialize<AgentConfigDto>(yamlContent);
 				var mapper = new AgentConfigMapper();
 				var result = mapper.AgentConfigDtoToAgentConfig(configDto);
 				TryLoadingTaskActions(configDto, result);
@@ -54,7 +54,7 @@ namespace ByteBuoy.Infrastructure.Config
 			ValidationErrors.Add(new AgentConfigValidationError(location, message));
 		}
 
-		private void TryLoadingTaskActions(JobDto jobDto, AgentConfig result)
+		private void TryLoadingTaskActions(AgentConfigDto jobDto, AgentConfig result)
 		{
 			result.Tasks = [];
 			var mapper = new AgentConfigMapper();

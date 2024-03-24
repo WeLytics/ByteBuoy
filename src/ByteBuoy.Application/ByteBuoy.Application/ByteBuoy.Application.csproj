@@ -16,8 +16,4 @@
 	</PackageReference>
 	<PackageReference Include="Riok.Mapperly" Version="3.3.0" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="DTO\" />
-	</ItemGroup>
 </Project>

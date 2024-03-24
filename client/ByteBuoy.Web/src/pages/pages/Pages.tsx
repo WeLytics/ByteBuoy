@@ -7,7 +7,7 @@ const PagesComponent: React.FC = () => {
   
   return (
     <>
-      <PageTitle title="Pages" />
+      <PageTitle title="Metric Pages" />
       <PagesList />
     </>
   )
