@@ -1,11 +1,11 @@
 # Deploy your Hyas site to GitHub Pages
-name: GitHub Pages
+name: "ByteBuoy Docs: Deploy Hugo with GitHub Pages"
 
 on:
   # Runs on pushes targeting the default branch
-  # push:
-    # branches:
-      # - main
+  push:
+    branches:
+    - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -31,35 +31,41 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+                      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+         # cache: 'docs'
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+        run: "npm i"
+        working-directory: docs
       - name: Build production website
         env:
           # For maximum backward compatibility with Hugo modules
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          npm run build \
+            npm run build \
             -- \
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
-            --destination docs
+            --destination public
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./public
+          path: ./docs/public
 
   # Deployment job
   deploy:
