@@ -91,7 +91,7 @@ namespace ByteBuoy.API.Controllers
 		// PATCH: api/v1/pages/{pageIdOrSlug}/metrics/groups/{groupsId}
 		[HttpPatch("groups/{groupId}")]
 		public async Task<ActionResult<MetricGroup>> UpdatePageMetricsGroup([FromRoute] string pageIdOrSlug, [FromRoute] int groupId,
-																					     [FromBody] UpdatePageMetricGroupContract updateContract)
+																			[FromBody] UpdatePageMetricGroupContract updateContract)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
 			if (page == null)

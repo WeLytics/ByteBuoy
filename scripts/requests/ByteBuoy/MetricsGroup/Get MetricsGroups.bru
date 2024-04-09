@@ -1,20 +1,11 @@
 meta {
   name: Get MetricsGroups
   type: http
-  seq: 1
+  seq: 2
 }
 
-patch {
-  url: {{BYTEBUOY_SERVER}}/api/v1/pages/4/metrics/groups/1
-  body: json
+get {
+  url: {{BYTEBUOY_SERVER}}/api/v1/pages/4/metrics/groups
+  body: none
   auth: none
-}
-
-body:json {
-  {
-      "title": "Default Metric Group",
-      "description": "My Default Metrics Group per Files",
-      "groupBy": "label:customer",
-      "metricInterval": 1
-  }
 }
