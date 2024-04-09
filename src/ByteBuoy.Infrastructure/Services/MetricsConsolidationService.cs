@@ -188,12 +188,14 @@ namespace ByteBuoy.Infrastructure.Services
 			}
 			else if (metricInterval == MetricInterval.Day)
 			{
+				start = start.Date;
+				end = end.Date.AddDays(1).AddMicroseconds(-1);
 				while (start < end)
 				{
 					result.Add(new PageMetricBucketDto
 					{
 						Start = start,
-						End = start.AddDays(1),
+						End = start.AddDays(1).AddMicroseconds(-1),
 						Value = start.Date.ToShortDateString()
 					});
 					start = start.AddDays(1);
