@@ -8,8 +8,8 @@ namespace ByteBuoy.API.Models
 
 		//Pagination params
 		const int _maxPageSize = 50;
-		private int _pageSize = 10;
-		public int PageNumber { get; set; } = 1;
+		private int _pageSize = 15;
+		public int Page { get; set; } = 1;
 		public int PageSize
 		{
 			get { return _pageSize; }

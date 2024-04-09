@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using ByteBuoy.API.Extensions;
 using ByteBuoy.API.Models;
 using ByteBuoy.Application.Contracts;
@@ -23,46 +24,18 @@ namespace ByteBuoy.API.Controllers
 		{
 			var query = _context.Jobs.AsQueryable();
 
-			if (queryParameters!= null)
+			// Create a mapping of property names to expressions
+			var columnsMap = new Dictionary<string, Expression<Func<Job, object>>>
 			{
-				if (queryParameters.OrderBy.EndsWith("desc"))
-				{
-					queryParameters.OrderBy = queryParameters.OrderBy[..^4];
-					queryParameters.OrderAsc = false;
-				}
+				["finishedDateTime"] = v => v.FinishedDateTime!,
+				["startedDateTime"] = v => v.StartedDateTime!
+			};
 
-				var orderBy = queryParameters.OrderBy.Split(",", StringSplitOptions.RemoveEmptyEntries);
-				foreach (var order in orderBy)
-				{
-					switch (order.ToLower().Trim())
-					{
-						case "finisheddatetime":
-							if (queryParameters.OrderAsc)
-							{
-								query = query.OrderBy(r => r.FinishedDateTime);
-							}
-							else
-							{
-								query = query.OrderByDescending(r => r.FinishedDateTime);
-							}
-							break;
-						case "starteddatetime":
-							if (queryParameters.OrderAsc)
-							{
-								query = query.OrderBy(r => r.StartedDateTime);
-							}
-							else
-							{
-								query = query.OrderByDescending(r => r.StartedDateTime);
-							}
-							break;
-					}
-				}
-			}
-			else
-			{
-				query = query.OrderByDescending(query => query.StartedDateTime);
-			}
+			query = query.ApplySort(queryParameters.OrderBy, columnsMap);
+
+			// Apply paging
+			query = query.ApplyPaging(queryParameters.Page, queryParameters.PageSize);
+
 
 			return await query.ToListAsync();	
 		}

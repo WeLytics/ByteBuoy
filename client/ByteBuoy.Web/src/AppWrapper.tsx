@@ -26,8 +26,8 @@ export const AppWrapper = () => {
 					<Route path="trace/:fileHash" element={<TraceComponent />} />
 					<Route path="metrics/:pageId/list" element={<PageMetricsList />} />
 					<Route path="metrics" element={<PagesComponent />} />
-					<Route path="jobs/:jobId" element={<Job />} />
-					<Route path="jobs" element={<JobsComponent />} />
+					<Route path="job/:jobId" element={<Job />} />
+					<Route path="jobs/:pageId?" element={<JobsComponent />} />
 					<Route path="login" element={<LoginPage />} />
 					<Route path="profile" element={<ProfilePage />} />
 					<Route path="*" element={<NotFound />} errorElement={<NotFound />} />

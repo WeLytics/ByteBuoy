@@ -52,6 +52,7 @@ const Footer: React.FC = () => {
 						<div key={item.name} className="pb-6">
 							<a
 								href={item.href}
+								target="_blank"
 								className="text-sm leading-6 text-white hover:text-white-900"
 							>
 								{item.name}

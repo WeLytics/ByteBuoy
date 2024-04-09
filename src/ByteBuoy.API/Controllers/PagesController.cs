@@ -4,7 +4,6 @@ using ByteBuoy.Application.Helpers;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
