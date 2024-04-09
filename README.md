@@ -18,6 +18,9 @@ We move a large number of files on a daily basis, particularly for the machine l
 - **Agent for File Operations:** A robust agent that can copy or move files according to your configurations.
 - **Web Application:** A user-friendly web interface to view the status of file operations and monitoring alerts.
 
+## Status
+This project is still in its very early development days. Expect a few bugs.
+
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
