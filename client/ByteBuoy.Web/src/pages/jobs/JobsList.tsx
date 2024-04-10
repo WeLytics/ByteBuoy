@@ -35,7 +35,7 @@ const Jobs: React.FC = () => {
 			setError(null);
 			try {
 				const result = await fetchData<Job[]>(
-					`/api/v1/jobs?page=${pageId}&orderby=starteddatetime desc`
+					`/api/v1/jobs?page=${pageId}&orderby=startedDateTime desc`
 				);
 				setJobs(result);
 			} catch (error) {
@@ -78,7 +78,7 @@ const Jobs: React.FC = () => {
 									</div>
 									<h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
 										<a
-											href={"job/" + job.id}
+											href={"/job/" + job.id}
 											className="flex gap-x-2"
 										>
 											<span className="truncate">

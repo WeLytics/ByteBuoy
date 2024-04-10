@@ -172,7 +172,15 @@ namespace ByteBuoy.API.Controllers
 			page.PageStatus = createPageMetric.Status;
 			await _context.SaveChangesAsync();
 
+			await UpdatePageStatus(page);
+
 			return CreatedAtAction("GetPageMetricById", new { pageIdOrSlug, metricId = pageMetric.Id }, pageMetric);
+		}
+
+		// updates the page status based on the interval metrics
+		private async Task UpdatePageStatus(Page page)
+		{
+			await _metricsConsolidationService.UpdatePageStatus(page);
 		}
 	}
 }

@@ -140,9 +140,8 @@ export default function PageMetricsList() {
 					</div>
 				</div>
 			)}
-			asdf
 			{metrics === undefined ||
-				(metrics && metrics.length === 0 && <EmptyMetricsState />)}
+				(metrics && metrics.length === 0 && <EmptyMetricsState pageIdOrSlug={pageIdOrSlug!} />)}
 		</>
 	);
 }

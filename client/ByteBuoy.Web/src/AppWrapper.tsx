@@ -1,5 +1,5 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import PageComponent from "./pages/pages/Page";
+import PageComponent from "./pages/pages/PageMetric";
 import Job from "./pages/jobs/Job";
 import JobsComponent from "./pages/jobs/Jobs";
 import PagesComponent from "./pages/pages/Pages";

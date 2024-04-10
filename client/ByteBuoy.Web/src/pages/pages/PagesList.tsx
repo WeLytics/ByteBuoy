@@ -72,7 +72,7 @@ export default function PagesList() {
 								<Circle colorClass={statuses[page.pageStatus]} />
 								<h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
 									<a
-										href={"metrics/" + page.slug}
+										href={"/metrics/" + page.slug}
 										className="flex gap-x-2"
 									>
 										<span className="truncate">{page.title}</span>

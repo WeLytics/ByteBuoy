@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System.Text.Json;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
@@ -32,7 +33,7 @@ namespace ByteBuoy.Infrastructure.Services
 			ArgumentNullException.ThrowIfNull(metricGroup);
 
 			var result = new PageMetricGroupDto();
-			
+
 			var metricsFilter = GetDateFilterLimit(page.Created, metricGroup.MetricInterval);
 
 			var metrics = await _dbContext.Metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter)
@@ -60,7 +61,7 @@ namespace ByteBuoy.Infrastructure.Services
 			if (string.IsNullOrEmpty(metricGroup.GroupBy))
 				return result;
 
-			var labelCache = new List<LabelCache>();	
+			var labelCache = new List<LabelCache>();
 			var labelName = metricGroup.GroupBy.Replace("label:", "");
 
 			foreach (var metric in metrics)
@@ -68,7 +69,7 @@ namespace ByteBuoy.Infrastructure.Services
 				if (string.IsNullOrEmpty(metric.MetaJson))
 					continue;
 
-				JsonDocument jsonDoc = null;
+				JsonDocument? jsonDoc = null;
 
 				try
 				{
@@ -103,7 +104,7 @@ namespace ByteBuoy.Infrastructure.Services
 						{
 							subGroup = new LabelCache
 							{
-								GroupTitle = label.Value.GetString(),
+								GroupTitle = label.Value.GetString()!,
 								GroupValue = value
 							};
 							labelCache.Add(subGroup);
@@ -118,7 +119,7 @@ namespace ByteBuoy.Infrastructure.Services
 				var mapping = GenerateBucketMapping(metricGroup, metricsFilter, subGroup.Metrics);
 				result.Add(new PageMetricSubGroupDto
 				{
-					GroupTitle= subGroup.GroupTitle,
+					GroupTitle = subGroup.GroupTitle,
 					GroupValue = subGroup.GroupValue,
 					GroupByValues = mapping
 				});
@@ -259,6 +260,99 @@ namespace ByteBuoy.Infrastructure.Services
 				result = pageCreated;
 
 			return result;
+		}
+
+		private static PageMetricBucketDto GetCurrentBucket(MetricInterval metricInterval)
+		{
+			var start = DateTime.UtcNow;
+			var end = DateTime.UtcNow;
+			if (metricInterval == MetricInterval.Hour)
+			{
+				return new PageMetricBucketDto
+				{
+					Start = start,
+					End = start.AddHours(1),
+					Value = start.Date.ToString()
+				};
+			}
+			else if (metricInterval == MetricInterval.Day)
+			{
+				start = start.Date;
+				return new PageMetricBucketDto
+				{
+					Start = start,
+					End = start.AddDays(1).AddMicroseconds(-1),
+					Value = start.Date.ToShortDateString()
+				};
+			}
+			else if (metricInterval == MetricInterval.Week)
+			{
+				return new PageMetricBucketDto
+				{
+					Start = start,
+					End = start.AddDays(7),
+					Value = $"{start.Date} - {end.Date}"
+				};
+			}
+			else if (metricInterval == MetricInterval.Month)
+			{
+				return new PageMetricBucketDto
+				{
+					Start = start,
+					End = start.AddMonths(1),
+					Value = $"{start.Date.Month} {start.Date.Year}"
+				};
+			}
+			else if (metricInterval == MetricInterval.Year)
+			{
+				return new PageMetricBucketDto
+				{
+					Start = start,
+					End = start.AddYears(1),
+					Value = $"{start.Date.Year}"
+				};
+			}
+
+			throw new InvalidOperationException("Invalid metric interval");
+		}
+
+
+		private async Task<MetricStatus> GetCurrentPageStatus(Page page)
+		{
+			var metrics = await _dbContext.Metrics.Where(r => r.Page == page)
+							.Include(r => r.MetricGroup)
+							.ToListAsync();
+
+			var metricFilterDate = DateTime.UtcNow.AddSeconds(-1);
+			MetricStatus? result = null;
+
+			foreach (var metricGroup in metrics.Select(r => r.MetricGroup))
+			{
+				var metricsFilter = GetDateFilterLimit(metricFilterDate, metricGroup!.MetricInterval);
+
+				var metricsFiltered = metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter).ToList();
+
+				if (metricsFiltered.Count == 0)
+				{
+					result = MetricStatus.NoData;
+					continue;	
+				}
+
+				if (metricsFiltered.Any(r => r.Status == MetricStatus.Error))
+					return MetricStatus.Error;
+
+				if (metricsFiltered.Any(r => r.Status == MetricStatus.Warning))
+					return MetricStatus.Warning;
+			}
+
+			return result ?? MetricStatus.Success;
+		}
+
+		public async Task UpdatePageStatus(Page page)
+		{
+			var status = await GetCurrentPageStatus(page);
+			page.PageStatus = status;
+			await _dbContext.SaveChangesAsync();
 		}
 	}
 }

@@ -40,6 +40,7 @@ const PageComponent: React.FC = () => {
 	const refreshChild = useCallback(() => {
 		// Incrementing the key will cause the useEffect in ChildComponent to run
 		setRefreshKey((prevKey) => prevKey + 1);
+		console.log('refreshed');
 	}, []);
 
 	return (
@@ -138,21 +139,48 @@ const PageComponent: React.FC = () => {
 												"block px-4 py-2 text-sm text-gray-700"
 											)}
 										>
+																		<PencilIcon
+												className="-ml-0.5 mr-1.5 h-5 w-5 inline-block"
+												aria-hidden="true"
+											/>
 											Edit
 										</a>
 									)}
 								</Menu.Item>
 								<Menu.Item>
 									{({active}) => (
-										<a
-											href="#"
+										<button
 											className={classNames(
 												active ? "bg-gray-100" : "",
-												"block px-4 py-2 text-sm text-gray-700"
+												"px-4 py-2 text-sm text-gray-700"
 											)}
 										>
-											History
-										</a>
+											<ArrowPathIcon
+												className="-ml-0.5 mr-1.5 h-5 w-5 inline-block"
+												aria-hidden="true"
+												onClick={refreshChild}
+											/>
+											Refresh
+										</button>
+									)}
+								</Menu.Item>
+								<Menu.Item>
+									{({active}) => (
+								
+										<Link to={"list"}>
+											<button
+												className={classNames(
+													active ? "bg-gray-100" : "",
+													"px-4 py-2 text-sm text-gray-700 focus:outline-none"
+												)}
+											>
+												<ClockIcon
+													className="h-5 w-5 inline-block mr-1.5"
+													aria-hidden="true"
+												/>
+												History
+												</button>
+											</Link>
 									)}
 								</Menu.Item>
 							</Menu.Items>

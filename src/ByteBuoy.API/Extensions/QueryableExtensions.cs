@@ -19,9 +19,7 @@ namespace ByteBuoy.API.Extensions
 				var propertyName = orderDescending ? trimmedOrderByPart[0..^5] : trimmedOrderByPart;
 
 				if (!columnsMap.ContainsKey(propertyName))
-				{
-					continue; // or throw an exception
-				}
+					throw new InvalidOperationException("Column not found " + propertyName);
 
 				source = orderDescending
 					? source.OrderByDescending(columnsMap[propertyName])
