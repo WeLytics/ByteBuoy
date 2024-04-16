@@ -148,7 +148,6 @@ namespace ByteBuoy.API.Controllers
 			var pageMetric = new PageContractMappers().CreatePageMetricDtoToPageMetric(createPageMetric);
 			pageMetric.Page = page;
 
-
 			if (createPageMetric.MetricGroupId == null)
 			{
 				var metricGroup = await _context.MetricGroups.SingleOrDefaultAsync(r => r.Page.Id == page.Id);
@@ -169,7 +168,6 @@ namespace ByteBuoy.API.Controllers
 
 			_context.Metrics.Add(pageMetric);
 			page.Updated = DateTime.UtcNow;
-			page.PageStatus = createPageMetric.Status;
 			await _context.SaveChangesAsync();
 
 			await UpdatePageStatus(page);
@@ -180,7 +178,15 @@ namespace ByteBuoy.API.Controllers
 		// updates the page status based on the interval metrics
 		private async Task UpdatePageStatus(Page page)
 		{
-			await _metricsConsolidationService.UpdatePageStatus(page);
+			try
+			{
+				await _metricsConsolidationService.UpdatePageStatus(page);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message + ex.StackTrace);
+				throw;
+			}
 		}
 	}
 }

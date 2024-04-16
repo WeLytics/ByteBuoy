@@ -4,6 +4,7 @@ namespace ByteBuoy.Application.Contracts
 {
 	public class CreatePageMetricContract
 	{
+		public int JobId { get; set; }
 		public int? MetricGroupId { get; set; }
 		public MetricStatus Status { get; set; }
 		public decimal? Value { get; set; }

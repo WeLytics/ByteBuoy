@@ -262,74 +262,41 @@ namespace ByteBuoy.Infrastructure.Services
 			return result;
 		}
 
-		private static PageMetricBucketDto GetCurrentBucket(MetricInterval metricInterval)
+		private static DateTime GetCurrentBucketDateLimit(MetricInterval metricInterval)
 		{
 			var start = DateTime.UtcNow;
-			var end = DateTime.UtcNow;
 			if (metricInterval == MetricInterval.Hour)
-			{
-				return new PageMetricBucketDto
-				{
-					Start = start,
-					End = start.AddHours(1),
-					Value = start.Date.ToString()
-				};
-			}
+				return start.AddHours(-1);
 			else if (metricInterval == MetricInterval.Day)
-			{
-				start = start.Date;
-				return new PageMetricBucketDto
-				{
-					Start = start,
-					End = start.AddDays(1).AddMicroseconds(-1),
-					Value = start.Date.ToShortDateString()
-				};
-			}
+				return start.Date;
 			else if (metricInterval == MetricInterval.Week)
-			{
-				return new PageMetricBucketDto
-				{
-					Start = start,
-					End = start.AddDays(7),
-					Value = $"{start.Date} - {end.Date}"
-				};
-			}
+				return start.Date.AddDays(-7);
 			else if (metricInterval == MetricInterval.Month)
-			{
-				return new PageMetricBucketDto
-				{
-					Start = start,
-					End = start.AddMonths(1),
-					Value = $"{start.Date.Month} {start.Date.Year}"
-				};
-			}
+				return start.Date.AddMonths(-1);
 			else if (metricInterval == MetricInterval.Year)
-			{
-				return new PageMetricBucketDto
-				{
-					Start = start,
-					End = start.AddYears(1),
-					Value = $"{start.Date.Year}"
-				};
-			}
+				return start.Date.AddYears(-1);
 
 			throw new InvalidOperationException("Invalid metric interval");
 		}
 
-
 		private async Task<MetricStatus> GetCurrentPageStatus(Page page)
 		{
-			var metrics = await _dbContext.Metrics.Where(r => r.Page == page)
+			var metrics = await _dbContext.Metrics.Where(r => r.Page == page &&
+														 r.Created > DateTime.UtcNow.AddHours(-24))
 							.Include(r => r.MetricGroup)
 							.ToListAsync();
 
 			var metricFilterDate = DateTime.UtcNow.AddSeconds(-1);
 			MetricStatus? result = null;
 
-			foreach (var metricGroup in metrics.Select(r => r.MetricGroup))
-			{
-				var metricsFilter = GetDateFilterLimit(metricFilterDate, metricGroup!.MetricInterval);
+			var groupedMetrics = metrics
+								.GroupBy(m => m.MetricGroup)
+								.Select(g => g.Key!)
+								.ToList();
 
+			foreach (var metricGroup in groupedMetrics)
+			{
+				var metricsFilter = GetCurrentBucketDateLimit(metricGroup!.MetricInterval);
 				var metricsFiltered = metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter).ToList();
 
 				if (metricsFiltered.Count == 0)

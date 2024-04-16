@@ -12,5 +12,6 @@ namespace ByteBuoy.Domain.Entities
 		public DateTime? FinishedDateTime { get; set; }
 
 		public List<JobHistory> JobHistory { get; set; } = [];
+		public List<Metric> Metrics { get; set; } = [];
 	}
 }

@@ -3,15 +3,16 @@ using ByteBuoy.Domain.Entities.Config;
 namespace ByteBuoy.Agent.JobExecution
 {
 	internal class LoggingConfiguration
-		{
-			public Action<JobExecutionStep, string>? LogAction { get; set; }
-			public Action<JobExecutionStep, string>? ErrorLogAction { get; set; }
-		}
+	{
+		public Action<JobExecutionStep, string>? LogAction { get; set; }
+		public Action<JobExecutionStep, string>? ErrorLogAction { get; set; }
+	}
 
 	internal class JobExecutionContext
 	{
 		private readonly LoggingConfiguration _loggingConfiguration;
 		private readonly AgentConfig _agentConfig;
+		public int JobId { get; internal set; }
 		public JobExecutionStep CurrentExecutionStep { get; set; } = null!;
 
 		public JobExecutionContext(AgentConfig agentConfig, Action<LoggingConfiguration> configureLogging)
@@ -23,7 +24,7 @@ namespace ByteBuoy.Agent.JobExecution
 
 		public AgentConfig GetAgentConfig() => _agentConfig;
 
-		public string[] GetGlobalgnoredFiles() => !string.IsNullOrEmpty(_agentConfig.IgnoreFiles) ?  _agentConfig.IgnoreFiles.Split(";", StringSplitOptions.RemoveEmptyEntries) : [];
+		public string[] GetGlobalgnoredFiles() => !string.IsNullOrEmpty(_agentConfig.IgnoreFiles) ? _agentConfig.IgnoreFiles.Split(";", StringSplitOptions.RemoveEmptyEntries) : [];
 
 		public void AddLog(string message)
 		{

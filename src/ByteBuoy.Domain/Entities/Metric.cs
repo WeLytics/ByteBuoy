@@ -18,5 +18,7 @@ namespace ByteBuoy.Domain.Entities
 		public string? MetaJson { get; set; }
 
 		public string? HashSHA256 { get; set; }
+
+		public int JobId { get; set; }	
 	}
 }

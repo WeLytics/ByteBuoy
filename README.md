@@ -50,6 +50,10 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/WeLytics/ByteBuoy/issues). You can also take a look at the [contributing guide](https://github.com/WeLytics/ByteBuoy/blob/main/CONTRIBUTING.md).
 
+## Discord
+
+Join our [Discord](https://discord.gg/9ujA3fme)
+
 ## Show your support
 
 Give a ⭐️ if this project helped you!
