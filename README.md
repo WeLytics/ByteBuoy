@@ -24,7 +24,7 @@ This project is still in its very early development days. Expect a few bugs.
 
 ## Demo
 
-Check out our Demo page [https://bytebuoy.app](bytebuoy.app)
+Check out our Demo page [https://bytebuoy.app](https://bytebuoy.app)
 
 
 ## Getting Started
