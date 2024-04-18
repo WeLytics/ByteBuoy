@@ -1,7 +1,3 @@
-using ByteBuoy.API.Extensions;
-using ByteBuoy.API.Models;
-using ByteBuoy.Application.Contracts;
-using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;

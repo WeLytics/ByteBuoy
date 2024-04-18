@@ -2,7 +2,6 @@ using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Helpers;
 using ByteBuoy.Application.ServiceInterfaces;
 using ByteBuoy.Domain.Entities;
-using ByteBuoy.Domain.Entities.Identity;
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

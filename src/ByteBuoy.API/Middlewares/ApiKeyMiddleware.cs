@@ -1,10 +1,11 @@
 using System.Net;
+using System.Text.RegularExpressions;
 using ByteBuoy.API.Validation;
 using ByteBuoy.Domain;
 
 namespace ByteBuoy.API.Middlewares
 {
-	public class ApiKeyMiddleware(RequestDelegate next, IApiKeyValidation apiKeyValidation)
+	public partial class ApiKeyMiddleware(RequestDelegate next, IApiKeyValidation apiKeyValidation)
 	{
 		private readonly RequestDelegate _next = next;
 		private readonly IApiKeyValidation _apiKeyValidation = apiKeyValidation;
@@ -15,7 +16,14 @@ namespace ByteBuoy.API.Middlewares
 			{
 				await _next(context);
 				return;
-			}	
+			}
+
+			// Check if the request is for a specific Page badge url
+			if (context.Request.Method.Equals("GET") && context.Request.Path.Value != null && PageBadgeUrlPattern().IsMatch(context.Request.Path.Value))
+			{
+				await _next(context);
+				return;
+			}
 
 			if (string.IsNullOrWhiteSpace(context.Request.Headers[Constants.ApiKeyHeaderName]))
 			{
@@ -33,5 +41,8 @@ namespace ByteBuoy.API.Middlewares
 
 			await _next(context);
 		}
+
+		[GeneratedRegex("^/api/v1/pages/.+/badge$")]
+		private static partial Regex PageBadgeUrlPattern();
 	}
 }

@@ -17,9 +17,14 @@ We move a large number of files on a daily basis, particularly for machine learn
 - **File Monitoring:** Keep an eye on your critical files and artefacts with real-time monitoring.
 - **Agent for File Operations:** A robust agent that can copy or move files according to your configurations.
 - **Web Application:** A user-friendly web interface to view the status of file operations and monitoring alerts.
+- **Status Badges::**  Seamlessly integrate dynamic status badges into your application or CI/CD pipeline to provide real-time insights into page metrics and operational health.
 
 ## ⚠️ Status
 This project is still in its very early development days. Expect a few bugs.
+
+## Demo
+
+Check out our Demo page [https://bytebuoy.app](bytebuoy.app)
 
 
 ## Getting Started

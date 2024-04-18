@@ -81,5 +81,20 @@ namespace ByteBuoy.API.Controllers
 
 			return finalSlug;
 		}
+
+
+
+		// GET: api/v1/pages/5/badge
+		[HttpGet("{pageIdOrSlug}/badge")]
+		public async Task<IActionResult> GetPageBadge(string pageIdOrSlug)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+
+			if (page == null)
+				return NotFound();
+
+			var svgContent = Utilities.PageMetricBadgeGenerator.GenerateBadge(page);
+			return Content(svgContent, "image/svg+xml");
+		}
 	}
 }

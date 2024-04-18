@@ -10,6 +10,7 @@ services:
     volumes: 
       - ./DB:/app/DB
       - ./appsettings.json:/app/appsettings.json      
+      - ./logs:/app/logs      
     deploy:
       labels:
         - "traefik.enable=true"
