@@ -64,6 +64,7 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			var payload = new CreatePageMetricContract()
 			{
+				JobId = _jobExecutionContext.JobId,
 				Status = Domain.Enums.MetricStatus.Success,
 				ValueString = Path.GetFileName(filePath),
 				HashSHA256 = FileHasher.GetFileSHA256Hash(filePath),

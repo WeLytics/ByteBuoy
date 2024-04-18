@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ByteBuoy.Infrastructure.Data.Migrations
 {
-    /// <inheritdoc />
-    public partial class AddedIdentity : Migration
+	/// <inheritdoc />
+	public partial class AddedIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

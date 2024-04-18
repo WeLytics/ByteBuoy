@@ -11,7 +11,7 @@ export default function Layout() {
 			
 			<div className="flex-grow">
 			<main>
-				<div className="mx-auto max-w-6xl sm:px-6 lg:px-8 dark:text-white lg:py-3 "> 
+				<div className="mx-auto max-w-6xl sm:px-7 md:px-6 lg:px-8 dark:text-white lg:py-3 "> 
 					<Outlet /> {/* Child routes will be rendered here */}
 				</div>
 			</main>

@@ -1,5 +1,5 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import PageComponent from "./pages/pages/Page";
+import PageComponent from "./pages/pages/PageMetric";
 import Job from "./pages/jobs/Job";
 import JobsComponent from "./pages/jobs/Jobs";
 import PagesComponent from "./pages/pages/Pages";
@@ -26,8 +26,8 @@ export const AppWrapper = () => {
 					<Route path="trace/:fileHash" element={<TraceComponent />} />
 					<Route path="metrics/:pageId/list" element={<PageMetricsList />} />
 					<Route path="metrics" element={<PagesComponent />} />
-					<Route path="jobs/:jobId" element={<Job />} />
-					<Route path="jobs" element={<JobsComponent />} />
+					<Route path="job/:jobId" element={<Job />} />
+					<Route path="jobs/:pageId?" element={<JobsComponent />} />
 					<Route path="login" element={<LoginPage />} />
 					<Route path="profile" element={<ProfilePage />} />
 					<Route path="*" element={<NotFound />} errorElement={<NotFound />} />

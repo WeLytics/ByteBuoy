@@ -6,7 +6,7 @@ import JobsList from './JobsList';
 const Jobs: React.FC = () => {
   return (
     <>
-      <PageTitle title="Jobs ⛵" />
+      <PageTitle title="Jobs" />
       <JobsList />
     </>
   )

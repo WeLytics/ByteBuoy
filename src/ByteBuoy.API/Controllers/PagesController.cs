@@ -4,7 +4,6 @@ using ByteBuoy.Application.Helpers;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -81,6 +80,21 @@ namespace ByteBuoy.API.Controllers
 			}
 
 			return finalSlug;
+		}
+
+
+
+		// GET: api/v1/pages/5/badge
+		[HttpGet("{pageIdOrSlug}/badge")]
+		public async Task<IActionResult> GetPageBadge(string pageIdOrSlug)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+
+			if (page == null)
+				return NotFound();
+
+			var svgContent = Utilities.PageMetricBadgeGenerator.GenerateBadge(page);
+			return Content(svgContent, "image/svg+xml");
 		}
 	}
 }

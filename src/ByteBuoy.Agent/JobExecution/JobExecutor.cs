@@ -85,7 +85,7 @@ namespace ByteBuoy.Agent.JobExecution
 				return;
 			}
 
-			await CreateJobAsync();
+			executionContext.JobId = await CreateJobAsync();
 
 			foreach (var executionStep in _jobExecutionSteps)
 			{
@@ -116,17 +116,17 @@ namespace ByteBuoy.Agent.JobExecution
 			return await _apiService.IsHealthy();
 		}
 
-		private async Task CreateJobAsync()
+		private async Task<int> CreateJobAsync()
 		{
 			var response = await _apiService.CreateJobAsync(new Application.Contracts.CreateJobContract()
 			{
 				Description = _agentConfig.Description,
 				HostName = Environment.MachineName,
 				Status = Domain.Enums.JobStatus.Running,
-				
 			});
 
 			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");
+			return _jobId;
 		}
 
 		private async Task CreateStartJobHistoryAsync(JobExecutionStep step)

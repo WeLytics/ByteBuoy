@@ -32,7 +32,7 @@ namespace ByteBuoy.Infrastructure.Services
 			ArgumentNullException.ThrowIfNull(metricGroup);
 
 			var result = new PageMetricGroupDto();
-			
+
 			var metricsFilter = GetDateFilterLimit(page.Created, metricGroup.MetricInterval);
 
 			var metrics = await _dbContext.Metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter)
@@ -60,7 +60,7 @@ namespace ByteBuoy.Infrastructure.Services
 			if (string.IsNullOrEmpty(metricGroup.GroupBy))
 				return result;
 
-			var labelCache = new List<LabelCache>();	
+			var labelCache = new List<LabelCache>();
 			var labelName = metricGroup.GroupBy.Replace("label:", "");
 
 			foreach (var metric in metrics)
@@ -68,7 +68,7 @@ namespace ByteBuoy.Infrastructure.Services
 				if (string.IsNullOrEmpty(metric.MetaJson))
 					continue;
 
-				JsonDocument jsonDoc = null;
+				JsonDocument? jsonDoc = null;
 
 				try
 				{
@@ -103,7 +103,7 @@ namespace ByteBuoy.Infrastructure.Services
 						{
 							subGroup = new LabelCache
 							{
-								GroupTitle = label.Value.GetString(),
+								GroupTitle = label.Value.GetString()!,
 								GroupValue = value
 							};
 							labelCache.Add(subGroup);
@@ -118,7 +118,7 @@ namespace ByteBuoy.Infrastructure.Services
 				var mapping = GenerateBucketMapping(metricGroup, metricsFilter, subGroup.Metrics);
 				result.Add(new PageMetricSubGroupDto
 				{
-					GroupTitle= subGroup.GroupTitle,
+					GroupTitle = subGroup.GroupTitle,
 					GroupValue = subGroup.GroupValue,
 					GroupByValues = mapping
 				});
@@ -259,6 +259,66 @@ namespace ByteBuoy.Infrastructure.Services
 				result = pageCreated;
 
 			return result;
+		}
+
+		private static DateTime GetCurrentBucketDateLimit(MetricInterval metricInterval)
+		{
+			var start = DateTime.UtcNow;
+			if (metricInterval == MetricInterval.Hour)
+				return start.AddHours(-1);
+			else if (metricInterval == MetricInterval.Day)
+				return start.Date;
+			else if (metricInterval == MetricInterval.Week)
+				return start.Date.AddDays(-7);
+			else if (metricInterval == MetricInterval.Month)
+				return start.Date.AddMonths(-1);
+			else if (metricInterval == MetricInterval.Year)
+				return start.Date.AddYears(-1);
+
+			throw new InvalidOperationException("Invalid metric interval");
+		}
+
+		private async Task<MetricStatus> GetCurrentPageStatus(Page page)
+		{
+			var metrics = await _dbContext.Metrics.Where(r => r.Page == page &&
+														 r.Created > DateTime.UtcNow.AddHours(-24))
+							.Include(r => r.MetricGroup)
+							.ToListAsync();
+
+			var metricFilterDate = DateTime.UtcNow.AddSeconds(-1);
+			MetricStatus? result = null;
+
+			var groupedMetrics = metrics
+								.GroupBy(m => m.MetricGroup)
+								.Select(g => g.Key!)
+								.ToList();
+
+			foreach (var metricGroup in groupedMetrics)
+			{
+				var metricsFilter = GetCurrentBucketDateLimit(metricGroup!.MetricInterval);
+				var metricsFiltered = metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter).ToList();
+
+				if (metricsFiltered.Count == 0)
+				{
+					result = MetricStatus.NoData;
+					continue;	
+				}
+
+				if (metricsFiltered.Any(r => r.Status == MetricStatus.Error))
+					return MetricStatus.Error;
+
+				if (metricsFiltered.Any(r => r.Status == MetricStatus.Warning))
+					return MetricStatus.Warning;
+			}
+
+			return result ?? MetricStatus.Success;
+		}
+
+		public async Task UpdatePageStatus(Page page)
+		{
+			var status = await GetCurrentPageStatus(page);
+			page.PageStatus = status;
+			await _dbContext.SaveChangesAsync();
 		}
 	}
 }

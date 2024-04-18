@@ -5,5 +5,6 @@ namespace ByteBuoy.Application.ServiceInterfaces
 	public interface IMetricsConsolidationService
 	{
 		Task<PageMetricConsolidationDto> ConsolidateMetricsAsync(Page page);
+		Task UpdatePageStatus(Page page);
 	}
 }

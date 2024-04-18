@@ -1,5 +1,4 @@
 using ByteBuoy.Application.DTO;
-using Microsoft.AspNetCore.Identity;
 
 namespace ByteBuoy.Application.ServiceInterfaces
 {

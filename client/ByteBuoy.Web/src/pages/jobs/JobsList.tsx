@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; 
 
 import { Job } from "../../types/Job";
 import { fetchData } from "../../services/apiService";
@@ -8,6 +9,7 @@ import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
 import { statuses } from "../../models/statuses";
 import SkeletonLoader from "../../components/SkeletonLoader";
+import { ServerIcon } from "@heroicons/react/20/solid";
 
 const DEFAULT_DATE = "0001-01-01T00:00:00Z";
 
@@ -16,19 +18,26 @@ const isValidDate = (dateString: string) => {
 };
 
 const Jobs: React.FC = () => {
-	const [jobs, setData] = useState<Job[] | null>(null);
+	const [jobs, setJobs] = useState<Job[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const navigate = useNavigate(); 
+	const { pageId: pageIdParam } = useParams(); 
+	const pageId = Number(pageIdParam) || 1; 
 
 	useEffect(() => {
+		if (!pageIdParam || isNaN(Number(pageIdParam))) {
+			navigate(`/jobs/${pageId}`, { replace: true });
+		}
+
 		const loadData = async () => {
 			setLoading(true);
 			setError(null);
 			try {
 				const result = await fetchData<Job[]>(
-					`/api/v1/jobs?orderby=starteddatetime desc`
+					`/api/v1/jobs?page=${pageId}&orderby=startedDateTime desc`
 				);
-				setData(result);
+				setJobs(result);
 			} catch (error) {
 				console.error("Failed to fetch metrics:", error);
 				setError("Failed to load metrics. Please try again later.");
@@ -38,7 +47,7 @@ const Jobs: React.FC = () => {
 		};
 
 		loadData();
-	}, []);
+	}, [pageId, navigate, pageIdParam]);
 
 	if (loading) {
 		return <SkeletonLoader />;
@@ -52,7 +61,7 @@ const Jobs: React.FC = () => {
 		<>
 			<div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 md:pt-16">
 				<ul role="list" className="divide-y divide-white/5">
-					{jobs?.map((job) => (
+					{jobs && jobs.map((job) => (
 						<li
 							key={job.id}
 							className="relative flex items-center space-x-4 py-4"
@@ -69,7 +78,7 @@ const Jobs: React.FC = () => {
 									</div>
 									<h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
 										<a
-											href={"jobs/" + job.id}
+											href={"/job/" + job.id}
 											className="flex gap-x-2"
 										>
 											<span className="truncate">
@@ -101,13 +110,9 @@ const Jobs: React.FC = () => {
 											</>
 										)}
 									</p>
-									<svg
-										viewBox="0 0 2 2"
-										className="h-0.5 w-0.5 flex-none fill-gray-300"
-									>
-										<circle cx={1} cy={1} r={1} />
-									</svg>
-									<p className="whitespace-nowrap">
+
+									<ServerIcon className="h-4 w-4 flex-none text-gray-400" />
+									<p className="whitespace-nowrap pl-0">
 										{job.hostName}
 									</p>
 								</div>

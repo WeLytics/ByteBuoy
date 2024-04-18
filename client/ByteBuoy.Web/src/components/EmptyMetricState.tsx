@@ -1,4 +1,12 @@
-export function EmptyMetricsState() {
+type EmptyMetricsStateProps = {
+	pageIdOrSlug: string;
+};
+
+/**
+ * Renders a component representing the empty state of metrics.
+ * @returns JSX.Element
+ */
+export function EmptyMetricsState({pageIdOrSlug}: EmptyMetricsStateProps) {
 	return (
 		<div className="relative mt-6 block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
 			<svg
@@ -19,10 +27,14 @@ export function EmptyMetricsState() {
 				No Metrics available
 			</span>
 
+			<span className="mt-2 block text-sm text-white">
+				Send metrics by using the Page Id or Slug <pre className="bg-gray-900 text-white p-1 rounded-lg inline-block"><code>{pageIdOrSlug}</code></pre>
+			</span>
+
 			<div className="mt-10 flex items-center justify-center gap-x-6">
 				<a
 					href="https://welytics.github.io/ByteBuoy/"
-          target="_blank"
+					target="_blank"
 					className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 				>
 					See Documentation

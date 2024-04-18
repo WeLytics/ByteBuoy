@@ -48,7 +48,7 @@ namespace ByteBuoy.Agent.Services
 				return new ApiResponse<T>
 				{
 					IsSuccess = false,
-					ErrorMessage = ex.Message
+					ErrorMessage = ex.Message + ex.InnerException?.Message + ex.StackTrace
 				};
 			}
 

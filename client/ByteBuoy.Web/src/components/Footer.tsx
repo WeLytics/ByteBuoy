@@ -15,9 +15,7 @@ const navigation: {
 	main: NavLink[];
 	social: SocialLink[];
 } = {
-	main: [
-		{ name: "Documentation", href: "https://welytics.github.io/ByteBuoy/" },
-	],
+	main: [{name: "Documentation", href: "https://welytics.github.io/ByteBuoy/"}],
 	social: [
 		{
 			name: "GitHub",
@@ -37,28 +35,36 @@ const navigation: {
 
 const Footer: React.FC = () => {
 	return (
-    <footer >
+		<footer>
 			<div className="mx-auto max-w-6xl overflow-hidden px-6 py-6 lg:px-8">
-        <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 md:flex md:items-top md:justify-between lg:mt-24">
-          <div className="flex space-x-6 md:order-2">
-            {navigation.social.map((item) => (
-              <a key={item.name} href={item.href} className="text-gray-500 hover:text-gray-400">
-                <span className="sr-only">{item.name}</span>
-                <item.icon className="h-6 w-6" aria-hidden="true" />
-              </a>
-            ))}
-          </div>
-          {navigation.main.map((item) => (
-						<div key={item.name} className="pb-6">
+				<div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 md:flex md:items-center md:justify-between lg:mt-24">
+					<div className="flex justify-center space-x-6 md:order-2 md:justify-end w-full md:w-auto">
+						{navigation.social.map((item) => (
+							<a
+								key={item.name}
+								href={item.href}
+								className="text-gray-500 hover:text-gray-400"
+							>
+								<span className="sr-only">{item.name}</span>
+								<item.icon className="h-6 w-6" aria-hidden="true" />
+							</a>
+						))}
+					</div>
+					{navigation.main.map((item) => (
+						<div
+							key={item.name}
+							className="pb-6 md:pb-0 md:flex md:justify-center md:w-full"
+						>
 							<a
 								href={item.href}
+								target="_blank"
 								className="text-sm leading-6 text-white hover:text-white-900"
 							>
 								{item.name}
 							</a>
 						</div>
 					))}
-        </div>
+				</div>
 			</div>
 		</footer>
 	);

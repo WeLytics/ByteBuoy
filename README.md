@@ -10,16 +10,21 @@
 Welcome to ByteBuoy, an open-source Artefact & File Monitoring solution. ByteBuoy is designed to streamline the process of monitoring, copying, and moving files and artefacts, offering an intuitive Web application to track the status of these operations. 
 
 ## Why ByteBuoy
-We move a large number of files on a daily basis, particularly for the machine learning pipelines. As part of this process, we need a solution to monitor file transactions, such as whether all customers have received their export files, or whether the correct data has been made available for further processing by the machine learning system. After trying a number of monitoring solutions, we decided to build something ourselves. We wanted to share it with everyone. After all, how hard can it be? :D
+We move a large number of files on a daily basis, particularly for machine learning pipelines. As part of this process, we need a solution to monitor file transactions, such as whether all customers have received their export files, or whether the correct data has been made available for further processing by the machine learning system. After trying a number of monitoring solutions, we decided to build something ourselves. How hard can it be? :D And we wanted to share it with the rest of you. 
 
 
 ## Features
 - **File Monitoring:** Keep an eye on your critical files and artefacts with real-time monitoring.
 - **Agent for File Operations:** A robust agent that can copy or move files according to your configurations.
 - **Web Application:** A user-friendly web interface to view the status of file operations and monitoring alerts.
+- **Status Badges::**  Seamlessly integrate dynamic status badges into your application or CI/CD pipeline to provide real-time insights into page metrics and operational health.
 
-## Status
+## ⚠️ Status
 This project is still in its very early development days. Expect a few bugs.
+
+## Demo
+
+Check out our Demo page [https://bytebuoy.app](bytebuoy.app)
 
 
 ## Getting Started
@@ -49,6 +54,10 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/WeLytics/ByteBuoy/issues). You can also take a look at the [contributing guide](https://github.com/WeLytics/ByteBuoy/blob/main/CONTRIBUTING.md).
+
+## Discord
+
+Join our [Discord](https://discord.gg/9ujA3fme)
 
 ## Show your support
 
