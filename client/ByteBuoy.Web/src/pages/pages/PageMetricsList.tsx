@@ -1,7 +1,7 @@
-import {NavLink, useParams} from "react-router-dom";
+import {NavLink, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Metric} from "../../types/Metric";
-import {fetchData} from "../../services/apiService";
+import {fetchData, fetchPagedData} from "../../services/apiService";
 import TimeAgo from "../../components/TimeAgo";
 import Circle from "../../components/Circle";
 import PageTitle from "../../components/PageTitle";
@@ -11,6 +11,8 @@ import {RenderMetaJson} from "../../components/MetaJsonRenderer";
 import SkeletonLoader from "../../components/SkeletonLoader";
 import {MagnifyingGlassCircleIcon} from "@heroicons/react/24/outline";
 import {EmptyMetricsState} from "../../components/EmptyMetricState";
+import Pagination from "../../components/Pagination";
+import { PaginationMeta } from "../../types/PaginationMeta";
 
 function truncateString(input: string): string {
 	const maxLength = 20;
@@ -21,36 +23,64 @@ function truncateString(input: string): string {
 }
 
 export default function PageMetricsList() {
-	const {pageId: pageIdOrSlug} = useParams<{pageId: string}>();
+	const { pageId, pageNr } = useParams<{ pageId: string; pageNr?: string }>();
+    const pageNumber = pageNr ? parseInt(pageNr) : 1;
+
 	const [metrics, setMetrics] = useState<Metric[] | null>(null);
 	const [page, setPage] = useState<Page | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [paginationMeta, setPaginationMeta] = useState<PaginationMeta>();
+	const navigate = useNavigate(); 
 
-	const loadData = async () => {
-		setLoading(true);
-		setError(null);
+	
+	
+	const loadDataPage = async (newPageId: number) => {	
+		console.log('loadDataPage');
+		navigate(`/metrics/${pageId}/history/${newPageId}`, { replace: true });
+		// navigate(`/metrics/${pageIdOrSlug}/history/${newPageId}`, { replace: true });
+	}
 
-		try {
-			const resultMetrics = await fetchData<Metric[]>(
-				`/api/v1/pages/${pageIdOrSlug}/metrics`
-			);
-			setMetrics(resultMetrics);
-
-			const resultPage = await fetchData<Page>(`/api/v1/pages/${pageIdOrSlug}`);
-			setPage(resultPage);
-		} catch (error) {
-			console.error("Failed to fetch metrics:", error);
-			setError("Failed to load metrics. Please try again later.");
-		} finally {
-			setLoading(false);
+	const onPreviousPage = async () => {	
+		console.log('onprevious');
+		if (pageNumber > 1) {
+			loadDataPage(pageNumber - 1);
 		}
-	};
+	}
 
+	const onNextPage = async () => {	
+		console.log('onNextPage');
+		if (paginationMeta && pageNumber < paginationMeta.totalPages) {
+			loadDataPage(pageNumber + 1);
+		}
+	}
+
+	
 	useEffect(() => {
+		const loadData = async () => {
+			setLoading(true);
+			setError(null);
+	
+			try {
+				const resultMetrics = await fetchPagedData<Metric[]>(
+					`/api/v1/pages/${pageId}/metrics?page=${pageNumber}&pageSize=5`
+				);
+				setMetrics(resultMetrics.data);
+				setPaginationMeta(resultMetrics.pagination!);
+	
+				const resultPage = await fetchData<Page>(`/api/v1/pages/${pageId}`);
+				setPage(resultPage);
+			} catch (error) {
+				console.error("Failed to fetch metrics:", error);
+				setError("Failed to load metrics. Please try again later.");
+			} finally {
+				setLoading(false);
+			}
+		};
+	
 		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [pageId, pageNumber]); // Added pageIdOrSlug to dependencies
+	
 
 	if (loading) {
 		return <SkeletonLoader />;
@@ -141,7 +171,12 @@ export default function PageMetricsList() {
 				</div>
 			)}
 			{metrics === undefined ||
-				(metrics && metrics.length === 0 && <EmptyMetricsState pageIdOrSlug={pageIdOrSlug!} />)}
+				(metrics && metrics.length === 0 && <EmptyMetricsState pageIdOrSlug={pageId!} />)}
+
+			{paginationMeta && paginationMeta.totalPages > 1 && (
+				<Pagination paginationMeta={paginationMeta!} onNavigate={loadDataPage!} onPrevious={onPreviousPage} onNext={onNextPage} />
+			)}
+
 		</>
 	);
 }

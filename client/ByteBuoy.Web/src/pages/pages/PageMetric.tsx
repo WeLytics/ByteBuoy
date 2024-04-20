@@ -57,7 +57,7 @@ const PageComponent: React.FC = () => {
 				</div>
 				<div className="mt-5 flex lg:ml-4 lg:mt-0">
 					<span className="hidden sm:block">
-						<Link to={"list"}>
+						<Link to={"history"}>
 							<button
 								type="button"
 								className="inline-flex items-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
@@ -115,7 +115,7 @@ const PageComponent: React.FC = () => {
 							</button>
 						</span>
 					)}
-					
+
 					{/* Dropdown */}
 					<Menu as="div" className="relative ml-3 sm:hidden">
 						<Menu.Button className="inline-flex items-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20">
@@ -172,7 +172,7 @@ const PageComponent: React.FC = () => {
 								<Menu.Item>
 									{({active}) => (
 								
-										<Link to={"list"}>
+										<Link to={"history"}>
 											<button
 												className={classNames(
 													active ? "bg-gray-100" : "",

@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"; 
 
 import { Job } from "../../types/Job";
-import { fetchData } from "../../services/apiService";
+import { fetchPagedData } from "../../services/apiService";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { classNames } from "../../utils/utils";
 import TimeAgo from "../../components/TimeAgo";
 import { statuses } from "../../models/statuses";
 import SkeletonLoader from "../../components/SkeletonLoader";
 import { ServerIcon } from "@heroicons/react/20/solid";
+import Pagination from "../../components/Pagination";
+import { PaginationMeta } from "../../types/PaginationMeta";
 
 const DEFAULT_DATE = "0001-01-01T00:00:00Z";
 
@@ -21,23 +23,45 @@ const Jobs: React.FC = () => {
 	const [jobs, setJobs] = useState<Job[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [paginationMeta, setPaginationMeta] = useState<PaginationMeta>();
 	const navigate = useNavigate(); 
 	const { pageId: pageIdParam } = useParams(); 
 	const pageId = Number(pageIdParam) || 1; 
+	
+	const loadDataPage = async (newPageId: number) => {	
+		console.log('newPageId', newPageId);
+		navigate(`/jobs/${newPageId}`, { replace: true });
+	}
+
+	const onPreviousPage = async () => {	
+		console.log('onprevious');
+		if (pageId > 1) {
+			loadDataPage(pageId - 1);
+		}
+	}
+
+	const onNextPage = async () => {	
+		console.log('onNextPage');
+		if (paginationMeta && pageId < paginationMeta.totalPages) {
+			loadDataPage(pageId + 1);
+		}
+	}
 
 	useEffect(() => {
 		if (!pageIdParam || isNaN(Number(pageIdParam))) {
 			navigate(`/jobs/${pageId}`, { replace: true });
 		}
-
 		const loadData = async () => {
 			setLoading(true);
 			setError(null);
 			try {
-				const result = await fetchData<Job[]>(
-					`/api/v1/jobs?page=${pageId}&orderby=startedDateTime desc`
+				const result = await fetchPagedData<Job[]>(
+					`/api/v1/jobs?page=${pageId}&orderby=startedDateTime desc&pageSize=5`
 				);
-				setJobs(result);
+				setJobs(result.data);
+
+				console.log('result', result);
+				setPaginationMeta(result.pagination!);
 			} catch (error) {
 				console.error("Failed to fetch metrics:", error);
 				setError("Failed to load metrics. Please try again later.");
@@ -125,6 +149,10 @@ const Jobs: React.FC = () => {
 					))}
 				</ul>
 			</div>
+
+			{paginationMeta && paginationMeta.totalPages > 1 && (
+				<Pagination paginationMeta={paginationMeta!} onNavigate={loadDataPage!} onPrevious={onPreviousPage} onNext={onNextPage} />
+			)}
 		</>
 	);
 };

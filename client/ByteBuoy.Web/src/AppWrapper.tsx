@@ -24,7 +24,7 @@ export const AppWrapper = () => {
 					</Route>
 					<Route path="metrics/:pageId" element={<PageComponent />} />
 					<Route path="trace/:fileHash" element={<TraceComponent />} />
-					<Route path="metrics/:pageId/list" element={<PageMetricsList />} />
+					<Route path="metrics/:pageId/history/:pageNr?" element={<PageMetricsList />} />
 					<Route path="metrics" element={<PagesComponent />} />
 					<Route path="job/:jobId" element={<Job />} />
 					<Route path="jobs/:pageId?" element={<JobsComponent />} />

@@ -1,4 +1,7 @@
+using System.Linq.Expressions;
 using ByteBuoy.API.Extensions;
+using ByteBuoy.API.Models;
+using ByteBuoy.API.Utilities;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Application.ServiceInterfaces;
@@ -25,15 +28,26 @@ namespace ByteBuoy.API.Controllers
 
 		// GET: api/v1/pages/{pageIdOrSlug}/metrics
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Metric>>> GetPageMetrics([FromRoute] string pageIdOrSlug)
+		public async Task<ActionResult<PagedList<Metric>>> GetPageMetrics([FromRoute] string pageIdOrSlug, [FromQuery] QueryParameters queryParameters)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
 			if (page == null)
 				return NotFound();
 
-			return await _context.Metrics.Where(r => r.Page == page)
-										 .OrderByDescending(r => r.Created)
-										 .ToListAsync();
+			var query = _context.Metrics.Where(r => r.Page == page)
+										 .OrderByDescending(r => r.Created).AsQueryable();
+
+			int totalRecords = await query.CountAsync();
+
+			// Apply paging
+			query = query.ApplyPaging(queryParameters.Page, queryParameters.PageSize);
+
+			// Calculate total pages
+			int totalPages = (int)Math.Ceiling(totalRecords / (double)queryParameters.PageSize);
+			var paginationMeta = PaginationMetaBuilder.Build(queryParameters.Page, queryParameters.PageSize, totalRecords, totalPages);
+			var items = await query.ToListAsync();
+
+			return new PagedList<Metric>(items, totalPages, queryParameters.Page, queryParameters.PageSize);
 		}
 
 		// POST: api/v1/pages/{pageIdOrSlug}/metrics/purge

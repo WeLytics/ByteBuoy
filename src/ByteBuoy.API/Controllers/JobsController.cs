@@ -1,12 +1,14 @@
 using System.Linq.Expressions;
 using ByteBuoy.API.Extensions;
 using ByteBuoy.API.Models;
+using ByteBuoy.API.Utilities;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ByteBuoy.API.Controllers
@@ -20,7 +22,7 @@ namespace ByteBuoy.API.Controllers
 
 		// GET: api/v1/jobs
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Job>>> GetJobs([FromQuery] QueryParameters queryParameters)
+		public async Task<ActionResult<PagedList<Job>>> GetJobs([FromQuery] QueryParameters queryParameters)
 		{
 			var query = _context.Jobs.AsQueryable();
 
@@ -32,12 +34,17 @@ namespace ByteBuoy.API.Controllers
 			};
 
 			query = query.ApplySort(queryParameters.OrderBy, columnsMap);
+			int totalRecords = await query.CountAsync();
 
 			// Apply paging
 			query = query.ApplyPaging(queryParameters.Page, queryParameters.PageSize);
 
+			// Calculate total pages
+			int totalPages = (int)Math.Ceiling(totalRecords / (double)queryParameters.PageSize);
+			var paginationMeta = PaginationMetaBuilder.Build(queryParameters.Page, queryParameters.PageSize, totalRecords, totalPages);
+			var items = await query.ToListAsync();
 
-			return await query.ToListAsync();	
+			return new PagedList<Job>(items, totalPages, queryParameters.Page, queryParameters.PageSize);	
 		}
 
 		// GET: api/v1/jobs/{jobId}
