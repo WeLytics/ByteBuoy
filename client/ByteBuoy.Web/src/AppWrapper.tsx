@@ -12,6 +12,7 @@ import NotFound from "./pages/pages/NotFound";
 import ProfilePage from "./pages/user/Profile";
 import TraceComponent from "./pages/pages/Trace";
 import {App} from "./main";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const AppWrapper = () => {
 	return (
@@ -19,7 +20,6 @@ export const AppWrapper = () => {
 			<Routes>
 				<Route element={<Layout />}>
 					<Route path="/" element={<App />}>
-						{/* Protected routes */}
 						<Route index element={<Home />} />
 					</Route>
 					<Route path="metrics/:pageId" element={<PageComponent />} />
@@ -29,11 +29,12 @@ export const AppWrapper = () => {
 					<Route path="job/:jobId" element={<Job />} />
 					<Route path="jobs/:pageId?" element={<JobsComponent />} />
 					<Route path="login" element={<LoginPage />} />
-					<Route path="profile" element={<ProfilePage />} />
+					<Route path="profile" element={<ProtectedRoute allowedRoles={['admin','user']} />}>
+						<Route index element={<ProfilePage />} />
+					</Route>
 					<Route path="*" element={<NotFound />} errorElement={<NotFound />} />
 				</Route>
 				<Route path="setup" element={<SetupComponent />} />
-				{/* </Route> */}
 			</Routes>
 		</Router>
 	);

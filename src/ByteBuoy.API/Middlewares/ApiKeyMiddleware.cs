@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using ByteBuoy.API.Validation;
 using ByteBuoy.Domain;
@@ -38,6 +39,16 @@ namespace ByteBuoy.API.Middlewares
 				context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 				return;
 			}
+
+
+			// ClaimsIdentity und ClaimsPrincipal erstellen
+
+			var claims = new List<Claim>() { new Claim(ClaimTypes.Role, "API") };
+			//claims.Add(new Claim(ClaimTypes.Name, extractedApiKey));
+			var identity = new ClaimsIdentity(claims, "ApiKey");
+			var principal = new ClaimsPrincipal(identity);
+
+			context.User = principal;
 
 			await _next(context);
 		}

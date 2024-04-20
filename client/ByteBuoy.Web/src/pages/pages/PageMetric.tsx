@@ -3,7 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Page} from "../../types/Page";
 import {fetchData, postDataNoPayload} from "../../services/apiService";
-
+import { useAuth } from "../../hooks/useAuth";
 import {Fragment} from "react";
 import {
 	ChevronDownIcon,
@@ -19,6 +19,7 @@ import {classNames} from "../../utils/utils";
 // import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
+	const { isAuthenticated } = useAuth(); 
 	const {pageId} = useParams<{pageId: string}>();
 	const [page, setPage] = useState<Page | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
@@ -70,18 +71,20 @@ const PageComponent: React.FC = () => {
 						</Link>
 					</span>
 
-					<span className="ml-3 hidden sm:block">
-						<button
-							type="button"
-							className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-						>
-							<PencilIcon
-								className="-ml-0.5 mr-1.5 h-5 w-5"
-								aria-hidden="true"
-							/>
-							Edit
-						</button>
-					</span>
+					{isAuthenticated && (
+						<span className="ml-3 hidden sm:block">
+							<button
+								type="button"
+								className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+							>
+								<PencilIcon
+									className="-ml-0.5 mr-1.5 h-5 w-5"
+									aria-hidden="true"
+								/>
+								Edit
+							</button>
+						</span>
+					)}
 
 					<span className="ml-3 hidden sm:block">
 						<button
@@ -97,20 +100,22 @@ const PageComponent: React.FC = () => {
 						</button>
 					</span>
 
-					<span className="ml-3 hidden sm:block">
-						<button
-							type="button"
-							className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-							onClick={purgeList}
-						>
-							<ArchiveBoxXMarkIcon
-								className="-ml-0.5 mr-1.5 h-5 w-5"
-								aria-hidden="true"
-							/>
-							Purge
-						</button>
-					</span>
-
+					{isAuthenticated && (
+						<span className="ml-3 hidden sm:block">
+							<button
+								type="button"
+								className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+								onClick={purgeList}
+							>
+								<ArchiveBoxXMarkIcon
+									className="-ml-0.5 mr-1.5 h-5 w-5"
+									aria-hidden="true"
+								/>
+								Purge
+							</button>
+						</span>
+					)}
+					
 					{/* Dropdown */}
 					<Menu as="div" className="relative ml-3 sm:hidden">
 						<Menu.Button className="inline-flex items-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20">

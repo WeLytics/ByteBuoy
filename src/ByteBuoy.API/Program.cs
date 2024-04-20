@@ -19,6 +19,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using ByteBuoy.Application.Validators;
 using FluentValidation.AspNetCore;
+using ByteBuoy.Application.Validators.Auth;
 
 
 namespace ByteBuoy.API
@@ -95,7 +96,7 @@ namespace ByteBuoy.API
 
 			var app = builder.Build();
 
-			app.MapIdentityApi<ApplicationUser>();
+			//app.MapIdentityApi<ApplicationUser>();
 			app.MapGet("/health", () => "OK");
 
 
@@ -104,7 +105,7 @@ namespace ByteBuoy.API
 				app.UseSwagger();
 				app.UseSwaggerUI(options =>
 				{
-					options.SwaggerEndpoint($"/swagger/V1/swagger.json", "Vr1.0");
+					options.SwaggerEndpoint($"/swagger/V1/swagger.json", "V1.0");
 				}
 				);
 			}
@@ -140,19 +141,6 @@ namespace ByteBuoy.API
 					await context.Response.WriteAsJsonAsync(response);
 				});
 			};
-			app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager,
-					[FromBody] object empty) =>
-							{
-								if (empty != null)
-								{
-									await signInManager.SignOutAsync();
-									return Results.Ok();
-								}
-								return Results.Unauthorized();
-							})
-				.WithOpenApi()
-				.RequireAuthorization();
-
 
 			app.Run("http://0.0.0.0:5000");
 		}

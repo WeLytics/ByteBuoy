@@ -1,10 +1,10 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { redirect } from 'react-router';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BACKEND_API_URI;
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: BASE_URL,
     headers: {
         'X-API-Key': API_KEY
@@ -12,9 +12,6 @@ const api = axios.create({
     withCredentials: true
 });
 
-interface CustomAxiosRequestConfig extends AxiosRequestConfig {
-    skipAuthRefresh?: boolean;
-}
 
 declare module 'axios' {
     export interface AxiosRequestConfig {
@@ -40,33 +37,6 @@ api.interceptors.response.use(
 );
 
 
-interface LoginResponse {
-    user: {
-      id: string;
-      username: string;
-    };
-    token: string;
-  }
-
-
-// Login function
-export const login = async (email: string, password: string): Promise<LoginResponse> => {
-    try {
-        const config: CustomAxiosRequestConfig = {
-            skipAuthRefresh: true, 
-        };
-
-        const response: AxiosResponse<LoginResponse> = await api.post('/login?useCookies=true', {
-            email,
-            password,
-        }, config);
-
-        return response.data;
-    } catch (error) {
-        console.error("Error logging in: ", error);
-        throw error;
-    }
-};
 
 export const fetchData = async <T>(endpoint: string): Promise<T> => {
     try {

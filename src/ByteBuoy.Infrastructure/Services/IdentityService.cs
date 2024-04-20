@@ -11,10 +11,11 @@ namespace ByteBuoy.Infrastructure.Services
 		private readonly UserManager<ApplicationUser> _userManager = userManager;
 		private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
 		private const string _adminRoleName = "admin";
+		private const string _userRoleName = "user";
 
 		public async Task<IdentityServiceResult> CreateAdminUser(string username, string password)
 		{
-			await CreateAdminRoleIfNotExists();
+			await CreateRolesIfNotExists();
 
 			var adminUser = new ApplicationUser { UserName = username, Email = username };
 			var result = await _userManager.CreateAsync(adminUser, password);
@@ -23,13 +24,17 @@ namespace ByteBuoy.Infrastructure.Services
 				return new IdentityServiceResult(result.ToUserErrorList());
 
 			await _userManager.AddToRoleAsync(adminUser, _adminRoleName);
+			await _userManager.AddToRoleAsync(adminUser, _userRoleName);
 			return new IdentityServiceResult() { Succeeded = true };
 		}
 
-		internal async Task CreateAdminRoleIfNotExists()
+		internal async Task CreateRolesIfNotExists()
 		{
 			if (!await _roleManager.RoleExistsAsync(_adminRoleName))
 				await _roleManager.CreateAsync(new ApplicationRole { Name = _adminRoleName });
+
+			if (!await _roleManager.RoleExistsAsync(_userRoleName))
+				await _roleManager.CreateAsync(new ApplicationRole { Name = _userRoleName });
 		}
 
 		public async Task<IdentityServiceResult> CreateAdminUserIfNotExistFromSystemEnv(IServiceProvider services)
@@ -46,7 +51,7 @@ namespace ByteBuoy.Infrastructure.Services
 				return new IdentityServiceResult() { Succeeded = true };
 			}
 
-			await CreateAdminRoleIfNotExists();
+			await CreateRolesIfNotExists();
 
 			return await CreateAdminUser(adminEmail, adminPassword);
 		}
