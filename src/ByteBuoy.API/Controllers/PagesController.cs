@@ -4,6 +4,7 @@ using ByteBuoy.Application.Helpers;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +20,12 @@ namespace ByteBuoy.API.Controllers
 
 		// GET: api/v1/pages
 		[HttpGet]
+		[Authorize]
 		public async Task<ActionResult<IEnumerable<Page>>> GetPages()
 		{
-			return await _context.Pages.Where(r => r.Deleted == null).ToListAsync();
+			return User?.Identity?.IsAuthenticated == true
+				? await _context.Pages.Where(r => r.Deleted == null).ToListAsync()
+				: await _context.Pages.Where(r => r.Deleted == null && r.IsPublic).ToListAsync();
 		}
 
 		// GET: api/v1/pages/5
@@ -29,6 +33,9 @@ namespace ByteBuoy.API.Controllers
 		public async Task<ActionResult<Page>> GetPageById(string pageIdOrSlug)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+
+			if (page != null && User?.Identity?.IsAuthenticated == false && !page.IsPublic)
+				return Unauthorized();
 
 			if (page == null)
 				return NotFound();
@@ -38,7 +45,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages
 		[HttpPost]
-		//[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Metric>> CreatePage([FromBody] CreatePageContract createPage)
 		{
 			var page = new PageContractMappers().CreatePageDtoToPage(createPage);
@@ -53,6 +60,7 @@ namespace ByteBuoy.API.Controllers
 
 		// DELETE: api/v1/pages/
 		[HttpDelete("{pageId}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Metric>> DeletePage([FromRoute] int pageId)
 		{
 			var page = await _context.Pages.FindAsync(pageId);

@@ -5,12 +5,12 @@ using ByteBuoy.Application.Contracts;
 using ByteBuoy.Application.Mappers;
 using ByteBuoy.Domain.Entities;
 using ByteBuoy.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ByteBuoy.API.Controllers
 {
-
 	[Route("api/v1/jobs")]
 	[ApiExplorerSettings(GroupName = "V1")]
 	[ApiController]
@@ -55,6 +55,7 @@ namespace ByteBuoy.API.Controllers
 
 		// DELETE api/v1/jobs/{jobId}
 		[HttpDelete("{jobId}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Job>> DeleteJob([FromRoute] int jobId)
 		{
 			var job = await _context.GetJobById(jobId);
@@ -69,6 +70,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/jobs
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Job>> PostJob(CreateJobContract createJob)
 		{
 			var newJob = new JobContractMappers().CreateJobContractToJob(createJob);
@@ -84,6 +86,7 @@ namespace ByteBuoy.API.Controllers
 
 		// PUT: api/v1/jobs/{jobId}
 		[HttpPut("{jobId}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<ActionResult<Job>> UpdateJob(UpdateJobContract updateJob, [FromRoute] int jobId)
 		{
 			var job = await _context.Jobs.FindAsync(jobId);

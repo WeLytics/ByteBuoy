@@ -138,6 +138,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages/{pageIdOrSlug}/metrics
 		[HttpPost]
+		[Authorize(Roles = "API")]
 		public async Task<IActionResult> PostMetric(CreatePageMetricContract createPageMetric, [FromRoute] string pageIdOrSlug)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);

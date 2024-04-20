@@ -4,6 +4,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 import { classNames } from "../utils/utils";
 import { postData } from "../services/apiService";
+import { useAuth } from "../hooks/useAuth";
 
 const navigation = [
 	{ name: "Metrics", href: "metrics", current: true },
@@ -11,11 +12,13 @@ const navigation = [
 ];
 
 export default function Navbar() {
-	async function logout() {
-		localStorage.removeItem("token");
+	const { isAuthenticated, logout } = useAuth();
+
+	async function handleLogout() {
+		logout();
 		await postData("/logout", null);
-		document.cookie =
-			"token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		// document.cookie =
+		// 	"token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 		window.location.href = "/login";
 	}
 
@@ -82,39 +85,53 @@ export default function Navbar() {
 								</div>
 							</div>
 							<div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-								<button
-									type="button"
-									className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-								>
-									<span className="absolute -inset-1.5" />
-									<span className="sr-only">
-										View notifications
-									</span>
-									<BellIcon
-										className="h-6 w-6"
-										aria-hidden="true"
-									/>
-								</button>
+								{isAuthenticated && (
+									<button
+										type="button"
+										className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+									>
+										<span className="absolute -inset-1.5" />
+										<span className="sr-only">
+											View notifications
+										</span>
+										<BellIcon
+											className="h-6 w-6"
+											aria-hidden="true"
+										/>
+									</button>
+								)}
 
+								{!isAuthenticated && (
+									<a
+										href="/login"
+										className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+									>
+										Login
+									</a>
+
+								)}
+								
 								{/* Profile dropdown */}
 								<Menu as="div" className="relative ml-3">
-									<div>
-										<Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-											<span className="absolute -inset-1.5" />
-											<span className="sr-only">
-												Open user menu
-											</span>
-											<span className="inline-block h-6 w-6 overflow-hidden rounded-full bg-gray-100">
-												<svg
-													className="h-full w-full text-gray-300"
-													fill="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-												</svg>
-											</span>
-										</Menu.Button>
-									</div>
+									{isAuthenticated && ( 
+										<div>
+											<Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+												<span className="absolute -inset-1.5" />
+												<span className="sr-only">
+													Open user menu
+												</span>
+												<span className="inline-block h-6 w-6 overflow-hidden rounded-full bg-gray-100">
+													<svg
+														className="h-full w-full text-gray-300"
+														fill="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+													</svg>
+												</span>
+											</Menu.Button>
+										</div>
+									)}
 									<Transition
 										as={Fragment}
 										enter="transition ease-out duration-100"
@@ -125,54 +142,60 @@ export default function Navbar() {
 										leaveTo="transform opacity-0 scale-95"
 									>
 										<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-											<Menu.Item>
-												{({ active }) => (
-													<a
-														href="/login"
-														className={classNames(
-															active
-																? "bg-gray-100"
-																: "",
-															"block px-4 py-2 text-sm text-gray-700"
-														)}
-													>
-														Login
-													</a>
-												)}
-											</Menu.Item>
-											<Menu.Item>
-												{({ active }) => (
-													<a
-														href="/profile"
-														className={classNames(
-															active
-																? "bg-gray-100"
-																: "",
-															"block px-4 py-2 text-sm text-gray-700"
-														)}
-													>
-														Your Profile
-													</a>
-												)}
-											</Menu.Item>
-											<Menu.Item>
-												{({ active }) => (
-													<a
-														href="#"
-														onClick={() => {
-															logout();	
-														}}
-														className={classNames(
-															active
-																? "bg-gray-100"
-																: "",
-															"block px-4 py-2 text-sm text-gray-700"
-														)}
-													>
-														Sign out
-													</a>
-												)}
-											</Menu.Item>
+											{!isAuthenticated && (
+												<Menu.Item>
+													{({ active }) => (
+														<a
+															href="/login"
+															className={classNames(
+																active
+																	? "bg-gray-100"
+																	: "",
+																"block px-4 py-2 text-sm text-gray-700"
+															)}
+														>
+															Login
+														</a>
+													)}
+												</Menu.Item>
+											)}
+											{isAuthenticated && (
+												<Menu.Item>
+													{({ active }) => (
+														<a
+															href="/profile"
+															className={classNames(
+																active
+																	? "bg-gray-100"
+																	: "",
+																"block px-4 py-2 text-sm text-gray-700"
+															)}
+														>
+															Your Profile
+														</a>
+													)}
+												</Menu.Item>
+											)}
+											{isAuthenticated && (
+												<Menu.Item>
+													{({ active }) => (
+														<a
+															href="#"
+															onClick={() => {
+																handleLogout();	
+															}}
+															className={classNames(
+																active
+																	? "bg-gray-100"
+																	: "",
+																"block px-4 py-2 text-sm text-gray-700"
+															)}
+														>
+															Logout
+														</a>
+													)}
+												</Menu.Item>
+											)}
 										</Menu.Items>
 									</Transition>
 								</Menu>

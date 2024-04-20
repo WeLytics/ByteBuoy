@@ -7,8 +7,10 @@ import Circle from "../../components/Circle";
 import {statuses} from "../../models/statuses";
 import SkeletonLoader from "../../components/SkeletonLoader";
 import PageCreateForm from "../../components/PageCreateForm";
+import {useAuth} from "../../hooks/useAuth";
 
 export default function PagesList() {
+	const { isAuthenticated } = useAuth();
 	const [pages, setData] = useState<Page[] | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export default function PagesList() {
 
 	return (
 		<div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 md:pt-16">
+			{isAuthenticated  && (
 			<div className="mt-6 flex justify-end">
 				<button
 					type="button"
@@ -58,6 +61,7 @@ export default function PagesList() {
 					New Metric Project
 				</button>
 			</div>
+			)}
 
 			{isEditing && <PageCreateForm />}
 
