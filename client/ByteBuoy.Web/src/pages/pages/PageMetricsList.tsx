@@ -54,7 +54,6 @@ export default function PageMetricsList() {
 			loadDataPage(pageNumber + 1);
 		}
 	}
-
 	
 	useEffect(() => {
 		const loadData = async () => {
@@ -63,7 +62,7 @@ export default function PageMetricsList() {
 	
 			try {
 				const resultMetrics = await fetchPagedData<Metric[]>(
-					`/api/v1/pages/${pageId}/metrics?page=${pageNumber}&pageSize=5`
+					`/api/v1/pages/${pageId}/metrics?page=${pageNumber}&pageSize=10`
 				);
 				setMetrics(resultMetrics.data);
 				setPaginationMeta(resultMetrics.pagination!);

@@ -8,11 +8,11 @@ import axios from "axios";
 import {patchData} from "../services/apiService";
 import {useParams} from "react-router-dom";
 
-// Define the schema for the form validation using Zod
 const schema = z.object({
 	title: z.string().min(3, "Name is too short").max(100, "Name is too long"),
 	description: z.string().nonempty("Description is required"),
 	groupBy: z.string().nullable(),
+	groupByValue: z.boolean().nullable(),
 });
 
 interface ServerResponse {
@@ -110,6 +110,31 @@ const MetricsGroupEdit: React.FC<MetricsGroupEditProps> = ({
 				/>
 				{errors.groupBy && (
 					<span className="text-red-500">{errors.groupBy.message}</span>
+				)}
+			</div>
+
+			<div className="mb-4">
+				<div className="relative flex gap-x-3">
+					<div className="flex h-6 items-center">
+						<input
+							{...register("groupByValue")}
+							disabled={isSubmitting}
+							type="checkbox"
+							className="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-gray-900"
+						/>
+					</div>
+					<div className="text-sm leading-6">
+						<label htmlFor="comments" className="font-medium text-white">
+							Group By Value
+						</label>
+						<p className="text-gray-400">
+							Additional Grouping by Value Alongside Label Grouping
+						</p>
+					</div>
+				</div>
+
+				{errors.groupByValue && (
+					<span className="text-red-500">{errors.groupByValue.message}</span>
 				)}
 			</div>
 

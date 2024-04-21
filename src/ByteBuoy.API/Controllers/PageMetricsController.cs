@@ -35,7 +35,7 @@ namespace ByteBuoy.API.Controllers
 				return NotFound();
 
 			var query = _context.Metrics.Where(r => r.Page == page)
-										 .OrderByDescending(r => r.Created).AsQueryable();
+										.OrderByDescending(r => r.Created).AsQueryable();
 
 			int totalRecords = await query.CountAsync();
 
@@ -115,7 +115,6 @@ namespace ByteBuoy.API.Controllers
 			if (metricGroup == null)
 				return NotFound();
 
-
 			if (updateContract.Title != null)
 				metricGroup.Title = updateContract.Title;
 
@@ -127,6 +126,9 @@ namespace ByteBuoy.API.Controllers
 
 			if (updateContract.GroupBy != null)
 				metricGroup.GroupBy = updateContract.GroupBy;
+
+			if (updateContract.GroupByValue != null)
+				metricGroup.GroupByValue = updateContract.GroupByValue.Value;
 
 			await _context.SaveChangesAsync();
 
@@ -166,7 +168,7 @@ namespace ByteBuoy.API.Controllers
 			if (createPageMetric.MetricGroupId == null)
 			{
 				var metricGroup = await _context.MetricGroups.SingleOrDefaultAsync(r => r.Page.Id == page.Id);
-				metricGroup ??= new MetricGroup() { Page = page, Title = "Default Metric Group" };
+				metricGroup ??= new MetricGroup() { Page = page, Title = "Default Metric Group", GroupByValue = true };
 
 				if (_context.Entry(metricGroup).State == EntityState.Detached)
 					_context.MetricGroups.Add(metricGroup);

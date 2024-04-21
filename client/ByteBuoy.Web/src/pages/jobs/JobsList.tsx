@@ -56,7 +56,7 @@ const Jobs: React.FC = () => {
 			setError(null);
 			try {
 				const result = await fetchPagedData<Job[]>(
-					`/api/v1/jobs?page=${pageId}&orderby=startedDateTime desc&pageSize=5`
+					`/api/v1/jobs?page=${pageId}&orderby=startedDateTime desc&pageSize=10`
 				);
 				setJobs(result.data);
 

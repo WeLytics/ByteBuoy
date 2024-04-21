@@ -36,8 +36,8 @@ namespace ByteBuoy.Infrastructure.Services
 			var metricsFilter = GetDateFilterLimit(page.Created, metricGroup.MetricInterval);
 
 			var metrics = await _dbContext.Metrics.Where(r => r.MetricGroup == metricGroup && r.Created >= metricsFilter)
-												   .OrderByDescending(r => r.Created)
-												   .ToListAsync();
+												  .OrderByDescending(r => r.Created)
+												  .ToListAsync();
 
 			_mappers.MetricGroupToPageMetricGroupDto(metricGroup, result);
 			result.BucketValues.AddRange(GenerateBucketMapping(metricGroup, metricsFilter, metrics));
@@ -88,16 +88,26 @@ namespace ByteBuoy.Infrastructure.Services
 
 				var root = jsonDoc!.RootElement;
 				var labelNode = root.GetProperty("labels");
-
-
 				var labels = labelNode.EnumerateObject();
+
 				foreach (var label in labels)
 				{
 					if (label.Name == labelName)
 					{
 						var value = metric.ValueString ?? metric.Value.ToString();
-						var subGroup = labelCache.SingleOrDefault(r => r.GroupTitle == label.Value.GetString() &&
-																   r.GroupValue == value);
+						LabelCache? subGroup;
+
+						if (metricGroup.GroupByValue)
+						{
+							subGroup = labelCache.SingleOrDefault(r => r.GroupTitle == label.Value.GetString() &&
+																	   r.GroupValue == value);
+						}
+						else
+						{
+							subGroup = labelCache.SingleOrDefault(r => r.GroupTitle == label.Value.GetString());
+							value = null;	
+						}
+				
 
 						if (subGroup == null)
 						{
