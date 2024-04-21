@@ -13,6 +13,7 @@ namespace ByteBuoy.Agent.JobExecution
 
 		private readonly List<JobExecutionStep> _jobExecutionSteps = [];
 		private int _jobId;
+		internal bool DryRun;
 
 		internal JobExecutor(AgentConfig agentConfig)
 		{
@@ -86,6 +87,7 @@ namespace ByteBuoy.Agent.JobExecution
 			}
 
 			executionContext.JobId = await CreateJobAsync();
+			executionContext.IsDryRun = DryRun;
 
 			foreach (var executionStep in _jobExecutionSteps)
 			{
@@ -125,7 +127,8 @@ namespace ByteBuoy.Agent.JobExecution
 				Status = Domain.Enums.JobStatus.Running,
 			});
 
-			_jobId = response?.Data?.Id ?? throw new Exception("Failed to start job");
+			_jobId = (response?.Data?.Id) != null && response.Data.Id != 0 ?  
+						response.Data.Id : throw new Exception("Failed to start job");
 			return _jobId;
 		}
 

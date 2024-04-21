@@ -1,3 +1,4 @@
+using ByteBuoy.Agent.Helpers;
 using ByteBuoy.Agent.JobExecution;
 using ByteBuoy.Infrastructure.Config;
 using Microsoft.Extensions.Hosting;
@@ -7,13 +8,14 @@ namespace ByteBuoy.Agent.Services
 	internal class JobWorker(IHostApplicationLifetime appLifetime, ICommandLineService commandLineService) : IHostedService
 	{
 		private readonly IHostApplicationLifetime _appLifetime = appLifetime;
-
+		
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			Console.WriteLine("ByteBuoy Agent started (v0.1.8)");
+			Console.WriteLine($"ByteBuoy Agent started ({IOHelper.GetVersion()})");
 			cancellationToken.ThrowIfCancellationRequested();
 
 			var filePath = commandLineService.FilePath;
+			var isDryRun = commandLineService.DryRun;
 
 			if (!File.Exists(filePath))
 			{
@@ -26,7 +28,14 @@ namespace ByteBuoy.Agent.Services
 			var config = await configReader.ReadAgentConfigAsync(filePath);
 			if (config?.IsValid() == true)
 			{
-				var executionService = new JobExecutor(config);
+				if (isDryRun)
+					Console.WriteLine("DRY RUN MODE ENABLED");
+
+				var executionService = new JobExecutor(config)
+				{
+					DryRun = isDryRun
+				};
+
 				await executionService.ExecuteTasksAsync();
 			}
 

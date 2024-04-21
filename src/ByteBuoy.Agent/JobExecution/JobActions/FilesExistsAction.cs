@@ -62,6 +62,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 
 		private async Task SendApiRequest(string filePath)
 		{
+			if (_jobExecutionContext.IsDryRun)
+			{
+				_jobExecutionContext.AddLog($"DRY RUN: Would send API request for file {filePath}");
+				return;
+			}
+
 			var payload = new CreatePageMetricContract()
 			{
 				JobId = _jobExecutionContext.JobId,

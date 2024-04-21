@@ -13,6 +13,7 @@ namespace ByteBuoy.Agent.JobExecution
 		private readonly LoggingConfiguration _loggingConfiguration;
 		private readonly AgentConfig _agentConfig;
 		public int JobId { get; internal set; }
+		public bool IsDryRun { get; internal set; }	
 		public JobExecutionStep CurrentExecutionStep { get; set; } = null!;
 
 		public JobExecutionContext(AgentConfig agentConfig, Action<LoggingConfiguration> configureLogging)

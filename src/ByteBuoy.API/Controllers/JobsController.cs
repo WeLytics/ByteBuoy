@@ -77,7 +77,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/jobs
 		[HttpPost]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin, API")]
 		public async Task<ActionResult<Job>> PostJob(CreateJobContract createJob)
 		{
 			var newJob = new JobContractMappers().CreateJobContractToJob(createJob);

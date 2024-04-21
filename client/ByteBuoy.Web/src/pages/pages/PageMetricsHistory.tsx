@@ -32,24 +32,18 @@ export default function PageMetricsList() {
 	const [error, setError] = useState<string | null>(null);
 	const [paginationMeta, setPaginationMeta] = useState<PaginationMeta>();
 	const navigate = useNavigate(); 
-
-	
 	
 	const loadDataPage = async (newPageId: number) => {	
-		console.log('loadDataPage');
 		navigate(`/metrics/${pageId}/history/${newPageId}`, { replace: true });
-		// navigate(`/metrics/${pageIdOrSlug}/history/${newPageId}`, { replace: true });
 	}
 
 	const onPreviousPage = async () => {	
-		console.log('onprevious');
 		if (pageNumber > 1) {
 			loadDataPage(pageNumber - 1);
 		}
 	}
 
 	const onNextPage = async () => {	
-		console.log('onNextPage');
 		if (paginationMeta && pageNumber < paginationMeta.totalPages) {
 			loadDataPage(pageNumber + 1);
 		}
@@ -78,7 +72,7 @@ export default function PageMetricsList() {
 		};
 	
 		loadData();
-	}, [pageId, pageNumber]); // Added pageIdOrSlug to dependencies
+	}, [pageId, pageNumber]); 
 	
 
 	if (loading) {
@@ -92,13 +86,14 @@ export default function PageMetricsList() {
 	return (
 		<>
 			<PageTitle title={page?.title ?? "N/A"} />
+
 			{metrics && metrics.length > 0 && (
 				<div className="mx-auto max-w-6xl sm:px-6 lg:px-8 dark:text-white lg:py-3 overflow-x-auto">
 					<div className="py-10">
 						<table className="mt-6 whitespace-nowrap text-left table-auto">
 							<colgroup>
-								<col className="w-full sm:w-4/12" />
-								<col className="lg:w-4/12" />
+								<col className="w-full sm:w-1/12" />
+								<col className="lg:w-5/12" />
 								<col className="lg:w-2/12" />
 							</colgroup>
 							<thead className="border-b border-white/10 text-sm leading-6 text-white">
@@ -123,6 +118,7 @@ export default function PageMetricsList() {
 									</th>
 								</tr>
 							</thead>
+							
 							<tbody className="divide-y divide-white/5">
 								{metrics?.map((item) => (
 									<tr key={item.id}>
