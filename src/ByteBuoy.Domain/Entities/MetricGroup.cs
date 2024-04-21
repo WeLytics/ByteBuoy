@@ -10,6 +10,7 @@ namespace ByteBuoy.Domain.Entities
 		public string? Description { get; set; }
 
 		public string? GroupBy { get; set; }
+		public bool GroupByValue { get; set; } = true;
 		public MetricInterval MetricInterval { get; set; } = MetricInterval.Day;
 	}
 }

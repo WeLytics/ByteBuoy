@@ -8,6 +8,7 @@ namespace ByteBuoy.Application.Contracts
 		public string? Description { get; set; }
 
 		public string? GroupBy { get; set; }
+		public bool? GroupByValue { get; set; }
 		public MetricInterval? MetricInterval { get; set; }
 	}
 }

@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { redirect } from 'react-router';
+import { PagedResponse } from '../types/PagedResponse';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = import.meta.env.VITE_BACKEND_API_URI;
@@ -36,8 +37,6 @@ api.interceptors.response.use(
     }
 );
 
-
-
 export const fetchData = async <T>(endpoint: string): Promise<T> => {
     try {
         const response: AxiosResponse<T> = await api.get<T>(endpoint);
@@ -47,6 +46,17 @@ export const fetchData = async <T>(endpoint: string): Promise<T> => {
         throw error;    
     }
 };
+
+export const fetchPagedData = async <T>(endpoint: string): Promise<PagedResponse<T>> => {
+    try {
+        const response: AxiosResponse<PagedResponse<T>> = await api.get<PagedResponse<T>>(endpoint);
+        return response.data
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        throw error;    
+    }
+};
+
 
 export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
     try {

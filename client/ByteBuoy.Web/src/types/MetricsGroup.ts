@@ -11,4 +11,5 @@ export interface MetricsGroup {
     bucketValues: MetricsBucket[];
     subGroups: MetricsSubGroup[];
     metricInterval: number;
+    groupByValue: boolean;  
   }

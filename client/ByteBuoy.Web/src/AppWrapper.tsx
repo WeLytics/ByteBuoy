@@ -7,7 +7,7 @@ import SetupComponent from "./pages/Setup";
 import LoginPage from "./pages/user/Login";
 import Home from "./pages/Home";
 import Layout from "./Layout";
-import PageMetricsList from "./pages/pages/PageMetricsList";
+import PageMetricsList from "./pages/pages/PageMetricsHistory";
 import NotFound from "./pages/pages/NotFound";
 import ProfilePage from "./pages/user/Profile";
 import TraceComponent from "./pages/pages/Trace";
@@ -24,7 +24,7 @@ export const AppWrapper = () => {
 					</Route>
 					<Route path="metrics/:pageId" element={<PageComponent />} />
 					<Route path="trace/:fileHash" element={<TraceComponent />} />
-					<Route path="metrics/:pageId/list" element={<PageMetricsList />} />
+					<Route path="metrics/:pageId/history/:pageNr?" element={<PageMetricsList />} />
 					<Route path="metrics" element={<PagesComponent />} />
 					<Route path="job/:jobId" element={<Job />} />
 					<Route path="jobs/:pageId?" element={<JobsComponent />} />

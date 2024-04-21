@@ -5,6 +5,10 @@ namespace ByteBuoy.Agent.Helpers
 {
 	internal partial class IOHelper
 	{
+		internal static string GetVersion()
+		{
+			return typeof(IOHelper).Assembly.GetName().Version?.ToString() ?? "";
+		}
 
 		internal static async Task CopyFileAsync(string sourcePath, string destinationPath)
 		{

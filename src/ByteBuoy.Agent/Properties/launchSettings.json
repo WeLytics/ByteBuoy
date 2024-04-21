@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ByteBuoy.Agent": {
+      "commandName": "Project"
+    },
+    "ByteBuoy.Agent DryRun": {
+      "commandName": "Project",
+      "commandLineArgs": "--dryrun"
+    }
+  }
+}
