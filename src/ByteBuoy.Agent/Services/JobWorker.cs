@@ -1,4 +1,4 @@
-using ByteBuoy.Agent.Helpers;
+using ByteBuoy.Core.Helpers;
 using ByteBuoy.Agent.JobExecution;
 using ByteBuoy.Infrastructure.Config;
 using Microsoft.Extensions.Hosting;

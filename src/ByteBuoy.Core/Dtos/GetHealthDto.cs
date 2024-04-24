@@ -1,6 +1,6 @@
-namespace ByteBuoy.Agent.Dtos
+namespace ByteBuoy.Core.Dtos
 {
-	internal class GetHealthDto
+	public class GetHealthDto
 	{
 		public bool IsHealthy { get => Body.Equals("OK"); }
 		public string Body { get; set; } = null!;

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using ByteBuoy.Agent.Dtos;
+using ByteBuoy.Core.Dtos;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain;
 using ByteBuoy.Domain.Entities;

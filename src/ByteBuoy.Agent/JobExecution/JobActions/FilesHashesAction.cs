@@ -1,4 +1,4 @@
-using ByteBuoy.Agent.Helpers;
+using ByteBuoy.Core.Helpers;
 using ByteBuoy.Agent.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
