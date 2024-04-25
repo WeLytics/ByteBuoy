@@ -1,0 +1,17 @@
+meta {
+  name: Set Page Visibility
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{BYTEBUOY_SERVER}}/api/v1/pages/1/visibility
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "isPublic": 0
+  }
+}

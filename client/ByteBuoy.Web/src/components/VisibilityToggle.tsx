@@ -18,8 +18,10 @@ export default function VisibilityToggle(props: VisibilityProps) {
         const response = await postDataRaw(`/api/v1/pages/${props.pageId}/visibility`, {
             isPublic: !enabled
         });
-        if (response.status === 200)
+        if (response.status === 204)
             toast.success("Page visibility updated");
+        else
+            toast.error("Failed to update page visibility");
     }
 
 	return (

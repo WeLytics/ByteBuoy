@@ -47,6 +47,16 @@ export const fetchData = async <T>(endpoint: string): Promise<T> => {
     }
 };
 
+export const fetchDataRaw = async <T>(endpoint: string): Promise<AxiosResponse<T>> => {
+    try {
+        const response: AxiosResponse<T> = await api.get<T>(endpoint);
+        return response;
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        throw error;    
+    }
+};
+
 export const fetchPagedData = async <T>(endpoint: string): Promise<PagedResponse<T>> => {
     try {
         const response: AxiosResponse<PagedResponse<T>> = await api.get<PagedResponse<T>>(endpoint);
@@ -78,22 +88,22 @@ export const postDataRaw = async <U>(endpoint: string, data: U): Promise<AxiosRe
     }
 };
 
-export const postDataNoPayload = async <T>(endpoint: string): Promise<T> => {
-    try {
-        const response: AxiosResponse<T> = await api.post<T>(endpoint);
-        return response.data;
-    } catch (error) {
-        console.error("Error posting data: ", error);
-        throw error;
-    }
-};
-
 export const patchData = async <T, U>(endpoint: string, data: U): Promise<T> => {
     try {
         const response: AxiosResponse<T> = await api.patch<T>(endpoint, data);
         return response.data;
     } catch (error) {
         console.error("Error patching data: ", error);
+        throw error;
+    }
+};
+
+export const deleteData = async(endpoint: string): Promise<AxiosResponse> => {
+    try {
+        const response: AxiosResponse = await api.delete(endpoint);
+        return response;
+    } catch (error) {
+        console.error("Error deleting data: ", error);
         throw error;
     }
 };

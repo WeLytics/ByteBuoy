@@ -59,11 +59,11 @@ namespace ByteBuoy.API.Controllers
 		}
 
 		// DELETE: api/v1/pages/
-		[HttpDelete("{pageId}")]
+		[HttpDelete("{pageIdOrSlug}")]
 		[Authorize(Roles = "admin")]
-		public async Task<ActionResult<Metric>> DeletePage([FromRoute] int pageId)
+		public async Task<ActionResult> DeletePage([FromRoute] string pageIdOrSlug)
 		{
-			var page = await _context.Pages.FindAsync(pageId);
+			var page = await _context.GetPageBySlug(pageIdOrSlug);
 
 			if (page == null)
 				return NotFound();
@@ -71,7 +71,7 @@ namespace ByteBuoy.API.Controllers
 			_context.Pages.Remove(page);
 			await _context.SaveChangesAsync();
 
-			return Ok();
+			return NoContent();
 		}
 
 
