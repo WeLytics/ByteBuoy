@@ -6,14 +6,14 @@ using ByteBuoy.Domain.Entities;
 using ByteBuoy.Domain.Entities.Config;
 using RestSharp;
 
-namespace ByteBuoy.Agent.Services
+namespace ByteBuoy.Core.Services
 {
-	internal class ApiService
+	public class ApiService
 	{
 		private readonly RestClient _client;
 		private readonly AgentConfig _agentConfig;
 
-		internal ApiService(AgentConfig agentConfig)
+		public ApiService(AgentConfig agentConfig)
 		{
 			_agentConfig = agentConfig ?? throw new ArgumentNullException(nameof(agentConfig));
 			_client = new RestClient(_agentConfig.Host);

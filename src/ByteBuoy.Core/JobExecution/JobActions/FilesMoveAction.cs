@@ -1,31 +1,35 @@
 using ByteBuoy.Core.Helpers;
-using ByteBuoy.Agent.Services;
+using ByteBuoy.Core.JobExecution;
+using ByteBuoy.Core.JobExecution.JobActions;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
 namespace ByteBuoy.Agent.JobExecution.JobActions
 {
-	internal class FilesHashesAction(FilesHashesConfig config, ApiService apiService) : IJobAction
+	internal class FilesMoveAction(FilesMoveJobConfig config, ApiService apiService) : IJobAction
 	{
 		private JobExecutionContext _jobExecutionContext;
-
 		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
 			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
 
-			foreach (var source in config.Paths)
+			foreach (var source in config.Sources)
 			{
-
-
+				_jobExecutionContext.AddLog($"Moving files from {source} to {config.Targets}");
+				foreach (var destination in config.Targets)
+				{
+					await MoveFilesAsync(source, destination);
+				}
 			}
 			return;
 		}
 
-		private static async Task CopyFilesAsync(string source, string destination)
+		private static async Task MoveFilesAsync(string source, string destination)
 		{
 			try
 			{
 				//check if destination is a directory or file, if directory create it if needed
-				if (File.Exists(destination))
+                if (File.Exists(destination))
 				{
 					//destination is a file, check if it is a directory
 					//if it is a directory, append the source filename to it
@@ -46,15 +50,13 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 					}
 				}
 
-				await IOHelper.CopyFileAsync(source, destination);
+				await IOHelper.MoveFileAsync(source, destination);
 			}
 			catch (IOException ioException)
 			{
 
 				throw;
 			}
-
-
 		}
 	}
 }

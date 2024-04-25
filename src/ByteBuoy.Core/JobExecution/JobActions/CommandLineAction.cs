@@ -1,28 +1,43 @@
-using ByteBuoy.Core.Helpers;
-using ByteBuoy.Agent.Services;
+using System.Diagnostics;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
-namespace ByteBuoy.Agent.JobExecution.JobActions
+namespace ByteBuoy.Core.JobExecution.JobActions
 {
-	internal class FilesMoveAction(FilesMoveJobConfig config, ApiService apiService) : IJobAction
+	internal class CommandLineAction(CommandLineConfig config, ApiService apiService) : IJobAction
 	{
 		private JobExecutionContext _jobExecutionContext;
+
 		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
 			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
 
-			foreach (var source in config.Sources)
+			foreach (var source in config.Commands)
 			{
-				_jobExecutionContext.AddLog($"Moving files from {source} to {config.Targets}");
-				foreach (var destination in config.Targets)
+				try
 				{
-					await MoveFilesAsync(source, destination);
+					var proc = new Process();
+					//if (config.RunAsRoot)
+					//{
+					//	proc.StartInfo.FileName = "sudo";
+					//	proc.StartInfo.Arguments = source;
+					//}
+					//else
+					//{
+					//	proc.StartInfo.FileName = "/bin/bash";
+					//	proc.StartInfo.Arguments = $"-c \"{source}\"";
+					//}
+				}
+				catch (Exception)
+				{
+
+					throw;
 				}
 			}
 			return;
 		}
 
-		private static async Task MoveFilesAsync(string source, string destination)
+		private async Task CopyFilesAsync(string source, string destination)
 		{
 			try
 			{
@@ -47,8 +62,8 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 						directoryInfo.Parent!.Create();
 					}
 				}
-
-				await IOHelper.MoveFileAsync(source, destination);
+				//copy the file
+				File.Copy(source, destination);
 			}
 			catch (IOException ioException)
 			{

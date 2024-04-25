@@ -1,11 +1,11 @@
 using System.Text.Json;
 using ByteBuoy.Core.Helpers;
-using ByteBuoy.Agent.Services;
 using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain.Entities.Config.Tasks;
+using ByteBuoy.Core.Services;
 
 
-namespace ByteBuoy.Agent.JobExecution.JobActions
+namespace ByteBuoy.Core.JobExecution.JobActions
 {
 	internal class FilesExistsAction(FilesExistsConfig _config, ApiService _apiService) : IJobAction
 	{

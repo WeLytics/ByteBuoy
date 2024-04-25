@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace ByteBuoy.Agent.Services
+namespace ByteBuoy.Core.Services
 {
 	internal class ApiResponse<T>
 	{
