@@ -16,6 +16,7 @@ import {Menu, Transition} from "@headlessui/react";
 
 import PageMetrics from "./PageMetrics";
 import {classNames} from "../../utils/utils";
+import VisibilityToggle from "../../components/VisibilityToggle";
 // import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
@@ -48,17 +49,32 @@ const PageComponent: React.FC = () => {
 		setRefreshKey((prevKey) => prevKey + 1);
 	}, []);
 
+
+	if (!page) {
+		return <div>Loading...</div>;
+	}
+
+	if (page && !isAuthenticated && !page.isPublic) {
+		return <div>Page is not available...</div>;
+	}
+
 	return (
 		<>
 			{/* {page && <PageEditForm page2={page} />} */}
 
 			{/* <PageTitle title={data?.title ?? "N/A"} /> */}
+
 			<div className="lg:flex lg:items-center lg:justify-between mt-4">
 				<div className="min-w-0 flex-1">
 					<h2 className="mt-2 text-left text-2xl font-bold leading-7 text-white sm:truncate sm:text-3xl sm:tracking-tight">
-						{page?.title ?? "N/A"}
+						{page.title ?? "N/A"}
 					</h2>
 				</div>
+				{isAuthenticated && (
+					<div className="mt-5 flex lg:ml-4 lg:mt-0">
+						<VisibilityToggle pageId={pageId!} isPublic={page.isPublic} />
+					</div>
+				)}
 				<div className="mt-5 flex lg:ml-4 lg:mt-0">
 					<span className="hidden sm:block">
 						<Link to={"history"}>

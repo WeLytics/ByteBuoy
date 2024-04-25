@@ -68,6 +68,16 @@ export const postData = async <T, U>(endpoint: string, data: U): Promise<T> => {
     }
 };
 
+export const postDataRaw = async <U>(endpoint: string, data: U): Promise<AxiosResponse> => {
+    try {
+        const response: AxiosResponse = await api.post(endpoint, data);
+        return response;
+    } catch (error) {
+        console.error("Error posting data: ", error);
+        throw error;
+    }
+};
+
 export const postDataNoPayload = async <T>(endpoint: string): Promise<T> => {
     try {
         const response: AxiosResponse<T> = await api.post<T>(endpoint);

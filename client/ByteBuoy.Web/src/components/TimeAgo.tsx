@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 interface TimeAgoProps {
-  dateString: string;
+  dateString?: string;
 }
 
 const TimeAgo: React.FC<TimeAgoProps> = ({ dateString }) => {
@@ -18,7 +18,7 @@ const TimeAgo: React.FC<TimeAgoProps> = ({ dateString }) => {
     const formattedDate = date.format('MM/DD/YYYY, HH:mm:ss'); // Example format
 
     return (
-        <span title={formattedDate}>{timeAgo}</span>
+        <span title={formattedDate}>{timeAgo} ({date.format('dddd, DD.MM.YYYY HH:mm')})</span>
     );
 };
 

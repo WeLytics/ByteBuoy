@@ -62,7 +62,7 @@ namespace ByteBuoy.API.Controllers
 
 		// DELETE api/v1/jobs/{jobId}
 		[HttpDelete("{jobId}")]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<Job>> DeleteJob([FromRoute] int jobId)
 		{
 			var job = await _context.GetJobById(jobId);
@@ -93,7 +93,7 @@ namespace ByteBuoy.API.Controllers
 
 		// PUT: api/v1/jobs/{jobId}
 		[HttpPut("{jobId}")]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<Job>> UpdateJob(UpdateJobContract updateJob, [FromRoute] int jobId)
 		{
 			var job = await _context.Jobs.FindAsync(jobId);
