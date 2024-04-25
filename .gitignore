@@ -401,3 +401,4 @@ src/ByteBuoy.API/DB/*.*
 .idea/
 scripts/requests/ByteBuoy/environments/Prod.bru
 docs/public/
+Prod*.bru

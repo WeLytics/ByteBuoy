@@ -74,10 +74,6 @@ namespace ByteBuoy.Infrastructure.Config
 						var filesExistsJob = mapper.JobDtoToFilesExistsConfig(job);
 						result.Tasks.Add(filesExistsJob);
 						break;
-					case "filesHashes@v1":
-						var filesHashesJob = mapper.JobDtoToFilesHashesConfig(job);
-						result.Tasks.Add(filesHashesJob);
-						break;
 					case "commandLine@v1":
 						var commandLineConfig = mapper.JobDtoToCommandLineConfig(job);
 						result.Tasks.Add(commandLineConfig);

@@ -1,4 +1,3 @@
-using ByteBuoy.Agent.JobExecution.JobActions;
 using ByteBuoy.Core.JobExecution.JobActions;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 

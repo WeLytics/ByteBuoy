@@ -40,9 +40,6 @@ namespace ByteBuoy.Core.JobExecution
 					case FilesMoveJobConfig filesMoveConfig:
 						AddTask(taskConfig, new FilesMoveAction(filesMoveConfig, _apiService));
 						break;
-					case FilesHashesConfig filesHashesConfig:
-						AddTask(taskConfig, new FilesHashesAction(filesHashesConfig, _apiService));
-						break;
 					case SshUploadConfig sshUploadConfig:
 						AddTask(taskConfig, new SshUploadAction(sshUploadConfig, _apiService));
 						break;

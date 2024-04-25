@@ -1,6 +1,4 @@
-using System.Text.Json;
 using ByteBuoy.Core.Helpers;
-using ByteBuoy.Application.Contracts;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 using ByteBuoy.Core.Services;
 
@@ -40,12 +38,12 @@ namespace ByteBuoy.Core.JobExecution.JobActions
 						if (!IOHelper.IsFileIgnored(file, _jobExecutionContext.GetGlobalgnoredFiles()))
 						{
 							_jobExecutionContext.AddLog($"File {file} found");
-							await SendApiRequest(file);
+							await _jobExecutionContext.SendApiRequestPath(_config, _apiService, file);
 						}
 						else
 						{
 							_jobExecutionContext.AddLog($"File {file} is ignored");
-						} 
+						}
 					}
 				}
 				else
@@ -56,37 +54,7 @@ namespace ByteBuoy.Core.JobExecution.JobActions
 			else if (File.Exists(path))
 			{
 				_jobExecutionContext.AddLog($"Checking path: {path}");
-				await SendApiRequest(path);
-			}
-		}
-
-		private async Task SendApiRequest(string filePath)
-		{
-			if (_jobExecutionContext.IsDryRun)
-			{
-				_jobExecutionContext.AddLog($"DRY RUN: Would send API request for file {filePath}");
-				return;
-			}
-
-			var payload = new CreatePageMetricContract()
-			{
-				JobId = _jobExecutionContext.JobId,
-				Status = Domain.Enums.MetricStatus.Success,
-				ValueString = Path.GetFileName(filePath),
-				HashSHA256 = FileHasher.GetFileSHA256Hash(filePath),
-				MetaJson = JsonSerializer.Serialize(new
-				{
-					path = filePath,
-					labels = _config.Labels,
-				})
-			};
-
-			var response = await _apiService.PostPageMetric(payload);
-			if (!response.IsSuccess)
-			{
-				_jobExecutionContext.AddErrorLog($"Error sending API request: {response.ErrorMessage}");
-				_jobExecutionContext.AddErrorLog($"Request: {response?.Response?.Request.Resource}");
-				_jobExecutionContext.AddErrorLog($"Response: {response?.Response?.Content}");
+				await _jobExecutionContext.SendApiRequestPath(_config, _apiService, path);	
 			}
 		}
 	}
