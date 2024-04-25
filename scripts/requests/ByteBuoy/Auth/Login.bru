@@ -5,13 +5,9 @@ meta {
 }
 
 post {
-  url: {{BYTEBUOY_SERVER}}/login?useCookies=true
+  url: {{BYTEBUOY_SERVER}}/api/v1/auth/login
   body: json
   auth: none
-}
-
-query {
-  useCookies: true
 }
 
 body:json {

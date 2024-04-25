@@ -52,7 +52,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages/{pageIdOrSlug}/metrics/purge
 		[HttpPost("purge")]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<bool>> PurgePageMetrics([FromRoute] string pageIdOrSlug)
 		{
 			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);

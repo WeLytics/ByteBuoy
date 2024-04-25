@@ -30,14 +30,6 @@ tasks:
     labels:
       customer: customer2
 
-  - name: Just checking file hashes (Customer 2)
-    action: filesHashes@v1
-    hashAlgorithm: CRC32
-    paths:
-      - c:\SourceFolder\ByteBuoys\myFiles\v1\Customer2*.xml
-    labels:
-      customer: customer2
-
   - name: Just checking file exists (Customer 3)
     action: filesExists@v1
     paths: 

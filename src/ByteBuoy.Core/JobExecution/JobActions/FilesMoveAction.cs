@@ -6,25 +6,59 @@ using ByteBuoy.Domain.Entities.Config.Tasks;
 
 namespace ByteBuoy.Agent.JobExecution.JobActions
 {
-	internal class FilesMoveAction(FilesMoveJobConfig config, ApiService apiService) : IJobAction
+	internal class FilesMoveAction(FilesMoveJobConfig _config, ApiService _apiService) : IJobAction
 	{
 		private JobExecutionContext _jobExecutionContext;
 		public async Task ExecuteAsync(JobExecutionContext jobExecutionContext)
 		{
 			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
 
-			foreach (var source in config.Sources)
+			foreach (var source in _config.Sources)
 			{
-				_jobExecutionContext.AddLog($"Moving files from {source} to {config.Targets}");
-				foreach (var destination in config.Targets)
+				if (source.Contains('*') || source.Contains('?'))
 				{
-					await MoveFilesAsync(source, destination);
+					var directory = Path.GetDirectoryName(source) ?? throw new InvalidOperationException();
+
+					var searchPattern = Path.GetFileName(source);
+
+					if (Directory.Exists(directory))
+					{
+						string[] files = Directory.GetFiles(directory, searchPattern);
+						foreach (string sourceFileName in files)
+						{
+							if (!IOHelper.IsFileIgnored(sourceFileName, _jobExecutionContext.GetGlobalgnoredFiles()))
+							{
+								foreach (var destination in _config.Targets)
+								{
+									var targetFileName = Path.Combine(destination, Path.GetFileName(sourceFileName));
+									_jobExecutionContext.AddLog($"Move file from {sourceFileName} to {targetFileName}");
+									await MoveFilesAsync(sourceFileName, targetFileName);
+								}
+							}
+							else
+							{
+								_jobExecutionContext.AddLog($"File {sourceFileName} is ignored");
+							}
+						}
+					}
+					else
+					{
+						_jobExecutionContext.AddErrorLog("Directory does not exist");
+					}
+				}
+				else if (File.Exists(source))
+				{
+					foreach (var destination in _config.Targets)
+					{
+						_jobExecutionContext.AddLog($"Move file from {source} to {destination}");
+						await MoveFilesAsync(source, destination);
+					}
 				}
 			}
 			return;
 		}
 
-		private static async Task MoveFilesAsync(string source, string destination)
+		private async Task MoveFilesAsync(string source, string destination)
 		{
 			try
 			{
@@ -50,12 +84,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 					}
 				}
 
-				await IOHelper.MoveFileAsync(source, destination);
+				await IOHelper.CopyFileAsync(source, destination);
+				await _jobExecutionContext.SendApiRequestPath(_config, _apiService, destination);
 			}
 			catch (IOException ioException)
 			{
-
-				throw;
+				_jobExecutionContext.AddErrorLog($"Failed moving from {source} to {destination}: {ioException}");
 			}
 		}
 	}

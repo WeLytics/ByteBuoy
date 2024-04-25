@@ -6,19 +6,18 @@ import { classNames } from "../utils/utils";
 import { postData } from "../services/apiService";
 import { useAuth } from "../hooks/useAuth";
 
-const navigation = [
-	{ name: "Metrics", href: "metrics", current: true },
-	{ name: "Jobs Runs", href: "jobs", current: false },
-];
 
 export default function Navbar() {
 	const { isAuthenticated, logout } = useAuth();
 
+	const navigation = [
+		{ name: "Metrics", href: "metrics", current: true },
+		...(isAuthenticated ? [{ name: "Jobs Runs", href: "jobs", current: false }] : []),
+	];
+
 	async function handleLogout() {
 		logout();
 		await postData("/logout", null);
-		// document.cookie =
-		// 	"token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 		window.location.href = "/login";
 	}
 

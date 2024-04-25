@@ -7,4 +7,5 @@ export interface Page {
     updated: string;
     description: string;
     pageStatus: MetricStatus;
+    isPublic: boolean;  
 }

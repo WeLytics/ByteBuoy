@@ -45,7 +45,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/pages
 		[HttpPost]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<Metric>> CreatePage([FromBody] CreatePageContract createPage)
 		{
 			var page = new PageContractMappers().CreatePageDtoToPage(createPage);
@@ -59,11 +59,11 @@ namespace ByteBuoy.API.Controllers
 		}
 
 		// DELETE: api/v1/pages/
-		[HttpDelete("{pageId}")]
-		[Authorize(Roles = "Admin")]
-		public async Task<ActionResult<Metric>> DeletePage([FromRoute] int pageId)
+		[HttpDelete("{pageIdOrSlug}")]
+		[Authorize(Roles = "admin")]
+		public async Task<ActionResult> DeletePage([FromRoute] string pageIdOrSlug)
 		{
-			var page = await _context.Pages.FindAsync(pageId);
+			var page = await _context.GetPageBySlug(pageIdOrSlug);
 
 			if (page == null)
 				return NotFound();
@@ -71,7 +71,7 @@ namespace ByteBuoy.API.Controllers
 			_context.Pages.Remove(page);
 			await _context.SaveChangesAsync();
 
-			return Ok();
+			return NoContent();
 		}
 
 
@@ -103,6 +103,22 @@ namespace ByteBuoy.API.Controllers
 
 			var svgContent = Utilities.PageMetricBadgeGenerator.GenerateBadge(page);
 			return Content(svgContent, "image/svg+xml");
+		}
+
+
+		// POST: api/v1/pages/5/visibility
+		[HttpPost("{pageIdOrSlug}/visibility")]
+		[Authorize(Roles ="admin")]
+		public async Task<IActionResult> SetPageVisiblity([FromBody] UpdatePageVisibility updatePageVisibility, string pageIdOrSlug)
+		{
+			var page = await _context.GetPageByIdOrSlug(pageIdOrSlug);
+
+			if (page == null)
+				return NotFound();
+
+			page.IsPublic = updatePageVisibility.IsPublic;
+			await _context.SaveChangesAsync();
+			return NoContent();
 		}
 	}
 }

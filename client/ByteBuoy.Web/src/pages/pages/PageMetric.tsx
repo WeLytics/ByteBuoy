@@ -2,9 +2,10 @@ import React, {useCallback} from "react";
 import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Page} from "../../types/Page";
-import {fetchData, postDataNoPayload} from "../../services/apiService";
+import {deleteData, fetchDataRaw, postDataRaw} from "../../services/apiService";
 import {useAuth} from "../../hooks/useAuth";
 import {Fragment} from "react";
+import {toast} from "react-toastify";
 import {
 	ChevronDownIcon,
 	ClockIcon,
@@ -16,49 +17,96 @@ import {Menu, Transition} from "@headlessui/react";
 
 import PageMetrics from "./PageMetrics";
 import {classNames} from "../../utils/utils";
+import VisibilityToggle from "../../components/VisibilityToggle";
+
 // import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
-	const {isAuthenticated} = useAuth();
+	const {isAuthenticated, isAdmin} = useAuth();
 	const {pageId} = useParams<{pageId: string}>();
 	const [page, setPage] = useState<Page | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
+	const [autoRefresh, setAutoRefresh] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);	
 
 	useEffect(() => {
 		const loadData = async () => {
-			const result = await fetchData<Page>(`/api/v1/pages/${pageId}`);
-			setPage(result);
+			const result = await fetchDataRaw<Page>(`/api/v1/pages/${pageId}`);
+
+			if (result.status === 200) {
+				setPage(result.data);
+			}
+			else if (result.status === 404) {	
+				setPage(null);
+				setAutoRefresh(false);
+			}
+			setIsLoading(false);
 		};
 
 		const interval = setInterval(() => {
-			refreshChild();
+			if (autoRefresh) {
+				refreshChild();
+			}
 		}, 60000); // 60 seconds
 
 		loadData();
 
 		return () => clearInterval(interval);
-	}, [pageId]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pageId, autoRefresh]);
 
-	const purgeList = async () => {
-		await postDataNoPayload(`/api/v1/pages/${pageId}/metrics/purge`);
+	const purgePage = async () => {
+		const response = await postDataRaw(`/api/v1/pages/${pageId}/metrics/purge`, {});
+		if (response.status === 204)	
+			toast.success("Page purged");
+		else
+			toast.error("Failed to purge page");
 		refreshChild();
+	};
+
+	const deletePage = async () => {
+		const response = await deleteData(`/api/v1/pages/${pageId}`);
+		if (response.status === 204) 
+			toast.success("Page deleted");
+		else
+			toast.error("Failed to delete page");
+		window.location.href = "/metrics";
 	};
 
 	const refreshChild = useCallback(() => {
 		setRefreshKey((prevKey) => prevKey + 1);
 	}, []);
 
+
+	if (!isLoading && !page) {	
+		return <div>Loading...</div>;
+	}
+
+	if (!page) {	
+		return <div>Page not found...</div>;
+	}
+
+	if (page && !isAuthenticated && !page.isPublic) {
+		return <div>Page is not available...</div>;
+	}
+
 	return (
 		<>
 			{/* {page && <PageEditForm page2={page} />} */}
 
 			{/* <PageTitle title={data?.title ?? "N/A"} /> */}
+
 			<div className="lg:flex lg:items-center lg:justify-between mt-4">
 				<div className="min-w-0 flex-1">
 					<h2 className="mt-2 text-left text-2xl font-bold leading-7 text-white sm:truncate sm:text-3xl sm:tracking-tight">
-						{page?.title ?? "N/A"}
+						{page.title ?? "N/A"}
 					</h2>
 				</div>
+				{isAuthenticated && (
+					<div className="mt-5 flex lg:ml-4 lg:mt-0">
+						<VisibilityToggle pageId={pageId!} isPublic={page.isPublic} />
+					</div>
+				)}
 				<div className="mt-5 flex lg:ml-4 lg:mt-0">
 					<span className="hidden sm:block">
 						<Link to={"history"}>
@@ -104,12 +152,28 @@ const PageComponent: React.FC = () => {
 						</button>
 					</span>
 
-					{isAuthenticated && (
+					{isAuthenticated && isAdmin && (
 						<span className="ml-3 hidden sm:block">
 							<button
 								type="button"
 								className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-								onClick={purgeList}
+								onClick={deletePage}
+							>
+								<ArchiveBoxXMarkIcon
+									className="-ml-0.5 mr-1.5 h-5 w-5"
+									aria-hidden="true"
+								/>
+								Delete Page
+							</button>
+						</span>
+					)}
+
+					{isAuthenticated && isAdmin && (
+						<span className="ml-3 hidden sm:block">
+							<button
+								type="button"
+								className="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+								onClick={purgePage}
 							>
 								<ArchiveBoxXMarkIcon
 									className="-ml-0.5 mr-1.5 h-5 w-5"
@@ -201,9 +265,11 @@ const PageComponent: React.FC = () => {
 				<PageMetrics key={refreshKey} />
 			</div>
 
-			<div className="text-gray">
-				<h1>This page will refresh every 60 seconds.</h1>
-			</div>
+			{autoRefresh && (	
+						<div className="text-gray">
+							<h1>This page will refresh every 60 seconds.</h1>
+						</div>
+			)}
 		</>
 	);
 };

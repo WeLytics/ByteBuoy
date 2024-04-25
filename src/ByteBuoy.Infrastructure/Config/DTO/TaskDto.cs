@@ -10,8 +10,7 @@ namespace ByteBuoy.Infrastructure.Config
 		public string? WorkingDirectory { get; set; } // for commandLine@v1
 		public List<string>? Sources { get; set; } 
 		public List<string>? Targets { get; set; } 
-		public List<string>? Paths { get; set; } // for filesHashes@v1, filesExists@v1
-		public string? HashAlgorithm { get; set; } // for filesHashes@v1
+		public List<string>? Paths { get; set; } // for filesExists@v1
 		public Dictionary<string, string>? Labels { get; set; }
 
 		// for sshUpload@v1
