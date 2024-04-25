@@ -1,10 +1,10 @@
-using ByteBuoy.Agent.Helpers;
-using ByteBuoy.Agent.Services;
+using System.Diagnostics;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
-namespace ByteBuoy.Agent.JobExecution.JobActions
+namespace ByteBuoy.Core.JobExecution.JobActions
 {
-	internal class FilesCopyAction(FilesCopyConfig config, ApiService apiService) : IJobAction
+	internal class CommandLineAction(CommandLineConfig config, ApiService apiService) : IJobAction
 	{
 		private JobExecutionContext _jobExecutionContext;
 
@@ -12,22 +12,37 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
 
-			foreach (var source in config.Sources)
+			foreach (var source in config.Commands)
 			{
-				foreach (var destination in config.Targets)
+				try
 				{
-					await CopyFilesAsync(source, destination);
+					var proc = new Process();
+					//if (config.RunAsRoot)
+					//{
+					//	proc.StartInfo.FileName = "sudo";
+					//	proc.StartInfo.Arguments = source;
+					//}
+					//else
+					//{
+					//	proc.StartInfo.FileName = "/bin/bash";
+					//	proc.StartInfo.Arguments = $"-c \"{source}\"";
+					//}
+				}
+				catch (Exception)
+				{
+
+					throw;
 				}
 			}
 			return;
 		}
 
-		private static async Task CopyFilesAsync(string source, string destination)
+		private async Task CopyFilesAsync(string source, string destination)
 		{
 			try
 			{
 				//check if destination is a directory or file, if directory create it if needed
-				if (File.Exists(destination))
+                if (File.Exists(destination))
 				{
 					//destination is a file, check if it is a directory
 					//if it is a directory, append the source filename to it
@@ -47,16 +62,14 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 						directoryInfo.Parent!.Create();
 					}
 				}
-
-				await IOHelper.CopyFileAsync(source, destination);
+				//copy the file
+				File.Copy(source, destination);
 			}
 			catch (IOException ioException)
 			{
 
 				throw;
 			}
-
-
 		}
 	}
 }

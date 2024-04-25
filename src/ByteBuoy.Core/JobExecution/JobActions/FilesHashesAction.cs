@@ -1,10 +1,10 @@
-using System.Diagnostics;
-using ByteBuoy.Agent.Services;
+using ByteBuoy.Core.Helpers;
 using ByteBuoy.Domain.Entities.Config.Tasks;
+using ByteBuoy.Core.Services;
 
-namespace ByteBuoy.Agent.JobExecution.JobActions
+namespace ByteBuoy.Core.JobExecution.JobActions
 {
-	internal class CommandLineAction(CommandLineConfig config, ApiService apiService) : IJobAction
+	internal class FilesHashesAction(FilesHashesConfig config, ApiService apiService) : IJobAction
 	{
 		private JobExecutionContext _jobExecutionContext;
 
@@ -12,37 +12,20 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
 
-			foreach (var source in config.Commands)
+			foreach (var source in config.Paths)
 			{
-				try
-				{
-					var proc = new Process();
-					//if (config.RunAsRoot)
-					//{
-					//	proc.StartInfo.FileName = "sudo";
-					//	proc.StartInfo.Arguments = source;
-					//}
-					//else
-					//{
-					//	proc.StartInfo.FileName = "/bin/bash";
-					//	proc.StartInfo.Arguments = $"-c \"{source}\"";
-					//}
-				}
-				catch (Exception)
-				{
 
-					throw;
-				}
+
 			}
 			return;
 		}
 
-		private async Task CopyFilesAsync(string source, string destination)
+		private static async Task CopyFilesAsync(string source, string destination)
 		{
 			try
 			{
 				//check if destination is a directory or file, if directory create it if needed
-                if (File.Exists(destination))
+				if (File.Exists(destination))
 				{
 					//destination is a file, check if it is a directory
 					//if it is a directory, append the source filename to it
@@ -62,14 +45,16 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 						directoryInfo.Parent!.Create();
 					}
 				}
-				//copy the file
-				File.Copy(source, destination);
+
+				await IOHelper.CopyFileAsync(source, destination);
 			}
 			catch (IOException ioException)
 			{
 
 				throw;
 			}
+
+
 		}
 	}
 }

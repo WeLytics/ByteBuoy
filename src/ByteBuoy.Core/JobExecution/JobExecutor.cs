@@ -1,21 +1,22 @@
 using System.Diagnostics;
 using ByteBuoy.Agent.JobExecution.JobActions;
-using ByteBuoy.Agent.Services;
+using ByteBuoy.Core.JobExecution.JobActions;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
-namespace ByteBuoy.Agent.JobExecution
+namespace ByteBuoy.Core.JobExecution
 {
-	internal class JobExecutor
+	public class JobExecutor
 	{
 		private readonly AgentConfig _agentConfig;
 		private readonly ApiService _apiService;
 
 		private readonly List<JobExecutionStep> _jobExecutionSteps = [];
 		private int _jobId;
-		internal bool DryRun;
+		public bool DryRun;
 
-		internal JobExecutor(AgentConfig agentConfig)
+		public JobExecutor(AgentConfig agentConfig)
 		{
 			_agentConfig = agentConfig;
 			_apiService = new ApiService(_agentConfig);

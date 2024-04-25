@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Application", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByteBuoy.Agent.Tests", "test\ByteBuoy.Agent.Tests\ByteBuoy.Agent.Tests.csproj", "{340DF401-4EC8-4331-BBB6-CEB2462E86BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByteBuoy.Core", "src\ByteBuoy.Core\ByteBuoy.Core.csproj", "{F7F37B36-362F-4EE9-B3BF-A53C9A2A8A5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{340DF401-4EC8-4331-BBB6-CEB2462E86BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{340DF401-4EC8-4331-BBB6-CEB2462E86BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{340DF401-4EC8-4331-BBB6-CEB2462E86BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7F37B36-362F-4EE9-B3BF-A53C9A2A8A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7F37B36-362F-4EE9-B3BF-A53C9A2A8A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7F37B36-362F-4EE9-B3BF-A53C9A2A8A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7F37B36-362F-4EE9-B3BF-A53C9A2A8A5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{C7666C5C-E271-4B3D-B4F6-740CAB7BA4E5} = {07C4B61E-2221-48EE-9A66-2BFD997CCD5E}
 		{E706206C-C902-4770-9107-663DBE52E657} = {D81CE091-EEFE-4211-911C-96A8BA8A79E6}
 		{340DF401-4EC8-4331-BBB6-CEB2462E86BE} = {BB73E2FD-1F55-42D6-9644-2F05A7C2A310}
+		{F7F37B36-362F-4EE9-B3BF-A53C9A2A8A5B} = {07C4B61E-2221-48EE-9A66-2BFD997CCD5E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C09E56FD-2738-45FC-8232-1BACA828E7E4}

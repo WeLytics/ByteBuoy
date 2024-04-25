@@ -3,7 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Page} from "../../types/Page";
 import {fetchData, postDataNoPayload} from "../../services/apiService";
-import { useAuth } from "../../hooks/useAuth";
+import {useAuth} from "../../hooks/useAuth";
 import {Fragment} from "react";
 import {
 	ChevronDownIcon,
@@ -19,7 +19,7 @@ import {classNames} from "../../utils/utils";
 // import PageEditForm from "../../components/PageEditForm";
 
 const PageComponent: React.FC = () => {
-	const { isAuthenticated } = useAuth(); 
+	const {isAuthenticated} = useAuth();
 	const {pageId} = useParams<{pageId: string}>();
 	const [page, setPage] = useState<Page | null>(null);
 	const [refreshKey, setRefreshKey] = useState(0);
@@ -30,7 +30,13 @@ const PageComponent: React.FC = () => {
 			setPage(result);
 		};
 
+		const interval = setInterval(() => {
+			refreshChild();
+		}, 60000); // 60 seconds
+
 		loadData();
+
+		return () => clearInterval(interval);
 	}, [pageId]);
 
 	const purgeList = async () => {
@@ -39,9 +45,7 @@ const PageComponent: React.FC = () => {
 	};
 
 	const refreshChild = useCallback(() => {
-		// Incrementing the key will cause the useEffect in ChildComponent to run
 		setRefreshKey((prevKey) => prevKey + 1);
-		console.log('refreshed');
 	}, []);
 
 	return (
@@ -144,7 +148,7 @@ const PageComponent: React.FC = () => {
 												"block px-4 py-2 text-sm text-gray-700"
 											)}
 										>
-																		<PencilIcon
+											<PencilIcon
 												className="-ml-0.5 mr-1.5 h-5 w-5 inline-block"
 												aria-hidden="true"
 											/>
@@ -171,7 +175,6 @@ const PageComponent: React.FC = () => {
 								</Menu.Item>
 								<Menu.Item>
 									{({active}) => (
-								
 										<Link to={"history"}>
 											<button
 												className={classNames(
@@ -184,8 +187,8 @@ const PageComponent: React.FC = () => {
 													aria-hidden="true"
 												/>
 												History
-												</button>
-											</Link>
+											</button>
+										</Link>
 									)}
 								</Menu.Item>
 							</Menu.Items>
@@ -196,6 +199,10 @@ const PageComponent: React.FC = () => {
 
 			<div className="mt-5">
 				<PageMetrics key={refreshKey} />
+			</div>
+
+			<div className="text-gray">
+				<h1>This page will refresh every 60 seconds.</h1>
 			</div>
 		</>
 	);

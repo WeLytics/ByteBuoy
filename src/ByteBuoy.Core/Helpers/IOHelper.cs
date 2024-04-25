@@ -1,29 +1,29 @@
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace ByteBuoy.Agent.Helpers
+namespace ByteBuoy.Core.Helpers
 {
-	internal partial class IOHelper
+	public partial class IOHelper
 	{
-		internal static string GetVersion()
+		public static string GetVersion()
 		{
 			return typeof(IOHelper).Assembly.GetName().Version?.ToString() ?? "";
 		}
 
-		internal static async Task CopyFileAsync(string sourcePath, string destinationPath)
+		public static async Task CopyFileAsync(string sourcePath, string destinationPath)
 		{
 			using var sourceStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
 			using var destinationStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
 			await sourceStream.CopyToAsync(destinationStream);
 		}
 
-		internal static async Task MoveFileAsync(string sourcePath, string destinationPath)
+		public static async Task MoveFileAsync(string sourcePath, string destinationPath)
 		{
 			await CopyFileAsync(sourcePath, destinationPath);
 			File.Delete(sourcePath);
 		}
 
-		internal static bool IsFileIgnored(string filePath, IEnumerable<string> ignorePatterns)
+		public static bool IsFileIgnored(string filePath, IEnumerable<string> ignorePatterns)
 		{
 			if (ignorePatterns == null || !ignorePatterns.Any())
 				return false;
@@ -34,7 +34,7 @@ namespace ByteBuoy.Agent.Helpers
 			return ignorePatterns.Any(pattern => fileName.Equals(pattern, comparison));
 		}
 
-		internal static string ResolvePathWithDynamicPlaceholders(string path)
+		public static string ResolvePathWithDynamicPlaceholders(string path)
 		{
 			var placeholderRegex = PlaceholderGroupPattern();
 			var matches = placeholderRegex.Matches(path);

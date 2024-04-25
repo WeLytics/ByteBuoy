@@ -1,10 +1,10 @@
-using ByteBuoy.Agent.Helpers;
-using ByteBuoy.Agent.Services;
+using ByteBuoy.Core.Helpers;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
-namespace ByteBuoy.Agent.JobExecution.JobActions
+namespace ByteBuoy.Core.JobExecution.JobActions
 {
-	internal class FilesHashesAction(FilesHashesConfig config, ApiService apiService) : IJobAction
+	internal class FilesCopyAction(FilesCopyConfig config, ApiService apiService) : IJobAction
 	{
 		private JobExecutionContext _jobExecutionContext;
 
@@ -12,10 +12,12 @@ namespace ByteBuoy.Agent.JobExecution.JobActions
 		{
 			_jobExecutionContext = jobExecutionContext ?? throw new ArgumentNullException(nameof(jobExecutionContext));
 
-			foreach (var source in config.Paths)
+			foreach (var source in config.Sources)
 			{
-
-
+				foreach (var destination in config.Targets)
+				{
+					await CopyFilesAsync(source, destination);
+				}
 			}
 			return;
 		}

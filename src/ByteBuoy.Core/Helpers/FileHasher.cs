@@ -1,11 +1,11 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ByteBuoy.Agent.Helpers
+namespace ByteBuoy.Core.Helpers
 {
-	internal class FileHasher
+	public class FileHasher
 	{
-		internal static string GetFileSHA256Hash(string filePath)
+		public static string GetFileSHA256Hash(string filePath)
 		{
 			if (!File.Exists(filePath))
 				throw new FileNotFoundException("File not found.", filePath);

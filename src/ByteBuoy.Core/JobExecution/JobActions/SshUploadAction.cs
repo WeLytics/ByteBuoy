@@ -1,7 +1,7 @@
-using ByteBuoy.Agent.Services;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
-namespace ByteBuoy.Agent.JobExecution.JobActions
+namespace ByteBuoy.Core.JobExecution.JobActions
 {
 	internal class SshUploadAction(SshUploadConfig config, ApiService apiService) : IJobAction
 	{

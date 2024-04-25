@@ -1,14 +1,14 @@
 using ByteBuoy.Domain.Entities.Config;
 
-namespace ByteBuoy.Agent.JobExecution
+namespace ByteBuoy.Core.JobExecution
 {
-	internal class LoggingConfiguration
+	public class LoggingConfiguration
 	{
 		public Action<JobExecutionStep, string>? LogAction { get; set; }
 		public Action<JobExecutionStep, string>? ErrorLogAction { get; set; }
 	}
 
-	internal class JobExecutionContext
+	public class JobExecutionContext
 	{
 		private readonly LoggingConfiguration _loggingConfiguration;
 		private readonly AgentConfig _agentConfig;

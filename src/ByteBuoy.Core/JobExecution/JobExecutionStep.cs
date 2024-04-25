@@ -1,9 +1,10 @@
 using ByteBuoy.Agent.JobExecution.JobActions;
+using ByteBuoy.Core.JobExecution.JobActions;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
-namespace ByteBuoy.Agent.JobExecution
+namespace ByteBuoy.Core.JobExecution
 {
-	internal class JobExecutionStep
+	public class JobExecutionStep
 	{
 		public int TaskId { get; set; }
 		public IJobAction jobAction { get; set; } = null!;

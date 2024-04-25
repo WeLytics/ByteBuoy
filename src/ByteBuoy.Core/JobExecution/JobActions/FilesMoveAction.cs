@@ -1,5 +1,7 @@
-using ByteBuoy.Agent.Helpers;
-using ByteBuoy.Agent.Services;
+using ByteBuoy.Core.Helpers;
+using ByteBuoy.Core.JobExecution;
+using ByteBuoy.Core.JobExecution.JobActions;
+using ByteBuoy.Core.Services;
 using ByteBuoy.Domain.Entities.Config.Tasks;
 
 namespace ByteBuoy.Agent.JobExecution.JobActions
