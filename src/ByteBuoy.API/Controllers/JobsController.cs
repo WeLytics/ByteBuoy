@@ -77,7 +77,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/jobs
 		[HttpPost]
-		[Authorize(Roles = "Admin, API")]
+		[Authorize(Roles = "admin, API")]
 		public async Task<ActionResult<Job>> PostJob(CreateJobContract createJob)
 		{
 			var newJob = new JobContractMappers().CreateJobContractToJob(createJob);
@@ -93,7 +93,7 @@ namespace ByteBuoy.API.Controllers
 
 		// PUT: api/v1/jobs/{jobId}
 		[HttpPut("{jobId}")]
-		[Authorize(Roles = "admin")]
+		[Authorize(Roles = "admin, API")]
 		public async Task<ActionResult<Job>> UpdateJob(UpdateJobContract updateJob, [FromRoute] int jobId)
 		{
 			var job = await _context.Jobs.FindAsync(jobId);
