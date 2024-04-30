@@ -69,32 +69,41 @@ namespace ByteBuoy.Core.JobExecution
 				config.LogAction = async (step, value) =>
 				{
 					Console.WriteLine(value);
-					await CreateJobStepSuccessHistoryAsync(step, value);
+
+					if (!DryRun)
+						await CreateJobStepSuccessHistoryAsync(step, value);await CreateJobStepSuccessHistoryAsync(step, value);
 				};
 				config.ErrorLogAction = async (step, value) =>
 				{
 					Console.WriteLine(value);
-					await CreateJobStepErrorHistoryAsync(step, value);
+
+					if (!DryRun)
+						await CreateJobStepErrorHistoryAsync(step, value);
 				};
 			});
 
-			if (!await ConnectionTestAsync())
+			if (!DryRun && !await ConnectionTestAsync())
 			{
 				await LogAsync("Failed to connect to the API " + _agentConfig.Host);
 				return;
 			}
 
-			executionContext.JobId = await CreateJobAsync();
+			if (!DryRun)
+				executionContext.JobId = await CreateJobAsync();
+
 			executionContext.IsDryRun = DryRun;
 
 			foreach (var executionStep in _jobExecutionSteps)
 			{
 				executionContext.CurrentExecutionStep = executionStep;	
-				await CreateStartJobHistoryAsync(executionStep);
+
+				if (!DryRun)
+					await CreateStartJobHistoryAsync(executionStep);await CreateStartJobHistoryAsync(executionStep);
 				await ExecuteStep(executionContext);
 			}
 
-			await FinishJobAsync();
+			if (!DryRun)
+				await FinishJobAsync();
 		}
 
 		private async Task ExecuteStep(JobExecutionContext executionContext)

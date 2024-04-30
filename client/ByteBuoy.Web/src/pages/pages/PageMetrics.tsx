@@ -75,7 +75,6 @@ export default function PageMetrics() {
 			{metrics?.metricsGroups !== undefined &&
 				metrics?.metricsGroups.length === 0 && 
 				<EmptyMetricsState pageIdOrSlug={pageIdOrSlug!} />}
-
 		</>
 	);
 }

@@ -18,6 +18,7 @@ import {Menu, Transition} from "@headlessui/react";
 import PageMetrics from "./PageMetrics";
 import {classNames} from "../../utils/utils";
 import VisibilityToggle from "../../components/VisibilityToggle";
+import CircularProgress from "../../components/CircularProgress";
 
 // import PageEditForm from "../../components/PageEditForm";
 
@@ -261,15 +262,17 @@ const PageComponent: React.FC = () => {
 				</div>
 			</div>
 
-			<div className="mt-5">
-				<PageMetrics key={refreshKey} />
-			</div>
+			<div className="mt-5" key={refreshKey}>
+				<PageMetrics />
 
-			{autoRefresh && (	
-						<div className="text-gray">
-							<h1>This page will refresh every 60 seconds.</h1>
+					{autoRefresh && (	
+						<div className="text-gray-500">
+							<p>This page will refresh every 60 seconds. <CircularProgress size={10} strokeWidth={5} duration={60} /></p>
 						</div>
 			)}
+			</div>
+
+
 		</>
 	);
 };
