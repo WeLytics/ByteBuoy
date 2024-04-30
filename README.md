@@ -2,7 +2,8 @@
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://welytics.github.io/ByteBuoy/)
-[![License: Apache--2.0 license](https://img.shields.io/badge/License-Apache--2.0 license-green.svg)](https://github.com/WeLytics/ByteBuoy/blob/main/LICENSE)
+[![License: Apache--2.0 license](https://img.shields.io/badge/License-Apache--2.0_license-green.svg)](https://github.com/WeLytics/ByteBuoy/blob/main/LICENSE)
+
 
 
 ## Introduction
