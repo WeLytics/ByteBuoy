@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ByteBuoy Documentation on ByteBuoy</title>
+    <link>//localhost:1313/</link>
+    <description>Recent content in ByteBuoy Documentation on ByteBuoy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright (c) 2024</copyright>
+    <lastBuildDate>Thu, 07 Sep 2023 17:19:07 +0200</lastBuildDate>
+    <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Example Post</title>
+      <link>//localhost:1313/blog/example-post/</link>
+      <pubDate>Thu, 07 Sep 2023 16:27:22 +0200</pubDate>
+      <guid>//localhost:1313/blog/example-post/</guid>
+      <description>You can use blog posts for announcing product updates and features.</description>
+    </item>
+    <item>
+      <title>Build Notes</title>
+      <link>//localhost:1313/docs/contributing/build-notes/</link>
+      <pubDate>Thu, 07 Sep 2023 16:04:48 +0200</pubDate>
+      <guid>//localhost:1313/docs/contributing/build-notes/</guid>
+      <description>Troubleshooting Builds: ByteBuoy.Agent Error Issue When attempting to run the ByteBuoy.Agent, you encounter the following error message:&#xA;Error reading config: Line: 1, Col: 1, Idx: 0Failed to create an instance of type &#39;ByteBuoy.</description>
+    </item>
+    <item>
+      <title>Database migrations</title>
+      <link>//localhost:1313/docs/contributing/database-migrations/</link>
+      <pubDate>Thu, 07 Sep 2023 16:04:48 +0200</pubDate>
+      <guid>//localhost:1313/docs/contributing/database-migrations/</guid>
+      <description>Adding a Database Migration To add a new database migration, please run the script src\addMigration.cmd. When prompted, ensure that the naming convention follows PascalCase and accurately describes the changes you have made.</description>
+    </item>
+    <item>
+      <title>Deploy with Traefik</title>
+      <link>//localhost:1313/docs/guides/deploy-with-traefik/</link>
+      <pubDate>Thu, 07 Sep 2023 16:04:48 +0200</pubDate>
+      <guid>//localhost:1313/docs/guides/deploy-with-traefik/</guid>
+      <description>Deployment Using Traefik as an Edge Router (Docker Swarm) This section outlines a deployment strategy for ByteBuoy utilizing Traefik.io, a powerful edge router, to establish a comprehensive ByteBuoy environment.</description>
+    </item>
+    <item>
+      <title>Getting Started</title>
+      <link>//localhost:1313/docs/getting-started/getting-started/</link>
+      <pubDate>Thu, 07 Sep 2023 16:04:48 +0200</pubDate>
+      <guid>//localhost:1313/docs/getting-started/getting-started/</guid>
+      <description>Welcome to ByteBuoy 👋&#xD;Introduction Welcome to ByteBuoy, an open-source Artefact &amp;amp; File Monitoring solution. ByteBuoy is designed to streamline the process of monitoring, copying, and moving files and artefacts, offering an intuitive Web application to track the status of these operations.</description>
+    </item>
+    <item>
+      <title>Privacy Policy</title>
+      <link>//localhost:1313/privacy/</link>
+      <pubDate>Thu, 07 Sep 2023 17:19:07 +0200</pubDate>
+      <guid>//localhost:1313/privacy/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

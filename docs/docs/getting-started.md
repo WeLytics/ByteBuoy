@@ -1,8 +1,16 @@
-# Welcome to ByteBuoy 👋
+---
+sidebar_position: 1
+sidebar_label: 'Getting started'
+title: Getting started with ByteBuoy
+description: huhu
+---
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000)
-[![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://welytics.github.io/ByteBuoy/)
-[![License: Apache--2.0 license](https://img.shields.io/badge/License-Apache--2.0 license-green.svg)](https://github.com/WeLytics/ByteBuoy/blob/main/LICENSE)
+
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
+  <a href="https://welytics.github.io/ByteBuoy/" target="_blank"><img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" /></a>
+  <a href="https://github.com/WeLytics/ByteBuoy/blob/main/LICENSE" target="_blank"><img alt="License: Apache--2.0 license" src="https://img.shields.io/badge/License-Apache--2.0 license-green.svg" /></a>
+</p>
 
 
 ## Introduction
@@ -14,23 +22,8 @@ We move a large number of files on a daily basis, particularly for machine learn
 
 ## Features
 - **File Monitoring:** Keep an eye on your critical files and artefacts with real-time monitoring.
-- **Agent for File Operations:** Equip your systems with a powerful agent capable of performing sophisticated file operations. This agent supports copying, moving, and managing files both locally and remotely via SSH, based on user-defined settings. It's designed for flexibility and efficiency in handling various file management tasks.
+- **Agent for File Operations:** A robust agent that can copy or move files according to your configurations.
 - **Web Application:** A user-friendly web interface to view the status of file operations and monitoring alerts.
-- **Status Badges:**  Seamlessly integrate dynamic status badges into your application or CI/CD pipeline to provide real-time insights into page metrics and operational health.
-
-## ⚠️ Status
-This project is still in its very early development days. Expect a few bugs.
-
-## Demo
-
-Check out our Demo page [https://bytebuoy.app](https://bytebuoy.app)
-
-
-## Roadmap
-- **Notifications & Subscribers:** Receive updates on failed jobs, missing files, and other critical alerts based on specific job conditions. Customize subscription options to target key stakeholders or groups.
-- **Tracing:** Trace files and artifacts through your system with a visual overview, detailing where and when files interact with various systems.
-- **Incidents:** Streamline incident communication with a dedicated system to quickly share and manage updates and resolutions.
-- **Online Config Builder:** Simplify your YAML configuration management with an intuitive online builder, making it easier to create, edit, and manage your configurations.
 
 
 ## Getting Started
@@ -51,7 +44,7 @@ cd ByteBuoy
 docker compose up
 ```
 
-Launch your default web browser and navigate to [`http://localhost:4200/`](http://localhost:4200/) to access the application.
+Launch your default web browser and navigate to [`http://localhost:3000/`](http://localhost:3000/) to access the application.
 
 ## Versioning
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/welytics/bytebuoy/tags).
@@ -60,10 +53,6 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/WeLytics/ByteBuoy/issues). You can also take a look at the [contributing guide](https://github.com/WeLytics/ByteBuoy/blob/main/CONTRIBUTING.md).
-
-## Discord
-
-Join our [Discord](https://discord.gg/9ujA3fme)
 
 ## Show your support
 
