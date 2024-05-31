@@ -1,22 +1,8 @@
 ---
 title: "Run Agent and ByteBuoy.yml"
 description: "Shows you the steps to use ByteBuoy.Agent to send Metrics to the API"
-summary: ""
-date: 2023-09-07T16:04:48+02:00
-lastmod: 2023-09-07T16:04:48+02:00
-draft: false
-menu:
-  docs:
-    parent: ""
-    identifier: "starthere"
-weight: 810
-toc: true
-seo:
-  title: "" # custom title (optional)
-  description: "" # custom description (recommended)
-  canonical: "" # custom canonical URL (optional)
-  noindex: false # false (default) or true
 ---
+
 # Introduction to ByteBuoy Agent
 
 The ByteBuoy Agent is a versatile command-line application designed for automating file operations. These operations include but are not limited to copying, moving files, verifying the presence of files that match specific patterns, and uploading them to an API server. The application utilizes a YAML-formatted file to define the sequence of operations to be performed.
@@ -135,7 +121,7 @@ Task-Specific Properties
 
 Example Task: Checking File Existence
 
-yaml
+```yaml
 
 - name: Just checking file exists (Customer 3)
   action: filesExists@v1
@@ -143,6 +129,7 @@ yaml
     - c:\Temp\ByteBuoys\sources\v1\ExportFile{yyyyMMdd}*.*
   labels:
      customer: customer3
+```
 
 This task checks for the existence of files matching a specific pattern in a given directory. It's named "Just checking file exists (Customer 3)" and tagged with a label indicating it's associated with "customer3". The action filesExists@v1 tells the ByteBuoy Agent to perform a file existence check. The paths property lists the patterns of files to be checked, supporting dynamic date-based file selection.
 
