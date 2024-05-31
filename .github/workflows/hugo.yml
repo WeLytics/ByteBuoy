@@ -13,6 +13,10 @@ on:
   
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: docs
+    
     name: Build Docusaurus
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: docs
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - name: Build website
         working-directory: docs
         run: yarn build
