@@ -2,7 +2,6 @@
 sidebar_position: 1
 sidebar_label: 'Getting started'
 title: Getting started with ByteBuoy
-description: huhu
 ---
 
 

@@ -1,7 +1,6 @@
-
 ---
-title: "Deploy with Traefik"
-description: "Guide on how to deploy ByteBuoy with Traefik.io"
+title: "Traefik Deployment"
+description: "Use ByteBuoy with Traefik Edge Routing"
 summary: ""
 date: 2023-09-07T16:04:48+02:00
 lastmod: 2023-09-07T16:04:48+02:00
@@ -9,14 +8,9 @@ draft: false
 menu:
   docs:
     parent: ""
-    identifier: "use-traefik"
+    identifier: "starthere"
 weight: 810
 toc: true
-seo:
-  title: "" # custom title (optional)
-  description: "" # custom description (recommended)
-  canonical: "" # custom canonical URL (optional)
-  noindex: false # false (default) or true
 ---
 
 # Deployment Using Traefik as an Edge Router (Docker Swarm)

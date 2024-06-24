@@ -1,7 +1,6 @@
-
 ---
-title: "Status Badge"
-description: "Use Status Badges"
+title: "Status Badges"
+description: "Generate Status Badges"
 summary: ""
 date: 2023-09-07T16:04:48+02:00
 lastmod: 2023-09-07T16:04:48+02:00
@@ -9,16 +8,10 @@ draft: false
 menu:
   docs:
     parent: ""
-    identifier: "use-traefik"
+    identifier: "starthere"
 weight: 810
 toc: true
-seo:
-  title: "" # custom title (optional)
-  description: "" # custom description (recommended)
-  canonical: "" # custom canonical URL (optional)
-  noindex: false # false (default) or true
 ---
-
 # Page Metric Status Badge
 
 This API endpoint generates and retrieves a status badge for a specific page identified by either its ID or slug. The badge provides a visual representation of the page's metrics, such as performance or availability status.

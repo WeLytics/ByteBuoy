@@ -63,7 +63,7 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Docs',
         },
 		// uncomment to display version
 		// {
@@ -78,7 +78,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Docs',
               to: '/docs/getting-started',
             },
           ],
@@ -87,21 +87,21 @@ const config: Config = {
           title: 'Community',
           items: [
             {
+              label: 'GitHub',
+              href: 'https://github.com/welytics/ByteBuoy',
+            },
+            {
               label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              href: 'https://stackoverflow.com/questions/tagged/bytebuoy',
             },
             {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://discord.gg/9ujA3fme',
             },
           ],
         }
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} ByteBuoy, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
