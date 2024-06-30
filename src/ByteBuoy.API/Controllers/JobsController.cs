@@ -22,6 +22,7 @@ namespace ByteBuoy.API.Controllers
 
 		// GET: api/v1/jobs
 		[HttpGet]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<PagedList<Job>>> GetJobs([FromQuery] QueryParameters queryParameters)
 		{
 			var query = _context.Jobs.AsQueryable();
@@ -49,6 +50,7 @@ namespace ByteBuoy.API.Controllers
 
 		// GET: api/v1/jobs/{jobId}
 		[HttpGet("{jobId}")]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<Job>> GetJob([FromRoute] int jobId)
 		{
 			var job = await _context.Jobs
@@ -110,6 +112,7 @@ namespace ByteBuoy.API.Controllers
 
 		// POST: api/v1/jobs/{jobId}/history
 		[HttpPost("{jobId}/history")]
+		[Authorize(Roles = "admin")]
 		public async Task<ActionResult<JobHistory>> PostJobHistory(CreateJobHistoryContract createJobHistory, [FromRoute] int jobId)
 		{
 			var job = await _context.Jobs.FindAsync(jobId);
