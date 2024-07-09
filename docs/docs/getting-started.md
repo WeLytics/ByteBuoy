@@ -2,11 +2,12 @@
 sidebar_position: 1
 sidebar_label: 'Getting started'
 title: Getting started with ByteBuoy
+slug: /
 ---
 
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://welytics.github.io/ByteBuoy/" target="_blank"><img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" /></a>
   <a href="https://github.com/WeLytics/ByteBuoy/blob/main/LICENSE" target="_blank"><img alt="License: Apache--2.0 license" src="https://img.shields.io/badge/License-Apache--2.0 license-green.svg" /></a>
 </p>
