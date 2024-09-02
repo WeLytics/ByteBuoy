@@ -80,7 +80,6 @@ const config: Config = {
             {
               label: 'Docs',
               to: '/',
-              // to: '/docs/getting-started',
             },
           ],
         },
