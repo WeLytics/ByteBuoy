@@ -12,6 +12,9 @@ Welcome to ByteBuoy, an open-source Artefact & File Monitoring solution. ByteBuo
 ## Why ByteBuoy
 We move a large number of files on a daily basis, particularly for machine learning pipelines. As part of this process, we need a solution to monitor file transactions, such as whether all customers have received their export files, or whether the correct data has been made available for further processing by the machine learning system. After trying a number of monitoring solutions, we decided to build something ourselves. How hard can it be? :D And we wanted to share it with the rest of you. 
 
+![image](https://github.com/user-attachments/assets/efd81ee8-f903-441d-8b10-0ac32dd52e9c)
+![image](https://github.com/user-attachments/assets/0e205627-55d4-42db-9167-8d20d79d4e9c)
+
 
 ## Features
 - **File Monitoring:** Keep an eye on your critical files and artefacts with real-time monitoring.
